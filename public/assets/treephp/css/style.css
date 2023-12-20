@@ -1,0 +1,33 @@
+
+#tree_root .item-tree.active{
+    background-color: #beebff;
+}
+
+#tree_root .item-tree{
+    cursor: pointer;
+}
+
+#tree_root .item-tree .title::before{
+    content: "";
+    margin-left: 13px;
+}
+#tree_root .item-tree.childs .title::before{
+    font-family: "Font Awesome 5 Free" !important; 
+    font-weight: 900; 
+    font-size: 20px;
+    margin-left: 0;
+    content: "\f0d7";
+    vertical-align: middle;
+    display: inline-block;
+}
+
+#tree_root .item-tree.childs.close .title::before{
+    font-family: "Font Awesome 5 Free" !important; 
+    font-weight: 900; 
+    margin-left: 0;
+    font-size: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    content: "\f0da";
+    
+}
