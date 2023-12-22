@@ -47,7 +47,7 @@ class StartModel extends Base
             return false;
         }
 
-        if(isset($config['required']) && $config['required'])
+        if(isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH.$config['required']))
         {
             $check = readline("Solution ". $config['name']. " required install ". $config['required'].". Do you want continue install solution ". $config['required'] ."(Y/n)? ");
             if (strtolower($check) =='n' || strtolower($check) == 'no')
@@ -61,6 +61,16 @@ class StartModel extends Base
             }
         }
 
+        if (file_exists(SPT_PLUGIN_PATH.$config['name']))
+        {
+            $check = readline($config['name']. ' already exists, Do you still want to install it (Y/n)? ');
+            if (strtolower($check) == 'y' || strtolower($check) == 'yes')
+            {
+                $this->error = "Stop Install";
+                return false;
+            }
+        }
+        
         echo "Start install ". $config['name']. ": \n";
         // Download zip solution
         if (!$config['link'])
