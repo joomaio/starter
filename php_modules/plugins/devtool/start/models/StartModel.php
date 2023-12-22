@@ -116,6 +116,17 @@ class StartModel extends Base
             }
         }
         
+        echo "5. Start generate database:\n";
+        // generate database
+        $entities = $this->DbToolModel->getEntities();
+        foreach($entities as $entity)
+        {
+            $try = $this->{$entity}->checkAvailability();
+            $status = $try !== false ? 'success' : 'failed';
+            echo str_pad($entity, 30) . $status ."\n";
+        }
+        echo "Generate data structure done\n";
+
         // clear file install
         $this->clearInstall($solution_folder);
 

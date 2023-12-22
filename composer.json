@@ -13,8 +13,6 @@
         "joomla/di": "~1.3",
         "smpleader/spt": "^0.8.0", 
         "smpleader/dtm": "@dev", 
-        "doctrine/annotations": "^2.0",
-        "doctrine/orm": "^2.15",
         "phpmailer/phpmailer": "^6.6.5"
     },
     "require-dev": { 
