@@ -13,11 +13,10 @@ class Cli
                 'description' => "Install solution. Example: php cli.php install solution-name",
                 'fnc' => 'start.install.install'
             ],
-            // Todo
-            // 'uninstall' => [
-            //     'description' => "Uninstall solution. Example: php cli.php uninstall solution-name",
-            //     'fnc' => 'start.uninstall.uninstall'
-            // ],
+            'uninstall' => [
+                'description' => "Uninstall solution. Example: php cli.php uninstall solution-name",
+                'fnc' => 'start.uninstall.uninstall'
+            ],
             'solution-list' => [
                 'description' => "Show solution list",
                 'fnc' => 'start.install.list'

@@ -64,7 +64,7 @@ class StartModel extends Base
         if (file_exists(SPT_PLUGIN_PATH.$config['name']))
         {
             $check = readline($config['name']. ' already exists, Do you still want to install it (Y/n)? ');
-            if (strtolower($check) == 'y' || strtolower($check) == 'yes')
+            if (strtolower($check) == 'n' || strtolower($check) == 'no')
             {
                 $this->error = "Stop Install";
                 return false;
@@ -110,10 +110,21 @@ class StartModel extends Base
             echo "- Install plugin ". basename($item)." done!\n";
         }
 
+        echo "4. Start generate data structure:\n";
+        // generate database
+        $entities = $this->DbToolModel->getEntities();
+        foreach($entities as $entity)
+        {
+            $try = $this->{$entity}->checkAvailability();
+            $status = $try !== false ? 'success' : 'failed';
+            echo str_pad($entity, 30) . $status ."\n";
+        }
+        echo "Generate data structure done\n";
+
         // update composer
         if(!$required)
         {
-            echo "4. Start composer update:\n";
+            echo "5. Start composer update:\n";
             $try = $this->updateComposer();
             if(!$try)
             {
@@ -125,17 +136,6 @@ class StartModel extends Base
                 echo "Composer update done!\n";
             }
         }
-        
-        echo "5. Start generate database:\n";
-        // generate database
-        $entities = $this->DbToolModel->getEntities();
-        foreach($entities as $entity)
-        {
-            $try = $this->{$entity}->checkAvailability();
-            $status = $try !== false ? 'success' : 'failed';
-            echo str_pad($entity, 30) . $status ."\n";
-        }
-        echo "Generate data structure done\n";
 
         // clear file install
         $this->clearInstall($solution_folder);
@@ -192,7 +192,7 @@ class StartModel extends Base
         // remove folder solution tmp
         if (file_exists(SPT_STORAGE_PATH. 'solutions'))
         {
-            $this->removeDir(SPT_STORAGE_PATH. 'solutions');
+            $this->file->removeFolder(SPT_STORAGE_PATH. 'solutions');
         }
 
         // unzip
@@ -206,38 +206,6 @@ class StartModel extends Base
         } 
 
         return false;
-    }
-
-    public function removeDir($dir)
-    {
-        if (!file_exists($dir))
-        {
-            return true;
-        } 
-    
-        if (!is_dir($dir) || is_link($dir))
-        {
-            return unlink($dir);
-        }
-    
-        foreach (scandir($dir) as $item) 
-        {
-            if ($item == '.' || $item == '..')
-            {
-                continue;
-            } 
-
-            if (!$this->removeDir($dir . "/" . $item)) 
-            {
-                if (!$this->removeDir($dir . "/" . $item))
-                {
-                    return false;
-                }
-            };
-
-        }
-    
-        return rmdir($dir);
     }
 
     public function getPlugins($path, $folder_solution = false)
@@ -272,7 +240,12 @@ class StartModel extends Base
 
         // copy folder
         $new_plugin = SPT_PLUGIN_PATH. $solution['name'].'/'. basename($plugin);
-        $try = $this->recursiveCopy($plugin, $new_plugin);
+        if (file_exists($new_plugin))
+        {
+            $this->file->removeFolder($new_plugin);
+        }
+        
+        $try = $this->file->copyFolder($plugin, $new_plugin);
 
         if (!$try)
         {
@@ -297,38 +270,9 @@ class StartModel extends Base
                 {
                     if(file_exists($new_plugin. '/'. $asset))
                     {
-                        $try = $this->recursiveCopy($new_plugin. '/'. $asset, PUBLIC_PATH.'assets/'. $key);
+                        $try = $this->file->copyFolder($new_plugin. '/'. $asset, PUBLIC_PATH.'assets/'. $key);
                     }
                 }
-            }
-        }
-
-        return true;
-    }
-
-    public function recursiveCopy($source, $dest) 
-    {
-        $files = scandir($source);
-        foreach ($files as $file) 
-        {
-            if ($file == "." || $file == "..") 
-            {
-                continue;
-            }
-
-            $sourcePath = $source . "/" . $file;
-            $destPath = $dest . "/" . $file;
-            if (is_dir($sourcePath)) 
-            {
-                if(!file_exists($destPath))
-                {
-                    mkdir($destPath, 0755, true);
-                }
-                $this->recursiveCopy($sourcePath, $destPath);
-            } 
-            else 
-            {
-                copy($sourcePath, $destPath);
             }
         }
 
@@ -339,17 +283,17 @@ class StartModel extends Base
     {
         if(file_exists($solution))
         {
-            $try = $this->removeDir($solution);
+            $try = $this->file->removeFolder($solution);
         }
 
         if($config && file_exists(SPT_PLUGIN_PATH. $config['name']))
         {
-            $try = $this->removeDir(SPT_PLUGIN_PATH. $config['name']);
+            $try = $this->file->removeFolder(SPT_PLUGIN_PATH. $config['name']);
         }
 
         if(file_exists(SPT_STORAGE_PATH. "solution.zip"))
         {
-            $try = $this->removeDir(SPT_STORAGE_PATH. "solution.zip");
+            $try = unlink(SPT_STORAGE_PATH. "solution.zip");
         }
 
         return true;
@@ -363,10 +307,101 @@ class StartModel extends Base
         return true;
     }
      
-    public function uninstall()
+    public function uninstall($solution)
     {
-        // Todo
+        $solutions = $this->getSolutions();
         
+        if (!$solution)
+        {
+            $this->error = 'Invalid Solution.';
+            return false;
+        }
+
+        $config = null;
+        foreach($solutions as $item)
+        {
+            if ($item->name == $solution)
+            {
+                $config = (array) $item;
+            }
+        }
+
+        if (!$config)
+        {
+            $this->error = 'Invalid Solution.';
+            return false;
+        }
+
+        if(!file_exists(SPT_PLUGIN_PATH.$solution))
+        {
+            $this->error = "Uninstall Failed. Cannot find installed solution ". $solution;
+            return false;
+        }
+        
+        // start uninstall
+        echo "Start uninstall solution ". $solution ."\n";
+        echo "1. Uninstall plugins: \n";
+        $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$solution, true);
+        foreach ($plugins as $plugin)
+        {
+            $try = $this->uninstallPlugin($plugin, $solution);
+            if (!$try)
+            {
+                echo "- Uninstall plugin ". basename($plugin)." failed:\n";
+                return false;
+            }
+            echo "- Uninstall plugin ". basename($plugin)." done!\n";
+        }
+        $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$solution);
+
+        echo "2. Start composer update:\n";
+        $try = $this->updateComposer();
+        if(!$try)
+        {
+            echo "Composer update failed!\n";
+            return false;
+        }
+        else
+        {
+            echo "Composer update done!\n";
+        }
+
+        return true;
+    }
+
+    public function uninstallPlugin($plugin, $solution)
+    {
+        // check folder plugin
+        if (!file_exists($plugin))
+        {
+            $this->error = 'Plugin Invalid';
+            return false;
+        }
+    
+        // run uninstall
+        $class = $this->app->getNameSpace(). '\\plugins\\'. $solution.'\\'. basename($plugin) .'\\registers\\Installer';
+        if(method_exists($class, 'uninstall'))
+        {
+            $class::uninstall($this->app);
+        }
+
+        // update asset file
+        if(method_exists($class, 'assets'))
+        {
+            $assets = $class::assets();
+            if ($assets && is_array($assets))
+            {
+                foreach($assets as $key => $asset)
+                {
+                    if (file_exists(PUBLIC_PATH.'assets/'. $key))
+                    {
+                        $this->file->removeFolder(PUBLIC_PATH.'assets/'. $key);
+                    }
+                }
+            }
+        }
+
+        $try = $this->file->removeFolder($plugin);
         return true;
     }
 }

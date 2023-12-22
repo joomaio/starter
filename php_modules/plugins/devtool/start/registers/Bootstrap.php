@@ -8,5 +8,10 @@ class Bootstrap
 {
     public static function initialize( IApp $app)
     {
+        $container = $app->getContainer();
+        if (!$container->exists('file')) 
+        {
+            $container->set('file', new File());
+        }
     }
 }
