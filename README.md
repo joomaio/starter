@@ -15,20 +15,20 @@ cd starter
 composer install
 ```
 
-Create folder 
-Edit config.php to connect to the database
+Copy and rename folder config.sample into config
+Edit file config/database.php to connect to the database
 
 Run install solution
 ```
-php cli.php install solution-code
+php spt install solution-code
 ```
 
 Example install solution
 ```
-php cli.php install pnote
+php spt install pnote
 ```
 
-Solution list:
+Solution code exist:
 pnote
 psol
 pubsol (Todo)
@@ -36,5 +36,10 @@ shopsol(Todo)
 
 Run install data minium
 ```
-php cli.php install pnote
+php spt data-minium
+```
+
+Uninstall solution
+```
+php spt uninstall solution-code
 ```
