@@ -5,7 +5,7 @@ use SPT\Container\Client as Base;
 use ZipArchive;
 use SPT\Support\Loader;
 
-class StartModel extends Base
+class StarterModel extends Base
 { 
     use \SPT\Traits\ErrorString;
 
