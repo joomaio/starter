@@ -2,8 +2,8 @@
 
 return [ 
     'starter' => [
-        'access_key' => '',
-        'user' => 'blue',
-        'password' => 'blue',
+        'access_key' => '123123',
+        'username' => 'starter',
+        'password' => '4Gr6RlAHPp',
     ],
 ];

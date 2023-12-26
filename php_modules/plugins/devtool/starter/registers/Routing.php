@@ -14,6 +14,12 @@ class Routing
                     'get' => 'starter.starter.list',
                 ],
             ],
+            'starter/login' => [
+                'fnc' => [
+                    'get' => 'starter.starter.gate',
+                    'post' => 'starter.starter.login',
+                ],
+            ],
         ];
     }
 }
