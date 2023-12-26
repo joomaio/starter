@@ -12,11 +12,13 @@ class Dispatcher
         $fName = $app->get('function');
 
         $check = php_sapi_name();
+        $container = $app->getContainer();
         if($check != 'cli')
         {
             // check asset key
-            $StarterModel = $app->getContainer()->get('StarterModel');
-            $permission = $StartModel->checkAccess();
+            $StarterAccessModel = $container->get('StarterAccessModel');
+            $access_key = $container->get('request')->get->get('access_key', '', 'string');
+            $permission = $StarterAccessModel->checkAccess($access_key);
             if (!$permission)
             {
                 $app->raiseError('Invalid request!');
@@ -29,7 +31,7 @@ class Dispatcher
             $app->raiseError('Invalid controller '. $cName);
         }
 
-        $controller = new $controller($app->getContainer());
+        $controller = new $controller($container);
         $controller->{$fName}();
         
         if ($check != 'cli')
