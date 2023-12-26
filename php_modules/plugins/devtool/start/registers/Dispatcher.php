@@ -20,6 +20,14 @@ class Dispatcher
         $controller = new $controller($app->getContainer());
         $controller->{$fName}();
         
-        exit(0);
+        $app->set('theme', $app->cf('adminTheme'));
+
+        $fName = 'to'. ucfirst($app->get('format', 'html'));
+
+        $app->finalize(
+            $controller->{$fName}()
+        );
+
+        // exit(0);
     }
 }

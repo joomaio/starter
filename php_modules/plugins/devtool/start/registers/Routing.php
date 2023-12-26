@@ -9,9 +9,9 @@ class Routing
     public static function registerEndpoints()
     {
         return [
-            '' => [
+            'starter' => [
                 'fnc' => [
-                    'get' => 'starter.starter.list',
+                    'get' => 'start.start.list',
                 ],
             ],
         ];
