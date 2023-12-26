@@ -19,7 +19,7 @@ class starter extends ControllerMVVM
 
         $this->app->set('page', 'backend-full');
         $this->app->set('format', 'html');
-        $this->app->set('layout', 'start.list');
+        $this->app->set('layout', 'starter.list');
     }
 
     public function gate()
@@ -35,7 +35,7 @@ class starter extends ControllerMVVM
 
         $this->app->set('page', 'backend-full');
         $this->app->set('format', 'html');
-        $this->app->set('layout', 'start.login');
+        $this->app->set('layout', 'starter.login');
     }
 
     public function login()

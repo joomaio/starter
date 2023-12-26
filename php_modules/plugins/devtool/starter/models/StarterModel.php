@@ -19,7 +19,23 @@ class StarterModel extends Base
             $this->solutions = simplexml_load_file(ROOT_PATH .'solution.xml');
         }
 
-        return $this->solutions;
+        $solutions = [];
+        if ($this->solutions)
+        {
+            foreach($this->solutions as $solution)
+            {
+                $tmp = (array) $solution;
+                $tmp['status'] = false;
+                if(file_exists(SPT_PLUGIN_PATH.$solution['name']))
+                {
+                    $tmp['status'] = true;
+                }
+
+                $solutions[] = $tmp;
+            }
+        }
+
+        return $solutions;
     }
 
     public function install($solution, $required = false)
