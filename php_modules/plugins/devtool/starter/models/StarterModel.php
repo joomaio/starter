@@ -1,5 +1,5 @@
 <?php
-namespace App\plugins\devtool\start\models;
+namespace App\plugins\devtool\starter\models;
 
 use SPT\Container\Client as Base;
 use ZipArchive;

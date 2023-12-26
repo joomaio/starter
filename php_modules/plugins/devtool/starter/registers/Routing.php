@@ -1,6 +1,6 @@
 <?php
 
-namespace App\plugins\devtool\start\registers;
+namespace App\plugins\devtool\starter\registers;
 
 use SPT\Application\IApp;
 
@@ -11,7 +11,7 @@ class Routing
         return [
             'starter' => [
                 'fnc' => [
-                    'get' => 'start.start.list',
+                    'get' => 'starter.starter.list',
                 ],
             ],
         ];
