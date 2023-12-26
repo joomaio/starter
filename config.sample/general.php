@@ -6,10 +6,5 @@ return [
     'adminTheme' => 'admin',
     'secrect' => 'sid',
     'expireSessionDuration' => 60,
-    'homeEndpoint' => [
-        'fnc' => [
-            'get' => 'pnote.pnote.dashboard'
-        ]
-    ],
     'redirectAfterLogin' => '',
 ];
