@@ -28,6 +28,7 @@ class Starter extends ViewModel
         
         return [
             'url' => $this->router->url(),
+            'list' => $list,
             'link_list' =>  $this->router->url('starter'),
             'title_page' => 'Starter',
             'link_install' => $this->router->url('starter/install'),

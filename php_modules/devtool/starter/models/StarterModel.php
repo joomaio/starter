@@ -26,7 +26,7 @@ class StarterModel extends Base
             {
                 $tmp = (array) $solution;
                 $tmp['status'] = false;
-                if(file_exists(SPT_PLUGIN_PATH.$solution['name']))
+                if(file_exists(SPT_PLUGIN_PATH.$tmp['code']))
                 {
                     $tmp['status'] = true;
                 }

@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     document.getElementById('clear_filter').onclick = function() {
         document.getElementById("search").value = "";
         document.getElementById('filter_form').submit();
@@ -33,4 +33,4 @@
             $('#filter_form').submit()
         });
     });
-</script>
+</script> -->

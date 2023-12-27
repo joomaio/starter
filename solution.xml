@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0"?>
 <solutions>
 	<pnote>
-		<name>pnote</name>
+		<name>PNote</name>
+		<code>pnote</code>
 		<link>https://github.com/joomaio/pnote/archive/refs/heads/main.zip</link>
 		<description>Personal Note</description>
 	</pnote>
 	<psol>
-		<name>psol</name>
+		<name>PSol</name>
+		<code>psol</code>
 		<link>https://github.com/joomaio/psol/archive/refs/heads/new_engine.zip</link>
 		<description>Pi Solution</description>
 		<required>pnote</required>
