@@ -25,6 +25,7 @@ class Routing
                 'fnc' => [
                     'post' => 'starter.starter.install',
                 ],
+                
             ],
             'starter/uninstall' => [
                 'fnc' => [

@@ -17,7 +17,7 @@ class starter extends ControllerMVVM
             );
         }
 
-        $this->app->set('page', 'backend-full');
+        // $this->app->set('page', 'backend-full');
         $this->app->set('format', 'html');
         $this->app->set('layout', 'starter.list');
     }
@@ -66,7 +66,7 @@ class starter extends ControllerMVVM
         $urlVars = $this->request->get('urlVars');
         $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
 
-        $try = $this->StarterModel->install($solution);
+        $try = $this->StarterModel->install($solution_code);
         
         $this->session->set('flashMsg', $try ? 'Install Done!' : 'Error: '. $this->StarterModel->getError());
         
@@ -80,7 +80,7 @@ class starter extends ControllerMVVM
         $urlVars = $this->request->get('urlVars');
         $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
 
-        $try = $this->StarterModel->uninstall($solution);
+        $try = $this->StarterModel->uninstall($solution_code);
         $this->session->set('flashMsg', $try ? 'Install Done!' : 'Error: '. $this->StarterModel->getError());
         
         return $this->app->redirect(

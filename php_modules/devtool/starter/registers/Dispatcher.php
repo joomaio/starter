@@ -36,8 +36,6 @@ class Dispatcher
         
         if ($check != 'cli')
         {
-            $app->set('theme', $app->cf('adminTheme'));
-
             $fName = 'to'. ucfirst($app->get('format', 'html'));
     
             return $app->finalize(
