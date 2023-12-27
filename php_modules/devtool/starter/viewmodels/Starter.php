@@ -1,5 +1,5 @@
 <?php
-namespace App\plugins\devtool\starter\viewmodels;
+namespace App\devtool\starter\viewmodels;
 
 use SPT\Web\Gui\Form;
 use SPT\Web\Gui\Listing;
