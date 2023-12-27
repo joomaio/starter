@@ -65,7 +65,6 @@ class starter extends ControllerMVVM
         $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
 
         $try = $this->StarterModel->install($solution_code);
-        
         $this->session->set('flashMsg', $try ? 'Install Done!' : 'Error: '. $this->StarterModel->getError());
         
         return $this->app->redirect(
@@ -79,7 +78,7 @@ class starter extends ControllerMVVM
         $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
 
         $try = $this->StarterModel->uninstall($solution_code);
-        $this->session->set('flashMsg', $try ? 'Install Done!' : 'Error: '. $this->StarterModel->getError());
+        $this->session->set('flashMsg', $try ? 'Uninstall Done!' : 'Error: '. $this->StarterModel->getError());
         
         return $this->app->redirect(
             $this->router->url('starter')
