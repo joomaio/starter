@@ -1,5 +1,5 @@
 <?php
-namespace App\devtool\start\controllers;
+namespace App\plugins\devtool\starter\controllers;
 
 use SPT\Response;
 use SPT\Web\ControllerMVVM;
@@ -11,10 +11,10 @@ class uninstall extends ControllerMVVM
         $args = $this->request->cli->getArgs();
         $solution = isset($args[1]) ? $args[1] : '';
 
-        $try = $this->StartModel->uninstall($solution);
+        $try = $this->StarterModel->uninstall($solution);
         if (!$try)
         {
-            echo $this->StartModel->getError() ."\n";
+            echo $this->StarterModel->getError() ."\n";
         }
         else
         {

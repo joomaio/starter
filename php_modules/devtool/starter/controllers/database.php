@@ -1,5 +1,5 @@
 <?php
-namespace App\plugins\devtool\starter\controllers;
+namespace App\devtool\starter\controllers;
 
 use SPT\Response;
 use SPT\Web\ControllerMVVM;

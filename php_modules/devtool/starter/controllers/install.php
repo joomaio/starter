@@ -1,5 +1,5 @@
 <?php
-namespace App\plugins\devtool\starter\controllers;
+namespace App\devtool\starter\controllers;
 
 use SPT\Response;
 use SPT\Web\ControllerMVVM;
@@ -8,7 +8,7 @@ class install extends ControllerMVVM
 {
     public function list()
     {
-        $list = $this->StarterModel->getSolutions();
+        $list = $this->StartModel->getSolutions();
         foreach($list as $item)
         {
             echo $item->name." : ". $item->description. "\n";
@@ -22,10 +22,10 @@ class install extends ControllerMVVM
         $args = $this->request->cli->getArgs();
         $solution = isset($args[1]) ? $args[1] : '';
 
-        $try = $this->StarterModel->install($solution);
+        $try = $this->StartModel->install($solution);
         if (!$try)
         {
-            echo $this->StarterModel->getError() ."\n";
+            echo $this->StartModel->getError() ."\n";
         }
         else
         {
