@@ -14,9 +14,8 @@
 					<div class="card border-0 shadow-none">
 						<div class="card-body">
 							<div class="row align-items-center">
-								<?php // echo $this->render('starter.list.filter', []); ?>
+								<?php echo $this->render('starter.list.filter', []); ?>
 							</div>
-							test
 						</div>
 					</div>
 				</div>
