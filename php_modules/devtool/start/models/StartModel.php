@@ -254,7 +254,7 @@ class StartModel extends Base
         }
     
         // run installer
-        $class = $this->app->getNameSpace(). '\\\'. $solution['name'].'\\'. basename($plugin) .'\\registers\\Installer';
+        $class = $this->app->getNameSpace(). '\\'. $solution['name'].'\\'. basename($plugin) .'\\registers\\Installer';
         if(method_exists($class, 'install'))
         {
             $class::install($this->app);
@@ -379,7 +379,7 @@ class StartModel extends Base
         }
     
         // run uninstall
-        $class = $this->app->getNameSpace(). '\\\'. $solution.'\\'. basename($plugin) .'\\registers\\Installer';
+        $class = $this->app->getNameSpace(). '\\'. $solution.'\\'. basename($plugin) .'\\registers\\Installer';
         if(method_exists($class, 'uninstall'))
         {
             $class::uninstall($this->app);
