@@ -3,7 +3,7 @@ namespace App\devtool\starter\controllers;
 
 use SPT\Response;
 use SPT\Web\ControllerMVVM;
-
+ 
 class database extends ControllerMVVM
 {
     public function checkavailability()

@@ -52,7 +52,7 @@ class StarterModel extends Base
         $config = null;
         foreach($solutions as $item)
         {
-            if ($item['name'] == $solution)
+            if ($item['code'] == $solution)
             {
                 $config = $item;
             }
@@ -68,10 +68,10 @@ class StarterModel extends Base
         {
             if ($is_cli)
             {
-                $check = readline("Solution ". $config['name']. " required install ". $config['required'].". Do you want continue install solution ". $config['required'] ."(Y/n)? ");
+                $check = readline("Solution ". $config['code']. " required install ". $config['required'].". Do you want continue install solution ". $config['required'] ."(Y/n)? ");
                 if (strtolower($check) =='n' || strtolower($check) == 'no')
                 {
-                    $this->error = "Install Failed. Solution ". $config['name']. " required install ". $config['required'] ;
+                    $this->error = "Install Failed. Solution ". $config['code']. " required install ". $config['required'] ;
                     return false;
                 }
                 else
@@ -85,11 +85,11 @@ class StarterModel extends Base
             }
         }
 
-        if (file_exists(SPT_PLUGIN_PATH.$config['name']))
+        if (file_exists(SPT_PLUGIN_PATH.$config['code']))
         {
             if ($is_cli)
             {
-                $check = readline($config['name']. ' already exists, Do you still want to install it (Y/n)? ');
+                $check = readline($config['code']. ' already exists, Do you still want to install it (Y/n)? ');
                 if (strtolower($check) == 'n' || strtolower($check) == 'no')
                 {
                     $this->error = "Stop Install";
@@ -98,14 +98,14 @@ class StarterModel extends Base
             }
             else
             {
-                $this->error = "Solution". $config['name']. " already exists!";
+                $this->error = "Solution". $config['code']. " already exists!";
                 return false;
             }
         }
         
         if ($is_cli)
         {
-            echo "Start install ". $config['name']. ": \n";
+            echo "Start install ". $config['code']. ": \n";
         }
 
         // Download zip solution
@@ -271,9 +271,9 @@ class StarterModel extends Base
 
     public function installPlugin($solution, $plugin)
     {
-        if(!file_exists(SPT_PLUGIN_PATH. $solution['name']))
+        if(!file_exists(SPT_PLUGIN_PATH. $solution['code']))
         {
-            if(!mkdir(SPT_PLUGIN_PATH. $solution['name']))
+            if(!mkdir(SPT_PLUGIN_PATH. $solution['code']))
             {
                 $this->error = "Error: Can't Create folder solution";
                 return false;
@@ -281,7 +281,7 @@ class StarterModel extends Base
         }
 
         // copy folder
-        $new_plugin = SPT_PLUGIN_PATH. $solution['name'].'/'. basename($plugin);
+        $new_plugin = SPT_PLUGIN_PATH. $solution['code'].'/'. basename($plugin);
         if (file_exists($new_plugin))
         {
             $this->file->removeFolder($new_plugin);
@@ -296,7 +296,7 @@ class StarterModel extends Base
         }
     
         // run installer
-        $class = $this->app->getNameSpace(). '\\'. $solution['name'].'\\'. basename($plugin) .'\\registers\\Installer';
+        $class = $this->app->getNameSpace(). '\\'. $solution['code'].'\\'. basename($plugin) .'\\registers\\Installer';
         if(method_exists($class, 'install'))
         {
             $class::install($this->app);
@@ -328,9 +328,9 @@ class StarterModel extends Base
             $try = $this->file->removeFolder($solution);
         }
 
-        if($config && file_exists(SPT_PLUGIN_PATH. $config['name']))
+        if($config && file_exists(SPT_PLUGIN_PATH. $config['code']))
         {
-            $try = $this->file->removeFolder(SPT_PLUGIN_PATH. $config['name']);
+            $try = $this->file->removeFolder(SPT_PLUGIN_PATH. $config['code']);
         }
 
         if(file_exists(SPT_STORAGE_PATH. "solution.zip"))
@@ -362,7 +362,7 @@ class StarterModel extends Base
         $config = null;
         foreach($solutions as $item)
         {
-            if ($item['name'] == $solution)
+            if ($item['code'] == $solution)
             {
                 $config = (array) $item;
             }

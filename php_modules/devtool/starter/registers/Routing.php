@@ -25,12 +25,13 @@ class Routing
                 'fnc' => [
                     'post' => 'starter.starter.install',
                 ],
-                
+                'parameters' => ['solution_code'],
             ],
             'starter/uninstall' => [
                 'fnc' => [
                     'post' => 'starter.starter.uninstall',
                 ],
+                'parameters' => ['solution_code'],
             ],
         ];
     }
