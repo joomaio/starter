@@ -51,9 +51,9 @@ class StarterModel extends Base
         $config = null;
         foreach($solutions as $item)
         {
-            if ($item->name == $solution)
+            if ($item['name'] == $solution)
             {
-                $config = (array) $item;
+                $config = $item;
             }
         }
 
@@ -336,7 +336,7 @@ class StarterModel extends Base
         $config = null;
         foreach($solutions as $item)
         {
-            if ($item->name == $solution)
+            if ($item['name'] == $solution)
             {
                 $config = (array) $item;
             }
