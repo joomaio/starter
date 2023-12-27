@@ -1,5 +1,5 @@
 <?php
-namespace App\devtool\start\registers;
+namespace App\devtool\starter\registers;
 
 use SPT\Application\IApp; 
 use SPT\File;
@@ -11,7 +11,7 @@ class Dispatcher
         $cName = $app->get('controller');
         $fName = $app->get('function');
 
-        $controller = 'App\devtool\start\controllers\\'. $cName;
+        $controller = 'App\devtool\starter\controllers\\'. $cName;
         if(!class_exists($controller))
         {
             $app->raiseError('Invalid controller '. $cName);

@@ -1,5 +1,5 @@
 <?php
-namespace App\devtool\start\registers;
+namespace App\devtool\starter\registers;
 
 use SPT\Application\IApp;
 use SPT\File;

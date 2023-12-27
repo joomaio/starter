@@ -1,6 +1,6 @@
 <?php
 
-namespace App\devtool\start\registers;
+namespace App\devtool\starter\registers;
 
 use SPT\Application\IApp;
 
@@ -11,19 +11,19 @@ class Cli
         return [
             'install' => [
                 'description' => "Install solution. Example: php cli.php install solution-name",
-                'fnc' => 'start.install.install'
+                'fnc' => 'starter.install.install'
             ],
             'uninstall' => [
                 'description' => "Uninstall solution. Example: php cli.php uninstall solution-name",
-                'fnc' => 'start.uninstall.uninstall'
+                'fnc' => 'starter.uninstall.uninstall'
             ],
             'solution-list' => [
                 'description' => "Show solution list",
-                'fnc' => 'start.install.list'
+                'fnc' => 'starter.install.list'
             ],
             'data-minium' => [
                 'description' => "Install data minium.",
-                'fnc' => 'start.database.generatedata'
+                'fnc' => 'starter.database.generatedata'
             ],
         ];
     }
