@@ -60,4 +60,31 @@ class starter extends ControllerMVVM
             $this->router->url($check ? 'starter' : 'starter/login?access_key='.$access_key )
         );
     }
+
+    public function install()
+    {
+        $urlVars = $this->request->get('urlVars');
+        $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
+
+        $try = $this->StarterModel->install($solution);
+        
+        $this->session->set('flashMsg', $try ? 'Install Done!' : 'Error: '. $this->StarterModel->getError());
+        
+        return $this->app->redirect(
+            $this->router->url('starter')
+        );
+    }
+
+    public function uninstall()
+    {
+        $urlVars = $this->request->get('urlVars');
+        $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
+
+        $try = $this->StarterModel->uninstall($solution);
+        $this->session->set('flashMsg', $try ? 'Install Done!' : 'Error: '. $this->StarterModel->getError());
+        
+        return $this->app->redirect(
+            $this->router->url('starter')
+        );
+    }
 }

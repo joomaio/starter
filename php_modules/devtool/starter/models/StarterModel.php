@@ -41,10 +41,11 @@ class StarterModel extends Base
     public function install($solution, $required = false)
     {
         $solutions = $this->getSolutions();
+        $is_cli = $this->isCli();
         
         if (!$solution)
         {
-            $this->error = 'Invalid Solution. Get solution name by command: php cli.php solution-list';
+            $this->error = 'Invalid Solution.';
             return false;
         }
 
@@ -59,17 +60,24 @@ class StarterModel extends Base
 
         if (!$config)
         {
-            $this->error = 'Invalid Solution. Get solution name by command: php cli.php solution-list';
+            $this->error = 'Invalid Solution.';
             return false;
         }
 
         if(isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH.$config['required']))
         {
-            $check = readline("Solution ". $config['name']. " required install ". $config['required'].". Do you want continue install solution ". $config['required'] ."(Y/n)? ");
-            if (strtolower($check) =='n' || strtolower($check) == 'no')
+            if ($is_cli)
             {
-                $this->error = "Install Failed. Solution ". $config['name']. " required install ". $config['required'] ;
-                return false;
+                $check = readline("Solution ". $config['name']. " required install ". $config['required'].". Do you want continue install solution ". $config['required'] ."(Y/n)? ");
+                if (strtolower($check) =='n' || strtolower($check) == 'no')
+                {
+                    $this->error = "Install Failed. Solution ". $config['name']. " required install ". $config['required'] ;
+                    return false;
+                }
+                else
+                {
+                    $this->install($config['required'], true);
+                }
             }
             else
             {
@@ -79,15 +87,27 @@ class StarterModel extends Base
 
         if (file_exists(SPT_PLUGIN_PATH.$config['name']))
         {
-            $check = readline($config['name']. ' already exists, Do you still want to install it (Y/n)? ');
-            if (strtolower($check) == 'n' || strtolower($check) == 'no')
+            if ($is_cli)
             {
-                $this->error = "Stop Install";
+                $check = readline($config['name']. ' already exists, Do you still want to install it (Y/n)? ');
+                if (strtolower($check) == 'n' || strtolower($check) == 'no')
+                {
+                    $this->error = "Stop Install";
+                    return false;
+                }
+            }
+            else
+            {
+                $this->error = "Solution". $config['name']. " already exists!";
                 return false;
             }
         }
         
-        echo "Start install ". $config['name']. ": \n";
+        if ($is_cli)
+        {
+            echo "Start install ". $config['name']. ": \n";
+        }
+
         // Download zip solution
         if (!$config['link'])
         {
@@ -98,58 +118,64 @@ class StarterModel extends Base
         $solution_zip = $this->downloadSolution($config['link']);
         if (!$solution_zip)
         {
+            $this->error = 'Download Solution Failed';
             return false;
         }
-        echo "1. Download solution done!\n";
+
+        echo $is_cli ? "1. Download solution done!\n" : '';
 
         // unzip solution
         $solution_folder = $this->unzipSolution($solution_zip);
         if (!$solution_folder)
         {
+            $this->error = 'Can`t read file solution';
             return false;
         }
 
-        echo "2. Unzip solution folder done!\n";
+        echo $is_cli ? "2. Unzip solution folder done!\n" : '';
         
         // Install plugins
         $plugins = $this->getPlugins($solution_folder);
-        echo "3. Start install plugin: \n";
+        echo $is_cli ? "3. Start install plugin: \n" : '';
         foreach($plugins as $item)
         {
             $try = $this->installPlugin($config, $item);
             if (!$try)
             {
                 $this->clearInstall($solution_folder, $config);
-                echo "- Install plugin ". basename($item)." failed:\n";
+                $this->error = "- Install plugin ". basename($item)." failed:\n";
                 return false;
             }
-            echo "- Install plugin ". basename($item)." done!\n";
+            echo $is_cli ? "- Install plugin ". basename($item)." done!\n" : '';
         }
 
-        echo "4. Start generate data structure:\n";
+        echo $is_cli ? "4. Start generate data structure:\n" : '';
         // generate database
         $entities = $this->DbToolModel->getEntities();
         foreach($entities as $entity)
         {
             $try = $this->{$entity}->checkAvailability();
             $status = $try !== false ? 'success' : 'failed';
-            echo str_pad($entity, 30) . $status ."\n";
+            echo $is_cli ? str_pad($entity, 30) . $status ."\n" : '';
         }
-        echo "Generate data structure done\n";
+        echo $is_cli ? "Generate data structure done\n" : '';
 
         // update composer
         if(!$required)
         {
-            echo "5. Start composer update:\n";
-            $try = $this->updateComposer();
-            if(!$try)
+            echo $is_cli ? "5. Start composer update:\n" : '';
+            if($is_cli)
             {
-                echo "Composer update failed!\n";
-                return false;
-            }
-            else
-            {
-                echo "Composer update done!\n";
+                $try = $this->updateComposer();
+                if(!$try)
+                {
+                    echo "Composer update failed!\n";
+                    return false;
+                }
+                else
+                {
+                    echo "Composer update done!\n";
+                }
             }
         }
 
@@ -419,5 +445,11 @@ class StarterModel extends Base
 
         $try = $this->file->removeFolder($plugin);
         return true;
+    }
+
+    public function isCli()
+    {
+        $check = php_sapi_name();
+        return $check === 'cli';
     }
 }

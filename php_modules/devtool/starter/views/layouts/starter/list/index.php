@@ -1,8 +1,10 @@
-<?php echo $this->renderWidget('core::notification'); ?>
 <div class="container">
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-12">
-			<h2 class="text-center my-4">Solutions</h2>
+			<h2 class="text-center mt-4 mb-2">Solutions</h2>
+			<div class="mb-4">
+				<?php echo $this->renderWidget('core::notification'); ?>
+			</div>
 			<?php echo $this->render('starter.list.filter', []); ?>
 		</div>
 		<div class="col-lg-10 col-12">
@@ -12,8 +14,10 @@
 		</div>
 	</div>
 </div>
-<form class="hidden" method="POST" id="form_delete">
+<form class="hidden" method="POST"  id="form_install">
     <input type="hidden" value="<?php echo $this->token ?>" name="token">
-    <input type="hidden" value="DELETE" name="_method">
+</form>
+<form class="hidden" method="POST"  id="form_uninstall">
+    <input type="hidden" value="<?php echo $this->token ?>" name="token">
 </form>
 <?php echo $this->render('starter.list.javascript', []); ?>
