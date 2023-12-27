@@ -17,7 +17,6 @@ class starter extends ControllerMVVM
             );
         }
 
-        // $this->app->set('page', 'backend-full');
         $this->app->set('format', 'html');
         $this->app->set('layout', 'starter.list');
     }
@@ -33,7 +32,6 @@ class starter extends ControllerMVVM
             );
         }
 
-        $this->app->set('page', 'backend-full');
         $this->app->set('format', 'html');
         $this->app->set('layout', 'starter.login');
     }

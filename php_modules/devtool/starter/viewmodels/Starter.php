@@ -13,7 +13,8 @@ class Starter extends ViewModel
             'layout'=>[
                 'starter.list',
                 'starter.list.row',
-                'starter.list.filter'
+                'starter.list.filter',
+                'starter.login'
             ],
         ];
     }
@@ -83,6 +84,13 @@ class Starter extends ViewModel
         return [
             'item' => $row,
             'index' => $viewData['list']->getIndex(),
+        ];
+    }
+
+    public function login()
+    {
+        return [
+            'url' => $this->router->url()
         ];
     }
 
