@@ -1,5 +1,5 @@
 <?php
-namespace App\plugins\devtool\start\models;
+namespace App\devtool\start\models;
 
 use SPT\Container\Client as Base;
 use SPT\Support\Loader;

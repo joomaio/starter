@@ -1,6 +1,6 @@
 <?php
 
-namespace App\plugins\devtool\start\registers;
+namespace App\devtool\start\registers;
 
 use SPT\Application\IApp;
 
