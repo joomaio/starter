@@ -8,7 +8,7 @@ class install extends ControllerMVVM
 {
     public function list()
     {
-        $list = $this->StartModel->getSolutions();
+        $list = $this->StarterModel->getSolutions();
         foreach($list as $item)
         {
             echo $item->name." : ". $item->description. "\n";
@@ -22,10 +22,10 @@ class install extends ControllerMVVM
         $args = $this->request->cli->getArgs();
         $solution = isset($args[1]) ? $args[1] : '';
 
-        $try = $this->StartModel->install($solution);
+        $try = $this->StarterModel->install($solution);
         if (!$try)
         {
-            echo $this->StartModel->getError() ."\n";
+            echo $this->StarterModel->getError() ."\n";
         }
         else
         {
