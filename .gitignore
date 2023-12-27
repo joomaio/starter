@@ -40,8 +40,8 @@ phpdoc-*
 /config
 /public/media/*
 !/public/media/default/*
-/php_modules/plugins/psol
-/php_modules/plugins/pnote
+/php_modules/psol
+/php_modules/pnote
 /public/assets/specs
 /public/assets/mermaidjs
 

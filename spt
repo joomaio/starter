@@ -11,7 +11,7 @@ require ROOT_PATH . 'vendor/autoload.php';
 $app = new DTM\core\libraries\Cli(
     new SPT\Container\Joomla,
     PUBLIC_PATH,
-    APP_PATH. 'plugins/',
+    APP_PATH,
     ROOT_PATH. 'config',
     'App'
 );
