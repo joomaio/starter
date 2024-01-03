@@ -32,7 +32,12 @@ return [
 ```
 
 Access the link https://your_domain/starter?access_key={access_key}
-With {access_key} taken from file config/starter starter => access_key
+
+With {access_key} from config/starter.php
+
+In screen login form, enter username and password from config/starter.php
+
+In screen solution mananager, click install pnote (psol)
 
 ## With CLI
 Run install solution
