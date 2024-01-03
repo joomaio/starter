@@ -25,6 +25,25 @@ class Starter extends ViewModel
         $search = trim($filter->getField('search')->value);
 
         $solutions = $this->StarterModel->getSolutions();
+        $tmp = [];
+        if ($search)
+        {
+            foreach($solutions as $item)
+            {
+                if(strpos($item['name'], $search) !== false || strpos($item['code'], $search) !== false || strpos($item['description'], $search) !== false)
+                {
+                    $tmp[] = $item;
+                }
+            }
+
+            $solutions = $tmp;
+        }
+
+        if(!$tmp && $search)
+        {
+            $this->session->set('flashMsg', 'Solution not found');
+        }
+
         $list   = new Listing($solutions, count($solutions), 0, $this->getColumns());
         
         return [
