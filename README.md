@@ -18,6 +18,23 @@ composer install
 Copy and rename folder config.sample into config
 Edit file config/database.php to connect to the database
 
+## With Webapp
+Required: 
+Must have a config/startup.php and data in starter
+```
+return [ 
+    'starter' => [
+        'access_key' => 'OPQzxeyQpU',
+        'username' => 'starter',
+        'password' => '4Gr6RlAHPp',
+    ],
+];
+```
+
+Access the link https://your_domain/starter?access_key={access_key}
+With {access_key} taken from file config/starter starter => access_key
+
+## With CLI
 Run install solution
 ```
 php spt install solution-code

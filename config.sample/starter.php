@@ -2,7 +2,7 @@
 
 return [ 
     'starter' => [
-        'access_key' => '123123',
+        'access_key' => 'OPQzxeyQpU',
         'username' => 'starter',
         'password' => '4Gr6RlAHPp',
     ],
