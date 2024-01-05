@@ -165,18 +165,15 @@ class StarterModel extends Base
         if(!$required)
         {
             echo $is_cli ? "5. Start composer update:\n" : '';
-            if($is_cli)
+            $try = $this->ComposerModel->update($is_cli);
+            if(!$try)
             {
-                $try = $this->updateComposer();
-                if(!$try)
-                {
-                    echo "Composer update failed!\n";
-                    return false;
-                }
-                else
-                {
-                    echo "Composer update done!\n";
-                }
+                echo $is_cli ? "Composer update failed!\n" : '';
+                return false;
+            }
+            else
+            {
+                echo $is_cli ? "Composer update done!\n" : '';
             }
         }
 
@@ -342,14 +339,6 @@ class StarterModel extends Base
         return true;
     }
 
-    public function updateComposer()
-    {
-        // update composer
-        exec("composer update", $output, $return_var);
-
-        return true;
-    }
-     
     public function uninstall($solution)
     {
         $solutions = $this->getSolutions();
@@ -398,7 +387,7 @@ class StarterModel extends Base
         $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$solution);
 
         echo "2. Start composer update:\n";
-        $try = $this->updateComposer();
+        $try = $this->ComposerModel->update($is_cli);
         if(!$try)
         {
             echo "Composer update failed!\n";
