@@ -8,6 +8,14 @@ class starter extends ControllerMVVM
 {
     public function list()
     {
+        $starter = $this->config->starter;
+
+        if (!$starter || (!isset($starter['access_key']) || $starter['access_key'] == '') || 
+        (!isset($starter['username']) || $starter['username'] == '') || (!isset($starter['password']) || $starter['password'] == ''))
+        {
+            $this->app->raiseError('Invalid request!');  
+        } 
+
         $access_key = $this->request->get->get('access_key', '', 'string');
         $user = $this->StarterAccessModel->user();
         if (!$user)
