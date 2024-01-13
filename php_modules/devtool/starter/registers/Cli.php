@@ -21,8 +21,8 @@ class Cli
                 'description' => "Show solution list",
                 'fnc' => 'starter.install.list'
             ],
-            'data-minium' => [
-                'description' => "Install data minium.",
+            'data-minimum' => [
+                'description' => "Install data minimum.",
                 'fnc' => 'starter.database.generatedata'
             ],
         ];
