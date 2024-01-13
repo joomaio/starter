@@ -7,4 +7,9 @@ return [
     'secrect' => 'sid',
     'expireSessionDuration' => 60,
     'redirectAfterLogin' => '',
+    'homeEndpoint' => [
+        'fnc' => [
+            'get' => 'pnote.pnote.dashboard'
+        ],
+    ],
 ];
