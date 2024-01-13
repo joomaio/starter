@@ -2,7 +2,7 @@
 
 return [ 
     'subpath' => '',
-    'defaultTheme' => 'blue',
+    'defaultTheme' => '',
     'adminTheme' => 'admin',
     'secrect' => 'sid',
     'expireSessionDuration' => 60,
