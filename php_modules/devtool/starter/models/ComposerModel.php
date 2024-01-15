@@ -21,9 +21,19 @@ class ComposerModel extends Base
             return true;
         }
         
-        putenv('COMPOSER_HOME=' . ROOT_PATH);
-        putenv('COMPOSER_VENDOR_DIR=' . ROOT_PATH.'vendor');
-        putenv('COMPOSER=' . ROOT_PATH.'composer.json');
+        $composer_data = array(
+            'url' => 'https://getcomposer.org/composer.phar',
+            'dir' => __DIR__.'/../../../../',
+            'bin' => __DIR__.'/../../../../composer.phar',
+            'json' => __DIR__.'/../../../../composer.json'
+        );
+
+        copy($composer_data['url'],$composer_data['bin']);
+        require_once "phar://{$composer_data['bin']}/src/bootstrap.php";
+
+        chdir($composer_data['dir']);
+        putenv("COMPOSER_HOME={$composer_data['dir']}");
+        putenv("OSTYPE=OS400");
 
         // $input = new ArrayInput(array('command' => 'update'));
         // $application = new Application();
