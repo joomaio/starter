@@ -213,3 +213,8 @@ span.select2-container {
 .open-dashboard-menu.dropdown-toggle:after{
     display: none;
 }
+
+.container img, .content-wrap img, .container-fluid img{
+    max-width: 100%;
+    height: auto;
+}
