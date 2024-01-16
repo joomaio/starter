@@ -341,6 +341,7 @@ class StarterModel extends Base
 
     public function uninstall($solution)
     {
+        $is_cli = $this->isCli();
         $solutions = $this->getSolutions();
         $is_cli = $this->isCli();
         
