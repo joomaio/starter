@@ -1,15 +1,12 @@
 <script>
     $(document).ready(function(){
         $(document).on('click', '.btn-install', function(){
-            $('#staticBackdropLabel').html(`Install Plugin ${$(this).data('name')}`);
+            $('#staticBackdropLabel').html(`Install Solution ${$(this).data('name')}`);
             $('#loading-text').html('Installing');
             $('.loading').css("display", "flex");
             $('#modal-text').html('');
             $('#staticBackdrop').modal('show');
             var button = $(this);
-            console.log(button);
-            
-
 
             var code = $(this).data('code');
             $.ajax({
@@ -36,10 +33,9 @@
         $(document).on('click', '.btn-uninstall', function(){
             var code  = $(this).data('code');
             var button = $(this);
-            console.log(button);
             var result = confirm("You are going to uninstall solution. Are you sure ?");
             if (result) {
-                $('#staticBackdropLabel').html(`Uninstall Plugin ${$(this).data('name')}`);
+                $('#staticBackdropLabel').html(`Uninstall Solution ${$(this).data('name')}`);
                 $('#loading-text').html('Uninstalling');
                 $('.loading').css("display", "flex");
                 $('#modal-text').html('');

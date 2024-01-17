@@ -136,7 +136,7 @@ class StarterModel extends Base
         {
             echo "1. Download solution done!\n";
         } else {
-            $result['message'] .= '<h4>Download solution</h4>';
+            $result['message'] .= '<h4>1/5. Download solution</h4>';
         }
 
         // unzip solution
@@ -152,7 +152,7 @@ class StarterModel extends Base
         {
             echo "2. Unzip solution folder done!\n";
         } else {
-            $result['message'] .= "<h4>Unzip solution folder</h4>";
+            $result['message'] .= "<h4>2/5. Unzip solution folder</h4>";
         }
         
         // Install plugins
@@ -161,7 +161,7 @@ class StarterModel extends Base
         {
             echo "3. Start install plugin: \n";
         } else {
-            $result['message'] .= "<h4>Start install plugin: </h4>";
+            $result['message'] .= "<h4>3/5. Start install plugin: </h4>";
         }
 
         foreach($plugins as $item)
@@ -186,7 +186,7 @@ class StarterModel extends Base
         {
             echo "4. Start generate data structure:\n";
         } else {
-            $result['message'] .= "<h4>Start generate data structure:</h4>";
+            $result['message'] .= "<h4>4/5. Start generate data structure:</h4>";
         }
 
         // generate database
@@ -216,7 +216,7 @@ class StarterModel extends Base
             {
                 echo "5. Start composer update:\n";
             } else {
-                $result['message'] .= "<h4>Run composer update:</h4>";
+                $result['message'] .= "<h4>5/5. Run composer update:</h4>";
             }
             $try = $this->ComposerModel->update($is_cli);
             if(!$try['success'])
@@ -236,7 +236,7 @@ class StarterModel extends Base
                     echo "Composer update done!\n";
                 } else {
                     $result["message"] .= $try['message'];
-                    $result['message'] .= "<p>Composer update succesfully!</p>";
+                    $result['message'] .= "<p>Composer update successfully!</p>";
                 }
             }
         }
@@ -450,7 +450,7 @@ class StarterModel extends Base
             echo "Start uninstall solution ". $solution ."\n";
             echo "1. Uninstall plugins: \n";
         } else {
-            $result['message'] .= "<h4>Uninstall plugins: </h4>";
+            $result['message'] .= "<h4>1/2. Uninstall plugins: </h4>";
         }
 
         $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$solution, true);
@@ -479,12 +479,11 @@ class StarterModel extends Base
         if ($is_cli) {
             echo "2. Start composer update:\n";
         } else {
-            $result['message'] .= "<h4>Run composer update:</h4>";
+            $result['message'] .= "<h4>2/2. Run composer update:</h4>";
         }
 
         $try = $this->ComposerModel->update($is_cli);
 
-        echo gettype( $try );
         if(!$try['success'])
         {
             if ($is_cli) {
