@@ -1,5 +1,5 @@
 <div class="container">
-	<h2 class="text-center mt-4 mb-2">Solutions</h2>
+	<h2 class="text-center mt-4 mb-2">Starter</h2>
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-12">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
