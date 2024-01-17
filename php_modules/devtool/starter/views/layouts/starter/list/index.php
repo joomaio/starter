@@ -34,11 +34,28 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
+				<div class="loading justify-content-center">
+					<div class="spinner-border" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+					<h3 id="loading-text"></h3>
+				</div>
 				<div id="modal-text"></div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			</div>
+			</div>
+		</div>
+	</div>
+	<!-- Toast Message -->
+	<div class="position-fixed" style="z-index: 11; position: absolute;top:120px;left:156px;">
+		<div class="toast message-toast toast-notification">
+			<div class="toast-message d-flex message-body">
+				<div class="toast-body">
+					
+				</div>
+				<button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
 			</div>
 		</div>
 	</div>
@@ -50,3 +67,4 @@
     <input type="hidden" value="<?php echo $this->token ?>" name="token">
 </form>
 <?php echo $this->render('starter.list.javascript', []); ?>
+<?php echo $this->render('starter.list.css', []); ?>

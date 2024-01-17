@@ -3,9 +3,9 @@ namespace App\devtool\starter\models;
 
 use SPT\Container\Client as Base;
 use SPT\Support\Loader;
-use Symfony\Component\Console\Application;
+use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class ComposerModel extends Base
 { 
@@ -15,10 +15,16 @@ class ComposerModel extends Base
 
     public function update($cli = false)
     {
+        $result = array(
+            'success' => false,
+            'message' => ''
+        );
+
         if($cli)
         {
             exec("composer update", $output, $return_var);
-            return true;
+            $result['success'] = true;
+            return $result;
         }
         
         $composer_data = array(
@@ -35,25 +41,26 @@ class ComposerModel extends Base
         putenv("COMPOSER_HOME={$composer_data['dir']}");
         putenv("OSTYPE=OS400");
 
-        // $input = new ArrayInput(array('command' => 'update'));
-        // $application = new Application();
-        // $application->setAutoExit(false);
-        // $application->setCatchExceptions(false);
+        $input = new ArrayInput(array('command' => 'update'));
+        $output = new BufferedOutput();
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
 
-        $try = true;
         try 
         {
-            // $result = $application->run($input);
-            $process = new Process(['composer', 'update']);
-            $process->run();
-            echo $process->getOutput();
+            $application->run($input, $output);
+            
+            $message = $output->fetch();
+            $result['success'] = true;
+            $result['message'] = nl2br($message);
         } catch (\Throwable $th) 
         {
-            $try = false; 
+            $result['message'] = $th->getMessage();
             $this->error = $th->getMessage();           
         }
         
         // Todo: cache vendor and test after run composer update
-        return $try;
+        return $result;
     }
 }

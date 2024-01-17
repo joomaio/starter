@@ -1,35 +1,66 @@
 <script>
     $(document).ready(function(){
-        $('.btn-install').on('click', function(){
+        $(document).on('click', '.btn-install', function(){
             $('#staticBackdropLabel').html(`Install Plugin ${$(this).data('name')}`);
+            $('#loading-text').html('Installing');
+            $('.loading').css("display", "flex");
+            $('#modal-text').html('');
             $('#staticBackdrop').modal('show');
+            var button = $(this);
+            console.log(button);
+            
+
+
             var code = $(this).data('code');
             $.ajax({
                 url: '<?php echo $this->link_install?>/' + code,
                 type: 'POST',
-                success: function (response) {
-                    $('#modal-text').html(response);
-                },
-                error: function (error) {
-                    $('#modal-text').html('Error occurred: ' + JSON.stringify(error));
+                complete: function(xhr, status) {
+                    $('.loading').css("display", "none");
+                    let response = JSON.parse(xhr.responseText);
+                    $('#modal-text').html(response.message.replace(/\\/g, ''));
+                    if (response.status == 'success') {
+                        button.html('Uninstall');
+                        button.removeClass("btn-primary btn-install").addClass("btn-secondary btn-uninstall");
+                        $('.toast-message').removeClass('alert-danger').addClass('alert-success');
+                        $('.toast-body').html('Install successfully!');
+                    } else {
+                        $('.toast-message').removeClass('alert-success').addClass('alert-danger');
+                        $('.toast-body').html('Install failed!');
+                    }
+                    $('.toast-notification').toast('show');
                 }
             });
         })
 
-        $('.btn-uninstall').on('click', function(){
+        $(document).on('click', '.btn-uninstall', function(){
             var code  = $(this).data('code');
+            var button = $(this);
+            console.log(button);
             var result = confirm("You are going to uninstall solution. Are you sure ?");
             if (result) {
                 $('#staticBackdropLabel').html(`Uninstall Plugin ${$(this).data('name')}`);
+                $('#loading-text').html('Uninstalling');
+                $('.loading').css("display", "flex");
+                $('#modal-text').html('');
                 $('#staticBackdrop').modal('show');
                 $.ajax({
                     url: '<?php echo $this->link_uninstall?>/' + code,
                     type: 'POST',
-                    success: function (response) {
-                        $('#modal-text').html(response);
-                    },
-                    error: function (error) {
-                        $('#modal-text').html('Error occurred: ' + JSON.stringify(error));
+                    complete: function(xhr, status) {
+                        $('.loading').css("display", "none");
+                        let response = JSON.parse(xhr.responseText);
+                        $('#modal-text').html(response.message.replace(/\\/g, ''));
+                        if (response.status == 'success') {
+                            button.html('Install');
+                            button.removeClass("btn-secondary btn-uninstall").addClass("btn btn-primary btn-install");
+                            $('.toast-message').removeClass('alert-danger').addClass('alert-success');
+                            $('.toast-body').html('Uninstall successfully!');
+                        } else {
+                            $('.toast-message').removeClass('alert-success').addClass('alert-danger');
+                            $('.toast-body').html('Uninstall failed!');
+                        }
+                        $('.toast-notification').toast('show');
                     }
                 });
             }

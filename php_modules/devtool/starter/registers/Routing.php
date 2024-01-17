@@ -26,12 +26,16 @@ class Routing
                     'post' => 'starter.starter.install',
                 ],
                 'parameters' => ['solution_code'],
+                'restApi' => true,
+                'format' => 'json',
             ],
             'starter/uninstall' => [
                 'fnc' => [
                     'post' => 'starter.starter.uninstall',
                 ],
                 'parameters' => ['solution_code'],
+                'restApi' => true,
+                'format' => 'json',
             ],
         ];
     }
