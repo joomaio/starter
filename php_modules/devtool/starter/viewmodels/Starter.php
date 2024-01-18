@@ -53,6 +53,14 @@ class Starter extends ViewModel
             'title_page' => 'Starter',
             'link_install' => $this->router->url('starter/install'),
             'link_uninstall' => $this->router->url('starter/uninstall'),
+            'link_prepare_install' => $this->router->url('starter/prepare_install'),
+            'link_prepare_uninstall' => $this->router->url('starter/prepare_uninstall'),
+            'link_download_solution' => $this->router->url('starter/download_solution'),
+            'link_unzip_solution' => $this->router->url('starter/unzip_solution'),
+            'link_install_plugins' => $this->router->url('starter/install_plugins'),
+            'link_uninstall_plugins' => $this->router->url('starter/uninstall_plugins'),
+            'link_generate_data_structure' => $this->router->url('starter/generate_data_structure'),
+            'link_composer_update' => $this->router->url('starter/composer_update'),
             'token' => $this->token->value(),
         ];
     }

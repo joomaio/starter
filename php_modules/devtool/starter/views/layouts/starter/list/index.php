@@ -34,13 +34,13 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
+				<div id="modal-text"></div>
 				<div class="loading justify-content-center">
 					<div class="spinner-border" role="status">
 						<span class="visually-hidden">Loading...</span>
 					</div>
 					<h3 id="loading-text"></h3>
 				</div>
-				<div id="modal-text"></div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
