@@ -562,7 +562,7 @@ class StarterModel extends Base
 
         if (!$solution)
         {
-            $result['message'] = '<h4>Invalid Solution.</h4>';
+            $result['message'] = '<h4>Invalid Solution</h4>';
             return $result;
         }
 
@@ -577,7 +577,7 @@ class StarterModel extends Base
 
         if (!$config)
         {
-            $result['message'] = '<h4>Invalid Solution.</h4>';
+            $result['message'] = '<h4>Invalid Solution</h4>';
             return $result;
         }
 
@@ -588,7 +588,7 @@ class StarterModel extends Base
 
         if (file_exists(SPT_PLUGIN_PATH.$config['code']))
         {
-            $result['message'] = "<h4>Solution". $config['code']. " already exists!</h4>";
+            $result['message'] = "<h4>Solution". $config['code']. " already exists</h4>";
             return $result;
         }
 
@@ -603,13 +603,13 @@ class StarterModel extends Base
         $solutions = $this->getSolutions();
         $result = array(
             'success' => false,
-            'message' => '',
+            'message' => '<h4>1/3. Check uninstall availability</h4>',
             'data' => '',
         );
 
         if (!$solution)
         {
-            $result['message'] = '<h4>Invalid Solution.</h4>';
+            $result['message'] .= '<h4>Invalid Solution</h4>';
             return $result;
         }
 
@@ -624,19 +624,18 @@ class StarterModel extends Base
 
         if (!$config)
         {
-            $result['message'] = '<h4>Invalid Solution.</h4>';
+            $result['message'] .= '<h4>Invalid Solution</h4>';
             return $result;
         }
 
         if(!file_exists(SPT_PLUGIN_PATH.$solution))
         {
-            $result['message'] = '<h4>Uninstall Failed. Cannot find installed solution '. $solution . '.</h4>';
+            $result['message'] .= '<h4>Uninstall Failed. Cannot find installed solution '. $solution . '</h4>';
             return $result;
         }
 
         $result["success"] = true;
         $result["data"] = $solution;
-        $result["message"] = '<h4>1/3. Check uninstall availability</h4>';
         return $result;
     }
 
@@ -644,25 +643,24 @@ class StarterModel extends Base
     {
         $result = array(
             'success' => false,
-            'message' => '',
+            'message' => '<h4>2/6. Download solution</h4>',
             'data' => '',
         );
         // Download zip solution
         if (!$link)
         {
-            $result['message'] .= '<p>Invalid Solution link.</p>';
+            $result['message'] .= '<p>Invalid Solution link</p>';
             return $result;
         }
 
         $solution_zip = $this->downloadSolution($link);
         if (!$solution_zip)
         {
-            $result['message'] .= '<p>Download Solution Failed.</p>';
+            $result['message'] .= '<p>Download Solution Failed</p>';
             return $result;
         }
 
         $result['data'] = $solution_zip;
-        $result['message'] = '<h4>2/6. Download solution</h4>';
         $result['success'] = true;
         return $result;
     }
@@ -671,7 +669,7 @@ class StarterModel extends Base
     {
         $result = array(
             'success' => false,
-            'message' => '',
+            'message' => '<h4>3/6. Unzip solution folder</h4>',
             'data' => '',
         );
 
@@ -679,13 +677,11 @@ class StarterModel extends Base
         $solution_folder = $this->unzipSolution($solution_zip);
         if (!$solution_folder)
         {
-            $this->error = 'Can`t read file solution';
             $result['message'] .= '<p>Can`t read file solution</p>';
             return $result;
         }
 
         $result['data'] = $solution_folder;
-        $result['message'] .= "<h4>3/6. Unzip solution folder</h4>";
         $result['success'] = true;
         return $result;
     }
@@ -694,12 +690,11 @@ class StarterModel extends Base
     {
         $result = array(
             'success' => false,
-            'message' => '',
+            'message' => '<h4>4/6. Start install plugins</h4>',
         );
 
         // Install plugins
         $plugins = $this->getPlugins($solution_folder);
-        $result['message'] .= "<h4>4/6. Start install plugins</h4>";
 
         $solutions = $this->getSolutions();
         $config = null;
@@ -717,10 +712,10 @@ class StarterModel extends Base
             if (!$try)
             {
                 $this->clearInstall($solution_folder, $config);
-                $result['message'] .= "<p>Install plugin ". basename($item)." failed:</p>";
+                $result['message'] .= "<p>Install plugin ". basename($item)." failed</p>";
                 return $result;
             }
-            $result['message'] .= "<p>Install plugin ". basename($item)." successfully!</p>";
+            $result['message'] .= "<p>Install plugin ". basename($item)." successfully</p>";
         }
 
         $result['success'] = true;
@@ -731,11 +726,8 @@ class StarterModel extends Base
     {
         $result = array(
             'success' => false,
-            'message' => '',
+            'message' => '<h4>2/3. Uninstall plugins</h4>',
         );
-
-        // start uninstall
-        $result['message'] .= "<h4>2/3. Uninstall plugins</h4>";
 
         $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$solution, true);
         foreach ($plugins as $plugin)
@@ -743,11 +735,11 @@ class StarterModel extends Base
             $try = $this->uninstallPlugin($plugin, $solution);
             if (!$try)
             {
-                $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." failed:</p>";
+                $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." failed</p>";
                 return $result;
             }
 
-            $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." successfully!</p>";
+            $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." successfully</p>";
         }
         $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$solution);
 
@@ -759,10 +751,8 @@ class StarterModel extends Base
     {
         $result = array(
             'success' => false,
-            'message' => '',
+            'message' => '<h4>5/6. Start generate data structure</h4>',
         );
-
-        $result['message'] .= "<h4>5/6. Start generate data structure</h4>";
         // generate database
         $entities = $this->DbToolModel->getEntities();
         foreach($entities as $entity)
@@ -772,7 +762,7 @@ class StarterModel extends Base
             $result['message'] .= '<p>' . str_pad($entity, 30) . $status ."</p>";
 
         }
-        $result['message'] .= "<p>Generate data structure successfully.</p>";
+        $result['message'] .= "<p>Generate data structure successfully</p>";
 
         $result['success'] = true;
         return $result;
@@ -789,13 +779,13 @@ class StarterModel extends Base
         $try = $this->ComposerModel->update();
         if(!$try['success'])
         {
-            $result['message'] .= "<p>Composer update failed!</p>";
+            $result['message'] .= "<p>Composer update failed</p>";
             return $result;
         }
         else
         {
             $result['message'] .= $try['message'];
-            $result['message'] .= "<p>Composer update done!</p>";
+            $result['message'] .= "<p>Composer update done</p>";
         }
 
         $result['success'] = true;
