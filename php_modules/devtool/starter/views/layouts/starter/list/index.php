@@ -33,14 +33,14 @@
 				<h2 class="modal-title" id="staticBackdropLabel"></h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
+			<div class="progress">
+				<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+			</div>
+			<div class="progess-status justify-content-center">
+				<span id="progess-status"></span>
+			</div>
 			<div class="modal-body">
 				<div id="modal-text"></div>
-				<div class="loading justify-content-center">
-					<div class="spinner-border" role="status">
-						<span class="visually-hidden">Loading...</span>
-					</div>
-					<h3 id="loading-text"></h3>
-				</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

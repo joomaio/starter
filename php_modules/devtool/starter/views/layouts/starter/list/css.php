@@ -21,4 +21,8 @@
 #staticBackdrop .modal-dialog .modal-body p {
     margin-bottom: 0;
 }
+
+#staticBackdrop .modal-dialog .progress {
+    margin: 15px 30px 15px 15px;
+}
 </style>

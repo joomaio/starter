@@ -2,8 +2,10 @@
     $(document).ready(function(){
         $(document).on('click', '.btn-install', function(){
             $('#staticBackdropLabel').html(`Install Solution ${$(this).data('name')}`);
-            $('#loading-text').html('Installing');
-            $('.loading').css("display", "flex");
+            $('.progress-bar').css('width', '0%').attr("aria-valuenow", 0);
+            $('#progess-status').html('Installing 0%');
+            $('.progess-status').css("display", "flex");
+            $('.progress').css("display", "flex");
             $('#modal-text').html('');
             $('#staticBackdrop').modal('show');
             var button = $(this);
@@ -22,8 +24,11 @@
                     let text_time_prepare_install = `Execute time: ${time_prepare_install.toFixed(2)} s`;
                     modalText += response_prepare_install.message.replace(/\\/g, '') + text_time_prepare_install;
                     $('#modal-text').html(modalText);
+                    $('.modal-body').scrollTop($('#modal-text').height());
                     let solution = response_prepare_install.data;
                     if (response_prepare_install.status == 'success') {
+                        $('.progress-bar').css('width', '16%').attr("aria-valuenow", 16);
+                        $('#progess-status').html('Installing 16%');
                         // if success, call api download solution
                         $.ajax({
                             url: '<?php echo $this->link_download_solution?>',
@@ -33,15 +38,17 @@
                             },
                             complete: function(xhr_download_solution, status_download_solution) {
                                 let response_download_solution = JSON.parse(xhr_download_solution.responseText);
-                                console.log(response_download_solution);
                                 let solution_path = response_download_solution.data;
                                 let time_download_solution = response_download_solution.time;
                                 total_time += time_download_solution;
                                 let text_time_download_solution = `Execute time: ${time_download_solution.toFixed(2)} s`;
                                 modalText += response_download_solution.message.replace(/\\/g, '') + text_time_download_solution;
                                 $('#modal-text').html(modalText);
+                                $('.modal-body').scrollTop($('#modal-text').height());
                                 if (response_download_solution.status == 'success') {
                                     //if success, call api unzip solution folder
+                                    $('.progress-bar').css('width', '33%').attr("aria-valuenow", 33);
+                                    $('#progess-status').html('Installing 33%');
                                     $.ajax({
                                         url: '<?php echo $this->link_unzip_solution?>',
                                         type: 'POST',
@@ -56,7 +63,10 @@
                                             let text_time_unzip_solution = `Execute time: ${time_unzip_solution.toFixed(2)} s`;
                                             modalText += response_unzip_solution.message.replace(/\\/g, '') + text_time_unzip_solution;
                                             $('#modal-text').html(modalText);
+                                            $('.modal-body').scrollTop($('#modal-text').height());
                                             if (response_unzip_solution.status == 'success') {
+                                                $('.progress-bar').css('width', '50%').attr("aria-valuenow", 50);
+                                                $('#progess-status').html('Installing 50%');
                                                 // if success, call api install plugins
                                                 $.ajax({
                                                     url: '<?php echo $this->link_install_plugins?>',
@@ -72,7 +82,10 @@
                                                         let text_time_install_plugins = `Execute time: ${time_install_plugins.toFixed(2)} s`;
                                                         modalText += response_install_plugins.message.replace(/\\/g, '') + text_time_install_plugins;
                                                         $('#modal-text').html(modalText);
+                                                        $('.modal-body').scrollTop($('#modal-text').height());
                                                         if (response_install_plugins.status == 'success') {
+                                                            $('.progress-bar').css('width', '67%').attr("aria-valuenow", 67);
+                                                            $('#progess-status').html('Installing 67%');
                                                             // if success, call api generate data structure
                                                             $.ajax({
                                                                 url: '<?php echo $this->link_generate_data_structure?>',
@@ -84,7 +97,10 @@
                                                                     let text_time_generate_data_structure = `Execute time: ${time_generate_data_structure.toFixed(2)} s`;
                                                                     modalText += response_generate_data_structure.message.replace(/\\/g, '') + text_time_generate_data_structure;
                                                                     $('#modal-text').html(modalText);
+                                                                    $('.modal-body').scrollTop($('#modal-text').height());
                                                                     if (response_generate_data_structure.status == 'success') {
+                                                                        $('.progress-bar').css('width', '84%').attr("aria-valuenow", 84);
+                                                                        $('#progess-status').html('Installing 84%');
                                                                         // if success, call api run composer update
                                                                         $.ajax({
                                                                             url: '<?php echo $this->link_composer_update?>',
@@ -99,21 +115,27 @@
                                                                                 let text_time_composer_update = `Execute time: ${time_composer_update.toFixed(2)} s`;
                                                                                 modalText += response_composer_update.message.replace(/\\/g, '') + text_time_composer_update;
                                                                                 if (response_composer_update.status == 'success') {
+                                                                                    $('.progress-bar').css('width', '100%').attr("aria-valuenow", 100);
+                                                                                    $('#progess-status').html('Install successfully!');
                                                                                     modalText += `<h4>Install successfully! Total execute time: ${total_time.toFixed(2)} s</h4>`;
-                                                                                    $('.loading').css("display", "none");
+                                                                                    // $('.progress').css("display", "none");
+                                                                                    // $('.progess-status').css("display", "none");
                                                                                     button.html('Uninstall');
                                                                                     button.removeClass("btn-primary btn-install").addClass("btn-secondary btn-uninstall");
                                                                                     showToast('success', 'Install successfully!');
                                                                                 } else {
                                                                                     modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
-                                                                                    $('.loading').css("display", "none");
+                                                                                    $('.progress').css("display", "none");
+                                                                                    $('.progess-status').css("display", "none");
                                                                                     showToast('failed', 'Install failed!');
                                                                                 }
                                                                                 $('#modal-text').html(modalText);
+                                                                                $('.modal-body').scrollTop($('#modal-text').height());
                                                                             }
                                                                         });
                                                                     } else {
-                                                                        $('.loading').css("display", "none");
+                                                                        $('.progress').css("display", "none");
+                                                                        $('.progess-status').css("display", "none");
                                                                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                                         $('#modal-text').html(modalText);
                                                                         showToast('failed', 'Install failed!');
@@ -121,7 +143,8 @@
                                                                 }
                                                             })
                                                         } else {
-                                                            $('.loading').css("display", "none");
+                                                            $('.progress').css("display", "none");
+                                                            $('.progess-status').css("display", "none");
                                                             modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                             $('#modal-text').html(modalText);
                                                             showToast('failed', 'Install failed!');
@@ -129,7 +152,8 @@
                                                     }
                                                 })
                                             } else {
-                                                $('.loading').css("display", "none");
+                                                $('.progress').css("display", "none");
+                                                $('.progess-status').css("display", "none");
                                                 modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                 $('#modal-text').html(modalText);
                                                 showToast('failed', 'Install failed!');
@@ -137,7 +161,8 @@
                                         }
                                     });
                                 } else {
-                                    $('.loading').css("display", "none");
+                                    $('.progress').css("display", "none");
+                                    $('.progess-status').css("display", "none");
                                     modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                     $('#modal-text').html(modalText);
                                     showToast('failed', 'Install failed!');
@@ -145,7 +170,8 @@
                             }
                         });
                     } else {
-                        $('.loading').css("display", "none");
+                        $('.progress').css("display", "none");
+                        $('.progess-status').css("display", "none");
                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                         $('#modal-text').html(modalText);
                         showToast('failed', 'Install failed!');
@@ -160,8 +186,10 @@
             var result = confirm("You are going to uninstall solution. Are you sure ?");
             if (result) {
                 $('#staticBackdropLabel').html(`Uninstall Solution ${$(this).data('name')}`);
-                $('#loading-text').html('Uninstalling');
-                $('.loading').css("display", "flex");
+                $('.progress-bar').css('width', '0%').attr("aria-valuenow", 0);
+                $('#progess-status').html('Uninstalling 0%');
+                $('.progess-status').css("display", "flex");
+                $('.progress').css("display", "flex");
                 $('#modal-text').html('');
                 $('#staticBackdrop').modal('show');
                 var modalText = '';
@@ -177,9 +205,12 @@
                         let text_time_prepare_uninstall = `Execute time: ${time_prepare_uninstall.toFixed(2)} s`;
                         modalText += response_prepare_uninstall.message.replace(/\\/g, '') + text_time_prepare_uninstall;
                         $('#modal-text').html(modalText);
+                        $('.modal-body').scrollTop($('#modal-text').height());
                         let solution = response_prepare_uninstall.data;
                         if (response_prepare_uninstall.status == 'success') {
                             // if success, call api uninstall plugins 
+                            $('.progress-bar').css('width', '33%').attr("aria-valuenow", 33);
+                            $('#progess-status').html('Uninstalling 33%');
                             $.ajax({
                                 url: '<?php echo $this->link_uninstall_plugins?>',
                                 type: 'POST',
@@ -193,7 +224,10 @@
                                     let text_time_uninstall_plugins = `Execute time: ${time_uninstall_plugins.toFixed(2)} s`;
                                     modalText += response_uninstall_plugins.message.replace(/\\/g, '') + text_time_uninstall_plugins;
                                     $('#modal-text').html(modalText);
+                                    $('.modal-body').scrollTop($('#modal-text').height());
                                     if (response_uninstall_plugins.status == 'success') {
+                                        $('.progress-bar').css('width', '67%').attr("aria-valuenow", 67);
+                                        $('#progess-status').html('Uninstalling 67%');
                                         // if success, call api run composer update
                                         $.ajax({
                                             url: '<?php echo $this->link_composer_update?>',
@@ -209,21 +243,27 @@
                                                 modalText += response_composer_update.message.replace(/\\/g, '') + text_time_composer_update;
 
                                                 if (response_composer_update.status == 'success') {
+                                                    $('.progress-bar').css('width', '100%').attr("aria-valuenow", 100);
+                                                    $('#progess-status').html('Uninstall successfully!');
                                                     modalText += `<h4>Install successfully! Total execute time: ${total_time.toFixed(2)} s</h4>`;
-                                                    $('.loading').css("display", "none");
+                                                    // $('.progress').css("display", "none");
+                                                    // $('.progess-status').css("display", "none");
                                                     button.html('Install');
                                                     button.removeClass("btn-secondary btn-uninstall").addClass("btn btn-primary btn-install");
                                                     showToast('success', 'Uninstall successfully!');
                                                 } else {
                                                     modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
-                                                    $('.loading').css("display", "none");
+                                                    $('.progress').css("display", "none");
+                                                    $('.progess-status').css("display", "none");
                                                     showToast('failed', 'Uninstall failed!');
                                                 }
                                                 $('#modal-text').html(modalText);
+                                                $('.modal-body').scrollTop($('#modal-text').height());
                                             }
                                         });
                                     } else {
-                                        $('.loading').css("display", "none");
+                                        $('.progress').css("display", "none");
+                                        $('.progess-status').css("display", "none");
                                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                         $('#modal-text').html(modalText);
                                         showToast('failed', 'Uninstall failed!');
@@ -231,7 +271,8 @@
                                 }
                             });
                         } else {
-                            $('.loading').css("display", "none");
+                            $('.progress').css("display", "none");
+                            $('.progess-status').css("display", "none");
                             modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                             $('#modal-text').html(modalText);
                             showToast('failed', 'Uninstall failed!');
