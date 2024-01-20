@@ -43,11 +43,16 @@ class StarterModel extends Base
     {
         $solutions = $this->getSolutions();
         $is_cli = $this->isCli();
+        $result = array(
+            'success' => false,
+            'message' => '',
+        );
         
         if (!$solution)
         {
             $this->error = 'Invalid Solution.';
-            return false;
+            $result['message'] = '<h4>Invalid Solution.</h4>';
+            return $result;
         }
 
         $config = null;
@@ -62,7 +67,8 @@ class StarterModel extends Base
         if (!$config)
         {
             $this->error = 'Invalid Solution.';
-            return false;
+            $result['message'] = '<h4>Invalid Solution.</h4>';
+            return $result;
         }
 
         if(isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH.$config['required']))
@@ -72,7 +78,7 @@ class StarterModel extends Base
                 $check = readline("Solution ". $config['code']. " required install ". $config['required'].". Do you want continue install solution ". $config['required'] ."(Y/n)? ");
                 if (strtolower($check) =='n' || strtolower($check) == 'no')
                 {
-                    $this->error = "Install Failed. Solution ". $config['code']. " required install ". $config['required'] ;
+                    $this->error = "<h4>Install Failed. Solution ". $config['code']. " required install ". $config['required'] . '</h4>' ;
                     return false;
                 }
                 else
@@ -100,7 +106,8 @@ class StarterModel extends Base
             else
             {
                 $this->error = "Solution". $config['code']. " already exists!";
-                return false;
+                $result['message'] = "<h4>Solution". $config['code']. " already exists!</h4>";
+                return $result;
             }
         }
         
@@ -113,31 +120,50 @@ class StarterModel extends Base
         if (!$config['link'])
         {
             $this->error = 'Invalid Solution link.';
-            return false;
+            $result['message'] .= '<p>Invalid Solution link.</p>';
+            return $result;
         }
 
         $solution_zip = $this->downloadSolution($config['link']);
         if (!$solution_zip)
         {
             $this->error = 'Download Solution Failed';
-            return false;
+            $result['message'] .= '<p>Download Solution Failed.</p>';
+            return $result;
         }
 
-        echo $is_cli ? "1. Download solution done!\n" : '';
+        if ($is_cli) 
+        {
+            echo "1. Download solution done!\n";
+        } else {
+            $result['message'] .= '<h4>1/5. Download solution</h4>';
+        }
 
         // unzip solution
         $solution_folder = $this->unzipSolution($solution_zip);
         if (!$solution_folder)
         {
             $this->error = 'Can`t read file solution';
-            return false;
+            $result['message'] .= '<p>Can`t read file solution</p>';
+            return $result;
         }
 
-        echo $is_cli ? "2. Unzip solution folder done!\n" : '';
+        if ($is_cli) 
+        {
+            echo "2. Unzip solution folder done!\n";
+        } else {
+            $result['message'] .= "<h4>2/5. Unzip solution folder</h4>";
+        }
         
         // Install plugins
         $plugins = $this->getPlugins($solution_folder);
-        echo $is_cli ? "3. Start install plugin: \n" : '';
+        if ($is_cli) 
+        {
+            echo "3. Start install plugin: \n";
+        } else {
+            $result['message'] .= "<h4>3/5. Start install plugin: </h4>";
+        }
+
         foreach($plugins as $item)
         {
             $try = $this->installPlugin($config, $item);
@@ -145,42 +171,82 @@ class StarterModel extends Base
             {
                 $this->clearInstall($solution_folder, $config);
                 $this->error = "- Install plugin ". basename($item)." failed:\n";
-                return false;
+                $result['message'] .= "<p>- Install plugin ". basename($item)." failed:</p>";
+                return $result;
             }
-            echo $is_cli ? "- Install plugin ". basename($item)." done!\n" : '';
+            if ($is_cli) 
+            {
+                echo "- Install plugin ". basename($item)." done!\n";
+            } else {
+                $result['message'] .= "<p>- Install plugin ". basename($item)." successfully!</p>";
+            }
         }
 
-        echo $is_cli ? "4. Start generate data structure:\n" : '';
+        if ($is_cli) 
+        {
+            echo "4. Start generate data structure:\n";
+        } else {
+            $result['message'] .= "<h4>4/5. Start generate data structure:</h4>";
+        }
+
         // generate database
         $entities = $this->DbToolModel->getEntities();
         foreach($entities as $entity)
         {
             $try = $this->{$entity}->checkAvailability();
-            $status = $try !== false ? 'success' : 'failed';
-            echo $is_cli ? str_pad($entity, 30) . $status ."\n" : '';
+            $status = $try !== false ? 'successfully' : 'failed';
+            if ($is_cli) 
+            {
+                echo str_pad($entity, 30) . $status ."\n";
+            } else {
+                $result['message'] .= '<p>' . str_pad($entity, 30) . $status ."</p>";
+            }
         }
-        echo $is_cli ? "Generate data structure done\n" : '';
+        if ($is_cli) 
+        {
+            echo "Generate data structure done\n";
+        } else {
+            $result['message'] .= "<p>Generate data structure successfully.</p>";
+        }
 
         // update composer
         if(!$required)
         {
-            echo $is_cli ? "5. Start composer update:\n" : '';
-            $try = $this->ComposerModel->update($is_cli);
-            if(!$try)
+            if ($is_cli) 
             {
-                echo $is_cli ? "Composer update failed!\n" : '';
-                return false;
+                echo "5. Start composer update:\n";
+            } else {
+                $result['message'] .= "<h4>5/5. Run composer update:</h4>";
+            }
+            $try = $this->ComposerModel->update($is_cli);
+            if(!$try['success'])
+            {
+                if ($is_cli) 
+                {
+                    echo "Composer update failed!\n";
+                } else {
+                    $result['message'] .= "<p>Composer update failed!</p>";
+                }
+                return $result;
             }
             else
             {
-                echo $is_cli ? "Composer update done!\n" : '';
+                if ($is_cli) 
+                {
+                    echo "Composer update done!\n";
+                } else {
+                    $result["message"] .= $try['message'];
+                    $result['message'] .= "<p>Composer update successfully!</p>";
+                }
             }
         }
 
         // clear file install
         $this->clearInstall($solution_folder);
 
-        return true;
+        $result['success'] = true;
+        $result['message'] .= "<h4>Install successfully!</h4>";
+        return $result;
     }
 
     public function downloadSolution($link)
@@ -343,11 +409,16 @@ class StarterModel extends Base
     {
         $solutions = $this->getSolutions();
         $is_cli = $this->isCli();
+        $result = array(
+            'success' => false,
+            'message' => '',
+        );
         
         if (!$solution)
         {
             $this->error = 'Invalid Solution.';
-            return false;
+            $result['message'] = '<h4>Invalid Solution.</h4>';
+            return $result;
         }
 
         $config = null;
@@ -362,44 +433,80 @@ class StarterModel extends Base
         if (!$config)
         {
             $this->error = 'Invalid Solution.';
-            return false;
+            $result['message'] = '<h4>Invalid Solution.</h4>';
+            return $result;
         }
 
         if(!file_exists(SPT_PLUGIN_PATH.$solution))
         {
-            $this->error = "Uninstall Failed. Cannot find installed solution ". $solution;
-            return false;
+            $this->error = 'Uninstall Failed. Cannot find installed solution '. $solution;
+            $result['message'] = '<h4>Uninstall Failed. Cannot find installed solution '. $solution . '.</h4>';
+            return $result;
         }
         
         // start uninstall
-        echo "Start uninstall solution ". $solution ."\n";
-        echo "1. Uninstall plugins: \n";
+        if ($is_cli) 
+        {
+            echo "Start uninstall solution ". $solution ."\n";
+            echo "1. Uninstall plugins: \n";
+        } else {
+            $result['message'] .= "<h4>1/2. Uninstall plugins: </h4>";
+        }
+
         $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$solution, true);
         foreach ($plugins as $plugin)
         {
             $try = $this->uninstallPlugin($plugin, $solution);
             if (!$try)
             {
-                echo "- Uninstall plugin ". basename($plugin)." failed:\n";
-                return false;
+                if ($is_cli) {
+                    echo "- Uninstall plugin ". basename($plugin)." failed:\n";
+                    return false;
+                } else {
+                    $result['message'] .= "<p>- Uninstall plugin ". basename($plugin)." failed:</p>";
+                    return $result;
+                }
             }
-            echo "- Uninstall plugin ". basename($plugin)." done!\n";
+
+            if ($is_cli) {
+                echo "- Uninstall plugin ". basename($plugin)." done!\n";
+            } else {
+                $result['message'] .= "<p>- Uninstall plugin ". basename($plugin)." successfully!</p>";
+            }
         }
         $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$solution);
 
-        echo "2. Start composer update:\n";
+        if ($is_cli) {
+            echo "2. Start composer update:\n";
+        } else {
+            $result['message'] .= "<h4>2/2. Run composer update:</h4>";
+        }
+
         $try = $this->ComposerModel->update($is_cli);
-        if(!$try)
+
+        if(!$try['success'])
         {
-            echo "Composer update failed!\n";
-            return false;
+            if ($is_cli) {
+                echo "Composer update failed!\n";
+                return false;
+            } else {
+                $result['message'] .= "<p>Composer update failed!</p>";
+                return $result;
+            }
         }
         else
         {
-            echo "Composer update done!\n";
+            if ($is_cli) {
+                echo "Composer update successfully!\n";
+                return true;
+            } else {
+                $result["message"] .= $try['message'];
+                $result['message'] .= "<p>Composer update done!</p>";
+                $result['message'] .= "<h4>Uninstall successfully!</h4>";
+                $result['success'] = true;
+                return $result;
+            }
         }
-
-        return true;
     }
 
     public function uninstallPlugin($plugin, $solution)
@@ -442,5 +549,246 @@ class StarterModel extends Base
     {
         $check = php_sapi_name();
         return $check === 'cli';
+    }
+
+    public function prepare_install($solution, $required = false)
+    {
+        $solutions = $this->getSolutions();
+        $result = array(
+            'success' => false,
+            'message' => '',
+            'data' => '',
+        );
+
+        if (!$solution)
+        {
+            $result['message'] = '<h4>Invalid Solution</h4>';
+            return $result;
+        }
+
+        $config = null;
+        foreach($solutions as $item)
+        {
+            if ($item['code'] == $solution)
+            {
+                $config = $item;
+            }
+        }
+
+        if (!$config)
+        {
+            $result['message'] = '<h4>Invalid Solution</h4>';
+            return $result;
+        }
+
+        if(isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH.$config['required']))
+        {
+            $this->install($config['required'], true);
+        }
+
+        if (file_exists(SPT_PLUGIN_PATH.$config['code']))
+        {
+            $result['message'] = "<h4>Solution". $config['code']. " already exists</h4>";
+            return $result;
+        }
+
+        $result['data'] = $config['link'];
+        $result['success'] = true;
+        $result["message"] = '<h4>1/6. Check install availability</h4>';
+        return $result;
+    }
+
+    public function prepare_uninstall($solution)
+    {
+        $solutions = $this->getSolutions();
+        $result = array(
+            'success' => false,
+            'message' => '<h4>1/3. Check uninstall availability</h4>',
+            'data' => '',
+        );
+
+        if (!$solution)
+        {
+            $result['message'] .= '<h4>Invalid Solution</h4>';
+            return $result;
+        }
+
+        $config = null;
+        foreach($solutions as $item)
+        {
+            if ($item['code'] == $solution)
+            {
+                $config = (array) $item;
+            }
+        }
+
+        if (!$config)
+        {
+            $result['message'] .= '<h4>Invalid Solution</h4>';
+            return $result;
+        }
+
+        if(!file_exists(SPT_PLUGIN_PATH.$solution))
+        {
+            $result['message'] .= '<h4>Uninstall Failed. Cannot find installed solution '. $solution . '</h4>';
+            return $result;
+        }
+
+        $result["success"] = true;
+        $result["data"] = $solution;
+        return $result;
+    }
+
+    public function download_solution($link)
+    {
+        $result = array(
+            'success' => false,
+            'message' => '<h4>2/6. Download solution</h4>',
+            'data' => '',
+        );
+        // Download zip solution
+        if (!$link)
+        {
+            $result['message'] .= '<p>Invalid Solution link</p>';
+            return $result;
+        }
+
+        $solution_zip = $this->downloadSolution($link);
+        if (!$solution_zip)
+        {
+            $result['message'] .= '<p>Download Solution Failed</p>';
+            return $result;
+        }
+
+        $result['data'] = $solution_zip;
+        $result['success'] = true;
+        return $result;
+    }
+
+    public function unzip_solution($solution_zip)
+    {
+        $result = array(
+            'success' => false,
+            'message' => '<h4>3/6. Unzip solution folder</h4>',
+            'data' => '',
+        );
+
+        // unzip solution
+        $solution_folder = $this->unzipSolution($solution_zip);
+        if (!$solution_folder)
+        {
+            $result['message'] .= '<p>Can`t read file solution</p>';
+            return $result;
+        }
+
+        $result['data'] = $solution_folder;
+        $result['success'] = true;
+        return $result;
+    }
+
+    public function install_plugins($solution_folder, $solution)
+    {
+        $result = array(
+            'success' => false,
+            'message' => '<h4>4/6. Start install plugins</h4>',
+        );
+
+        // Install plugins
+        $plugins = $this->getPlugins($solution_folder);
+
+        $solutions = $this->getSolutions();
+        $config = null;
+        foreach($solutions as $item)
+        {
+            if ($item['code'] == $solution)
+            {
+                $config = $item;
+            }
+        }
+
+        foreach($plugins as $item)
+        {
+            $try = $this->installPlugin($config, $item);
+            if (!$try)
+            {
+                $this->clearInstall($solution_folder, $config);
+                $result['message'] .= "<p>Install plugin ". basename($item)." failed</p>";
+                return $result;
+            }
+            $result['message'] .= "<p>Install plugin ". basename($item)." successfully</p>";
+        }
+
+        $result['success'] = true;
+        return $result;
+    }
+
+    public function uninstall_plugins($solution)
+    {
+        $result = array(
+            'success' => false,
+            'message' => '<h4>2/3. Uninstall plugins</h4>',
+        );
+
+        $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$solution, true);
+        foreach ($plugins as $plugin)
+        {
+            $try = $this->uninstallPlugin($plugin, $solution);
+            if (!$try)
+            {
+                $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." failed</p>";
+                return $result;
+            }
+
+            $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." successfully</p>";
+        }
+        $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$solution);
+
+        $result['success'] = true;
+        return $result;
+    }
+
+    public function generate_data_structure()
+    {
+        $result = array(
+            'success' => false,
+            'message' => '<h4>5/6. Start generate data structure</h4>',
+        );
+        // generate database
+        $entities = $this->DbToolModel->getEntities();
+        foreach($entities as $entity)
+        {
+            $try = $this->{$entity}->checkAvailability();
+            $status = $try !== false ? 'successfully' : 'failed';
+            $result['message'] .= '<p>' . str_pad($entity, 30) . $status ."</p>";
+
+        }
+        $result['message'] .= "<p>Generate data structure successfully</p>";
+
+        $result['success'] = true;
+        return $result;
+    }
+
+    public function composer_update($install)
+    {
+        $result = array(
+            'success' => false,
+            'message' => '',
+        );
+
+        $result['message'] .= $install == 'install' ? '<h4>6/6. Run composer update</h4>' : '<h4>3/3. Run composer update</h4>';
+        $try = $this->ComposerModel->update();
+        if(!$try['success'])
+        {
+            $result['message'] .= "<p>Composer update failed</p>";
+            return $result;
+        }
+        else
+        {
+            $result['message'] .= $try['message'];
+            $result['message'] .= "<p>Composer update done</p>";
+        }
+
+        $result['success'] = true;
+        return $result;
     }
 }

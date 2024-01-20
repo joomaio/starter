@@ -3,9 +3,9 @@ namespace App\devtool\starter\models;
 
 use SPT\Container\Client as Base;
 use SPT\Support\Loader;
-use Symfony\Component\Console\Application;
+use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class ComposerModel extends Base
 { 
@@ -15,35 +15,52 @@ class ComposerModel extends Base
 
     public function update($cli = false)
     {
+        $result = array(
+            'success' => false,
+            'message' => ''
+        );
+
         if($cli)
         {
             exec("composer update", $output, $return_var);
-            return true;
+            $result['success'] = true;
+            return $result;
         }
         
-        putenv('COMPOSER_HOME=' . ROOT_PATH);
-        putenv('COMPOSER_VENDOR_DIR=' . ROOT_PATH.'vendor');
-        putenv('COMPOSER=' . ROOT_PATH.'composer.json');
+        $composer_data = array(
+            'url' => 'https://getcomposer.org/composer.phar',
+            'dir' => __DIR__.'/../../../../',
+            'bin' => __DIR__.'/../../../../composer.phar',
+            'json' => __DIR__.'/../../../../composer.json'
+        );
 
-        // $input = new ArrayInput(array('command' => 'update'));
-        // $application = new Application();
-        // $application->setAutoExit(false);
-        // $application->setCatchExceptions(false);
+        copy($composer_data['url'],$composer_data['bin']);
+        require_once "phar://{$composer_data['bin']}/src/bootstrap.php";
 
-        $try = true;
+        chdir($composer_data['dir']);
+        putenv("COMPOSER_HOME={$composer_data['dir']}");
+        putenv("OSTYPE=OS400");
+
+        $input = new ArrayInput(array('command' => 'update'));
+        $output = new BufferedOutput();
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+
         try 
         {
-            // $result = $application->run($input);
-            $process = new Process(['composer', 'update']);
-            $process->run();
-            echo $process->getOutput();
+            $application->run($input, $output);
+            
+            $message = $output->fetch();
+            $result['success'] = true;
+            $result['message'] = nl2br($message);
         } catch (\Throwable $th) 
         {
-            $try = false; 
+            $result['message'] = $th->getMessage();
             $this->error = $th->getMessage();           
         }
         
         // Todo: cache vendor and test after run composer update
-        return $try;
+        return $result;
     }
 }
