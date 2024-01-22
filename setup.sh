@@ -27,7 +27,7 @@ echo 'checkout to web';
 
 # Run composer update
 fpm=""
-fpm_path=""
+web_root_path=""
 user=""
 
 # Xử lý tham số dòng lệnh
@@ -37,8 +37,8 @@ while [ "$#" -gt 0 ]; do
             fpm="$2"
             shift 2
             ;;
-        -fpm_path|--fpm_path)
-            fpm_path="$2"
+        -web_root_path|--web_root_path)
+            web_root_path="$2"
             shift 2
             ;;
         -user|--user)
@@ -59,7 +59,7 @@ if [ -n "$fpm" ]; then
         exit 1
     fi
 
-    docker exec -it $fpm bash -c "cd $fpm_path/starter && composer install"
+    docker exec -it $fpm bash -c "cd $web_root_path/starter && composer install"
 
     if [ $? -eq 0 ]; then
         echo "Composer install done!"
