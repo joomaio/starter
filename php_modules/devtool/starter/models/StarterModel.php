@@ -718,6 +718,15 @@ class StarterModel extends Base
             $result['message'] .= "<p>Install plugin ". basename($item)." successfully</p>";
         }
 
+        if (is_dir(SPT_STORAGE_PATH. 'solutions')) {
+            $this->file->removeFolder(SPT_STORAGE_PATH. 'solutions');
+        }
+
+        if(file_exists(SPT_STORAGE_PATH. "solution.zip"))
+        {
+            unlink(SPT_STORAGE_PATH. "solution.zip");
+        }
+
         $result['success'] = true;
         return $result;
     }
