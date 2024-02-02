@@ -35,24 +35,9 @@ class StarterModel extends Base
                 $class = $this->app->getNameSpace(). '\\'. $tmp['code'].'\\'. basename($tmp['code']) .'\\registers\\Installer';
                 if(method_exists($class,'createSuperUser'))
                 {
-                    $super_user_groups = [];
-                    $user_groups = $this->GroupEntity->list(0, 0, []);
-                    foreach($user_groups as $group)
+                    if ($class::createSuperUser($this->app))
                     {
-                        if (str_contains($group['access'], 'user_manager'))
-                        {
-                            $super_user_groups[] = $group['id'];
-                        }
-                    }
-
-                    if (count($super_user_groups) == 0) {
-
-                    }
-
-                    $super_users = $this->UserGroupEntity->list(0, 0, ['group_id IN (' . implode(',', $super_user_groups) . ')']);
-
-                    if (count($super_user_groups) == 0 || count($super_users) == 0) {
-                        $tmp['button-create-user'] = $class::createSuperUser();
+                        $tmp['button-create-user'] = $class::createSuperUser($this->app);
                     }
                 }
 
