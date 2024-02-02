@@ -33,11 +33,11 @@ class StarterModel extends Base
                 }
 
                 $class = $this->app->getNameSpace(). '\\'. $tmp['code'].'\\'. basename($tmp['code']) .'\\registers\\Installer';
-                if(method_exists($class,'createSuperUser'))
+                if(method_exists($class,'registerButton'))
                 {
-                    if ($class::createSuperUser($this->app))
+                    if ($class::registerButton($this->app))
                     {
-                        $tmp['button-create-user'] = $class::createSuperUser($this->app);
+                        $tmp['button'] = $class::registerButton($this->app);
                     }
                 }
 
