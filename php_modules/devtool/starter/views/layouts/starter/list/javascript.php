@@ -122,15 +122,16 @@
                                                                                     // $('.progess-status').css("display", "none");
                                                                                     button.html('Uninstall');
                                                                                     button.removeClass("btn-primary btn-install").addClass("btn-secondary btn-uninstall");
-                                                                                    showToast('success', 'Install successfully!');
+                                                                                    // showToast('success', 'Install successfully!');
                                                                                 } else {
                                                                                     modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                                                     $('.progress').css("display", "none");
                                                                                     $('.progess-status').css("display", "none");
-                                                                                    showToast('failed', 'Install failed!');
+                                                                                    // showToast('failed', 'Install failed!');
                                                                                 }
                                                                                 $('#modal-text').html(modalText);
                                                                                 $('.modal-body').scrollTop($('#modal-text').height());
+                                                                                $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                                                                             }
                                                                         });
                                                                     } else {
@@ -138,7 +139,7 @@
                                                                         $('.progess-status').css("display", "none");
                                                                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                                         $('#modal-text').html(modalText);
-                                                                        showToast('failed', 'Install failed!');
+                                                                        // showToast('failed', 'Install failed!');
                                                                     }
                                                                 }
                                                             })
@@ -147,7 +148,7 @@
                                                             $('.progess-status').css("display", "none");
                                                             modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                             $('#modal-text').html(modalText);
-                                                            showToast('failed', 'Install failed!');
+                                                            // showToast('failed', 'Install failed!');
                                                         }
                                                     }
                                                 })
@@ -156,7 +157,7 @@
                                                 $('.progess-status').css("display", "none");
                                                 modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                 $('#modal-text').html(modalText);
-                                                showToast('failed', 'Install failed!');
+                                                // showToast('failed', 'Install failed!');
                                             }
                                         }
                                     });
@@ -165,7 +166,7 @@
                                     $('.progess-status').css("display", "none");
                                     modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                     $('#modal-text').html(modalText);
-                                    showToast('failed', 'Install failed!');
+                                    // showToast('failed', 'Install failed!');
                                 }
                             }
                         });
@@ -174,7 +175,7 @@
                         $('.progess-status').css("display", "none");
                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                         $('#modal-text').html(modalText);
-                        showToast('failed', 'Install failed!');
+                        // showToast('failed', 'Install failed!');
                     }
                 }
             });
@@ -218,6 +219,7 @@
                                     'solution': solution
                                 },
                                 complete: function(xhr_uninstall_plugins, status_uninstall_plugins) {
+                                    console.log(xhr_uninstall_plugins.responseText);
                                     let response_uninstall_plugins = JSON.parse(xhr_uninstall_plugins.responseText);
                                     let time_uninstall_plugins = response_uninstall_plugins.time;
                                     total_time += time_uninstall_plugins;
@@ -250,15 +252,16 @@
                                                     // $('.progess-status').css("display", "none");
                                                     button.html('Install');
                                                     button.removeClass("btn-secondary btn-uninstall").addClass("btn btn-primary btn-install");
-                                                    showToast('success', 'Uninstall successfully!');
+                                                    // showToast('success', 'Uninstall successfully!');
                                                 } else {
                                                     modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                     $('.progress').css("display", "none");
                                                     $('.progess-status').css("display", "none");
-                                                    showToast('failed', 'Uninstall failed!');
+                                                    // showToast('failed', 'Uninstall failed!');
                                                 }
                                                 $('#modal-text').html(modalText);
                                                 $('.modal-body').scrollTop($('#modal-text').height());
+                                                $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                                             }
                                         });
                                     } else {
@@ -266,7 +269,7 @@
                                         $('.progess-status').css("display", "none");
                                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                         $('#modal-text').html(modalText);
-                                        showToast('failed', 'Uninstall failed!');
+                                        // showToast('failed', 'Uninstall failed!');
                                     }
                                 }
                             });
@@ -275,11 +278,15 @@
                             $('.progess-status').css("display", "none");
                             modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                             $('#modal-text').html(modalText);
-                            showToast('failed', 'Uninstall failed!');
+                            // showToast('failed', 'Uninstall failed!');
                         }
                     }
                 });
             }
+        });
+
+        $(document).on('click', '#modal-close', function () {
+            location.reload(true);
         });
 
         function showToast(status, message) {
