@@ -49,7 +49,7 @@ class Routing
                 'fnc' => [
                     'post' => 'starter.starter.prepare_uninstall',
                 ],
-                'parameters' => ['solution_code'],
+                'parameters' => ['code'],
                 'restApi' => true,
                 'format' => 'json',
             ],

@@ -115,10 +115,12 @@ class starter extends ControllerMVVM
     public function prepare_uninstall()
     {
         $urlVars = $this->request->get('urlVars');
-        $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
+        $code = isset($urlVars['code']) ? $urlVars['code'] : '';
+        $type = $this->request->post->get('type', '', 'string');
+        $solution = $this->request->post->get('solution', '', 'string');
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->prepare_uninstall($solution_code);
+        $try = $this->StarterModel->prepare_uninstall($code, $type, $solution);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -191,11 +193,13 @@ class starter extends ControllerMVVM
     {
         // get input data
         $data = [
+            'type' => $this->request->post->get('type', '', 'string'),
+            'package' => $this->request->post->get('package', '', 'string'),
             'solution' => $this->request->post->get('solution', '', 'string')
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->uninstall_plugins($data['solution']);
+        $try = $this->StarterModel->uninstall_plugins($data);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 

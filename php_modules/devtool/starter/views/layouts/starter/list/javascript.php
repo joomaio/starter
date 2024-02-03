@@ -183,10 +183,12 @@
 
         $(document).on('click', '.btn-uninstall', function(){
             var code  = $(this).data('code');
+            var type  = $(this).data('type');
+            var solution  = $(this).data('solution');
             var button = $(this);
-            var result = confirm("You are going to uninstall solution. Are you sure ?");
+            var result = confirm(`You are going to uninstall ${type}. Are you sure ?`);
             if (result) {
-                $('#staticBackdropLabel').html(`Uninstall Solution ${$(this).data('name')}`);
+                $('#staticBackdropLabel').html(`Uninstall ${type} ${$(this).data('name')}`);
                 $('.progress-bar').css('width', '0%').attr("aria-valuenow", 0);
                 $('#progess-status').html('Uninstalling 0%');
                 $('.progess-status').css("display", "flex");
@@ -198,8 +200,13 @@
                 // call api prepare uninstall
                 $.ajax({
                     url: '<?php echo $this->link_prepare_uninstall?>/' + code,
+                    data: {
+                        'type': type,
+                        'solution': solution,
+                    },
                     type: 'POST',
                     complete: function(xhr_prepare_uninstall, status_prepare_uninstall) {
+                        console.log(xhr_prepare_uninstall.responseText);
                         response_prepare_uninstall = JSON.parse(xhr_prepare_uninstall.responseText);
                         let time_prepare_uninstall = response_prepare_uninstall.time;
                         total_time += time_prepare_uninstall;
@@ -207,7 +214,7 @@
                         modalText += response_prepare_uninstall.message.replace(/\\/g, '') + text_time_prepare_uninstall;
                         $('#modal-text').html(modalText);
                         $('.modal-body').scrollTop($('#modal-text').height());
-                        let solution = response_prepare_uninstall.data;
+                        let package_path = response_prepare_uninstall.data;
                         if (response_prepare_uninstall.status == 'success') {
                             // if success, call api uninstall plugins 
                             $('.progress-bar').css('width', '33%').attr("aria-valuenow", 33);
@@ -216,6 +223,8 @@
                                 url: '<?php echo $this->link_uninstall_plugins?>',
                                 type: 'POST',
                                 data: {
+                                    'type': type,
+                                    'package': code,
                                     'solution': solution
                                 },
                                 complete: function(xhr_uninstall_plugins, status_uninstall_plugins) {
@@ -238,6 +247,7 @@
                                                 'action': 'uninstall'
                                             },
                                             complete: function(xhr_composer_update, status_composer_update) {
+                                                console.log(xhr_composer_update.responseText);
                                                 let response_composer_update = JSON.parse(xhr_composer_update.responseText);
                                                 let time_composer_update = response_composer_update.time;
                                                 total_time += time_composer_update;

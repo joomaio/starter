@@ -30,6 +30,8 @@ class StarterModel extends Base
                 if(file_exists(SPT_PLUGIN_PATH.$tmp['code']))
                 {
                     $tmp['status'] = true;
+
+                    $tmp['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH.$tmp['code'], true);
                 }
 
                 $class = $this->app->getNameSpace(). '\\'. $tmp['code'].'\\'. basename($tmp['code']) .'\\registers\\Installer';
@@ -334,8 +336,19 @@ class StarterModel extends Base
                 {
                     return $this->getPlugins($item->getPathname(), true);
                 }
-
-                $packages[$item->getBasename()] = $item->getPathname(); 
+                // get package info
+                if (substr($path, -1) == '/'){
+                    $path = substr($path, 0, -1);
+                }
+                $tmp = explode('/', $path);
+                $solution_name = end($tmp);
+                
+                $class = $this->app->getNameSpace(). '\\'. $solution_name.'\\'. $item->getBasename() .'\\registers\\Installer';
+                if(method_exists($class, 'info'))
+                {
+                    $packages[$item->getBasename()] = $class::info();   
+                    $packages[$item->getBasename()]['path'] = $item->getPathname(); 
+                }
             }
         }
 
@@ -624,7 +637,6 @@ class StarterModel extends Base
             $this->error = 'Plugin Invalid';
             return false;
         }
-    
         // run uninstall
         $class = $this->app->getNameSpace(). '\\'. $solution.'\\'. basename($plugin) .'\\registers\\Installer';
         if(method_exists($class, 'uninstall'))
@@ -705,7 +717,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function prepare_uninstall($solution)
+    public function prepare_uninstall($package, $type, $solution)
     {
         $solutions = $this->getSolutions();
         $result = array(
@@ -714,9 +726,9 @@ class StarterModel extends Base
             'data' => '',
         );
 
-        if (!$solution)
+        if (!$package)
         {
-            $result['message'] .= '<h4>Invalid Solution</h4>';
+            $result['message'] .= '<h4>Invalid Package</h4>';
             return $result;
         }
 
@@ -725,24 +737,27 @@ class StarterModel extends Base
         {
             if ($item['code'] == $solution)
             {
-                $config = (array) $item;
+                if ($type == 'solution')
+                {
+                    $config = (array) $item;
+                } else {
+                    if (array_key_exists($package, $item['plugins']))
+                    {
+                        $config = (array) $item['plugins'][$package];
+                    }
+                }
+                
             }
         }
 
         if (!$config)
         {
-            $result['message'] .= '<h4>Invalid Solution</h4>';
-            return $result;
-        }
-
-        if(!file_exists(SPT_PLUGIN_PATH.$solution))
-        {
-            $result['message'] .= '<h4>Uninstall Failed. Cannot find installed solution '. $solution . '</h4>';
+            $result['message'] .= '<h4>Invalid Package</h4>';
             return $result;
         }
 
         $result["success"] = true;
-        $result["data"] = $solution;
+        $result["data"] = $type == 'solution' ? $solution : $solution . '/' . $package;
         return $result;
     }
 
@@ -838,26 +853,41 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function uninstall_plugins($solution)
+    public function uninstall_plugins($data)
     {
         $result = array(
             'success' => false,
             'message' => '<h4>2/3. Uninstall plugins</h4>',
         );
 
-        $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$solution, true);
-        foreach ($plugins as $plugin)
+        if ($data['type'] == 'solution')
         {
-            $try = $this->uninstallPlugin($plugin, $solution);
+            $plugins = $this->getPlugins(SPT_PLUGIN_PATH.$data['solution'], true);
+
+            foreach ($plugins as $plugin)
+            {
+                $try = $this->uninstallPlugin($plugin, $data['solution']);
+                if (!$try)
+                {
+                    $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." failed</p>";
+                    return $result;
+                }
+
+                $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." successfully</p>";
+            }  
+            $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$data['solution']); 
+        } else {
+            $package_path = SPT_PLUGIN_PATH.$data['solution'].'/'.$data['package'];
+            $try = $this->uninstallPlugin($package_path, $data['solution']);
             if (!$try)
             {
-                $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." failed</p>";
+                $result['message'] .= "<p>Uninstall plugin ". $data['package']." failed</p>";
                 return $result;
             }
 
-            $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." successfully</p>";
+            $result['message'] .= "<p>Uninstall plugin ". $data['package']." successfully</p>";
+            $try = $this->file->removeFolder($package_path);
         }
-        $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$solution);
 
         $result['success'] = true;
         return $result;
