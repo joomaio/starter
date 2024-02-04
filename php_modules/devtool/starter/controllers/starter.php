@@ -10,18 +10,18 @@ class starter extends ControllerMVVM
     {
         $starter = $this->config->starter;
 
-        if (!$starter || (!isset($starter['access_key']) || $starter['access_key'] == '') || 
-        (!isset($starter['username']) || $starter['username'] == '') || (!isset($starter['password']) || $starter['password'] == ''))
-        {
-            $this->app->raiseError('Invalid request!');  
-        } 
+        if (
+            !$starter || (!isset($starter['access_key']) || $starter['access_key'] == '') ||
+            (!isset($starter['username']) || $starter['username'] == '') || (!isset($starter['password']) || $starter['password'] == '')
+        ) {
+            $this->app->raiseError('Invalid request!');
+        }
 
         $access_key = $this->request->get->get('access_key', '', 'string');
         $user = $this->StarterAccessModel->user();
-        if (!$user)
-        {
+        if (!$user) {
             return $this->app->redirect(
-                $this->router->url('starter/login?access_key='. $access_key)
+                $this->router->url('starter/login?access_key=' . $access_key)
             );
         }
 
@@ -33,8 +33,7 @@ class starter extends ControllerMVVM
     {
         $access_key = $this->request->get->get('access_key', '', 'string');
         $user = $this->StarterAccessModel->user();
-        if ($user)
-        {
+        if ($user) {
             return $this->app->redirect(
                 $this->router->url('starter')
             );
@@ -48,8 +47,7 @@ class starter extends ControllerMVVM
     {
         $access_key = $this->request->post->get('access_key', '', 'string');
         $user = $this->StarterAccessModel->user();
-        if ($user)
-        {
+        if ($user) {
             return $this->app->redirect(
                 $this->router->url('starter')
             );
@@ -59,11 +57,11 @@ class starter extends ControllerMVVM
         $password = $this->request->post->get('password', '', 'string');
 
         $check = $this->StarterAccessModel->login($username, $password);
-        
-        $this->session->set('messa'.$access_key, ''); 
-    
+
+        $this->session->set('messa' . $access_key, '');
+
         return $this->app->redirect(
-            $this->router->url($check ? 'starter' : 'starter/login?access_key='.$access_key )
+            $this->router->url($check ? 'starter' : 'starter/login?access_key=' . $access_key)
         );
     }
 
@@ -163,29 +161,28 @@ class starter extends ControllerMVVM
     public function unzip_solution()
     {
         $action = $this->request->post->get('action', '', 'string');
-        if ($action && $action == 'upload_file')
-        {
+        if ($action && $action == 'upload_file') {
             $package = $_FILES['package'];
             $file_tmp = $_FILES['package']['tmp_name'];
-            $tmp = explode('.',$_FILES['package']['name']);
+            $tmp = explode('.', $_FILES['package']['name']);
             $file_ext = strtolower(end($tmp));
             $expensions = array('zip');
-        
-            if(in_array($file_ext, $expensions) === false){
+
+            if (in_array($file_ext, $expensions) === false) {
                 $this->set('status', 'failed');
                 $this->set('message', 'Only .zip files are allowed.');
                 return;
             }
-            
-            if($_FILES['package']['size'] > 20 * 1024 * 1024) {
+
+            if ($_FILES['package']['size'] > 20 * 1024 * 1024) {
                 $this->set('status', 'failed');
                 $this->set('message', 'File size should be less than 20MB.');
                 return;
             }
 
-            move_uploaded_file($file_tmp, SPT_STORAGE_PATH. "solution.zip");
+            move_uploaded_file($file_tmp, SPT_STORAGE_PATH . "solution.zip");
 
-            $package_path = SPT_STORAGE_PATH. "solution.zip";
+            $package_path = SPT_STORAGE_PATH . "solution.zip";
             $upload = true;
         } else {
             $package_path = $this->request->post->get('package', '', 'string');
@@ -270,7 +267,7 @@ class starter extends ControllerMVVM
         $data = [
             'action' => $this->request->post->get('action', '', 'string')
         ];
-        
+
         $start_time = microtime(true);
         $try = $this->StarterModel->composer_update($data['action']);
         $end_time = microtime(true);
