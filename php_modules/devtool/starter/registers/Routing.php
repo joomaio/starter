@@ -41,7 +41,7 @@ class Routing
                 'fnc' => [
                     'post' => 'starter.starter.prepare_install',
                 ],
-                'parameters' => ['solution_code'],
+                'parameters' => ['code'],
                 'restApi' => true,
                 'format' => 'json',
             ],

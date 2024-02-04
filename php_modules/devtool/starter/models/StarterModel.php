@@ -46,7 +46,6 @@ class StarterModel extends Base
                 $solutions[] = $tmp;
             }
         }
-
         return $solutions;
     }
 
@@ -336,6 +335,10 @@ class StarterModel extends Base
                 {
                     return $this->getPlugins($item->getPathname(), true);
                 }
+
+                if($item->getBasename() == 'registers') {
+                    continue;
+                }
                 // get package info
                 if (substr($path, -1) == '/'){
                     $path = substr($path, 0, -1);
@@ -344,22 +347,25 @@ class StarterModel extends Base
                 $solution_name = end($tmp);
                 
                 $class = $this->app->getNameSpace(). '\\'. $solution_name.'\\'. $item->getBasename() .'\\registers\\Installer';
+
                 if(method_exists($class, 'info'))
                 {
                     $packages[$item->getBasename()] = $class::info();   
                     $packages[$item->getBasename()]['path'] = $item->getPathname(); 
+                } else {
+                    $packages[$item->getBasename()] = $item->getPathname(); 
                 }
             }
         }
-
         return $packages;
     }
 
     public function installPlugin($solution, $plugin)
     {
-        if(!file_exists(SPT_PLUGIN_PATH. $solution['code']))
+        $package_name = is_string($solution) ? $solution : $solution['code'];
+        if(!file_exists(SPT_PLUGIN_PATH. $package_name))
         {
-            if(!mkdir(SPT_PLUGIN_PATH. $solution['code']))
+            if(!mkdir(SPT_PLUGIN_PATH. $package_name))
             {
                 $this->error = "Error: Can't Create folder solution";
                 return false;
@@ -367,14 +373,15 @@ class StarterModel extends Base
         }
 
         // copy folder
-        $new_plugin = SPT_PLUGIN_PATH. $solution['code'].'/'. basename($plugin);
+        $new_plugin = SPT_PLUGIN_PATH. $package_name .'/'. basename($plugin);
         if (file_exists($new_plugin))
         {
             $this->file->removeFolder($new_plugin);
         }
         
         $try = $this->file->copyFolder($plugin, $new_plugin);
-
+        // print_r($plugin);print_r('------------');
+        // print_r($new_plugin);die();
         if (!$try)
         {
             $this->error = "Error: Can't create folder solution";
@@ -382,7 +389,7 @@ class StarterModel extends Base
         }
     
         // run installer
-        $class = $this->app->getNameSpace(). '\\'. $solution['code'].'\\'. basename($plugin) .'\\registers\\Installer';
+        $class = $this->app->getNameSpace(). '\\'. $package_name .'\\'. basename($plugin) .'\\registers\\Installer';
         if(method_exists($class, 'install'))
         {
             $class::install($this->app);
@@ -512,9 +519,10 @@ class StarterModel extends Base
             $try = $this->file->removeFolder($solution);
         }
 
-        if($config && file_exists(SPT_PLUGIN_PATH. $config['code']))
+        $package_path = is_string($config) ? $config : $config['code'];
+        if($config && file_exists(SPT_PLUGIN_PATH. $package_path))
         {
-            $try = $this->file->removeFolder(SPT_PLUGIN_PATH. $config['code']);
+            $try = $this->file->removeFolder(SPT_PLUGIN_PATH. $package_path);
         }
 
         if(file_exists(SPT_STORAGE_PATH. "solution.zip"))
@@ -670,7 +678,7 @@ class StarterModel extends Base
         return $check === 'cli';
     }
 
-    public function prepare_install($solution, $required = false)
+    public function prepare_install($data, $required = false)
     {
         $solutions = $this->getSolutions();
         $result = array(
@@ -679,41 +687,60 @@ class StarterModel extends Base
             'data' => '',
         );
 
-        if (!$solution)
+        if (!$data['solution'])
         {
             $result['message'] = '<h4>Invalid Solution</h4>';
             return $result;
         }
 
-        $config = null;
-        foreach($solutions as $item)
+        if ($data['type'] == 'solution')
         {
-            if ($item['code'] == $solution)
+            $config = null;
+            foreach($solutions as $item)
             {
-                $config = $item;
+                if ($item['code'] == $data['solution'])
+                {
+                    $config = $item;
+                }
+            }
+
+            if (!$config)
+            {
+                $result['message'] = '<h4>Invalid Solution</h4>';
+                return $result;
+            }
+
+            if(isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH.$config['required']))
+            {
+                $this->install($config['required'], true);
+            }
+
+            if (file_exists(SPT_PLUGIN_PATH.$config['code']))
+            {
+                $result['message'] = "<h4>Solution ". $config['code']. " already exists</h4>";
+                return $result;
+            }
+        } else {
+            if (file_exists(SPT_PLUGIN_PATH . $data['solution'] . '/' . $data['package']))
+            {
+                $result['message'] = "<h4>Plugin ". $data['package']. " already exists</h4>";
+                return $result;
+            } else {
+                if ($data['require'])
+                {
+                    $require_arr = explode(',', $data['require']);
+                    foreach ($require_arr as $item)
+                    {
+                        $this->install($item, true);
+                    }
+                }
             }
         }
+        
 
-        if (!$config)
-        {
-            $result['message'] = '<h4>Invalid Solution</h4>';
-            return $result;
-        }
-
-        if(isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH.$config['required']))
-        {
-            $this->install($config['required'], true);
-        }
-
-        if (file_exists(SPT_PLUGIN_PATH.$config['code']))
-        {
-            $result['message'] = "<h4>Solution". $config['code']. " already exists</h4>";
-            return $result;
-        }
-
-        $result['data'] = $config['link'];
+        $result['data'] = $data['type'] == 'solution' ? $config['link'] : '';
         $result['success'] = true;
-        $result["message"] = '<h4>1/6. Check install availability</h4>';
+        $result['message'] .= $data['action'] == 'upload' ? '<h4>2/5. Check install availability</h4>' : '<h4>1/6. Check install availability</h4>';
         return $result;
     }
 
@@ -725,7 +752,7 @@ class StarterModel extends Base
             'message' => '<h4>1/3. Check uninstall availability</h4>',
             'data' => '',
         );
-
+        
         if (!$package)
         {
             $result['message'] .= '<h4>Invalid Package</h4>';
@@ -787,20 +814,42 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function unzip_solution($solution_zip)
+    public function unzip_solution($solution_zip, $upload = false)
     {
         $result = array(
             'success' => false,
             'message' => '<h4>3/6. Unzip solution folder</h4>',
             'data' => '',
+            'info' => []
         );
 
         // unzip solution
         $solution_folder = $this->unzipSolution($solution_zip);
+
         if (!$solution_folder)
         {
             $result['message'] .= '<p>Can`t read file solution</p>';
             return $result;
+        }
+
+        if ($upload)
+        {
+            $dir = new \DirectoryIterator($solution_folder);
+            $info_list = simplexml_load_file($solution_folder . '/' . $dir->getBasename() . '/information.xml');
+            
+
+            foreach($info_list as $idx => $info)
+            {
+                $tmp = (array) $info;
+                if (array_key_exists(0, $tmp))
+                {
+                    $result['info'][$idx] = $tmp[0];
+                } else {
+                    $result['info'][$idx] = '';
+                }
+            }
+
+            $result['message'] = '<h4>1/5. Unzip package folder</h4>';
         }
 
         $result['data'] = $solution_folder;
@@ -808,36 +857,49 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function install_plugins($solution_folder, $solution)
+    public function install_plugins($data)
     {
         $result = array(
             'success' => false,
-            'message' => '<h4>4/6. Start install plugins</h4>',
+            'message' => '',
         );
 
-        // Install plugins
-        $plugins = $this->getPlugins($solution_folder);
-
-        $solutions = $this->getSolutions();
-        $config = null;
-        foreach($solutions as $item)
+        $result['message'] .= $data['action'] == 'upload' ? '<h4>3/5. Start install plugins</h4>' : '<h4>4/6. Start install plugins</h4>';
+        if ($data['type'] == 'plugin')
         {
-            if ($item['code'] == $solution)
-            {
-                $config = $item;
-            }
-        }
-
-        foreach($plugins as $item)
-        {
-            $try = $this->installPlugin($config, $item);
+            $try = $this->installPlugin($data['solution'], $data['package_path'] . '/' . $data['package']);
             if (!$try)
             {
-                $this->clearInstall($solution_folder, $config);
-                $result['message'] .= "<p>Install plugin ". basename($item)." failed</p>";
+                $this->clearInstall($data['package_path'], $data['package']);
+                $result['message'] .= "<p>Install plugin ". basename($data['package'])." failed</p>";
                 return $result;
             }
-            $result['message'] .= "<p>Install plugin ". basename($item)." successfully</p>";
+            $result['message'] .= "<p>Install plugin ". basename($data['package'])." successfully</p>";
+        } else {
+            // Install plugins
+            $plugins = $this->getPlugins($data['package_path']);
+
+            $solutions = $this->getSolutions();
+            $config = null;
+            foreach($solutions as $item)
+            {
+                if ($item['code'] == $data['solution'])
+                {
+                    $config = $item;
+                }
+            }
+
+            foreach($plugins as $item)
+            {
+                $try = $this->installPlugin($config, $item);
+                if (!$try)
+                {
+                    $this->clearInstall($data['package_path'], $config);
+                    $result['message'] .= "<p>Install plugin ". basename($item)." failed</p>";
+                    return $result;
+                }
+                $result['message'] .= "<p>Install plugin ". basename($item)." successfully</p>";
+            }
         }
 
         if (is_dir(SPT_STORAGE_PATH. 'solutions')) {
@@ -866,14 +928,14 @@ class StarterModel extends Base
 
             foreach ($plugins as $plugin)
             {
-                $try = $this->uninstallPlugin($plugin, $data['solution']);
+                $try = $this->uninstallPlugin($plugin['path'], $data['solution']);
                 if (!$try)
                 {
-                    $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." failed</p>";
+                    $result['message'] .= "<p>Uninstall plugin ". basename($plugin['path'])." failed</p>";
                     return $result;
                 }
 
-                $result['message'] .= "<p>Uninstall plugin ". basename($plugin)." successfully</p>";
+                $result['message'] .= "<p>Uninstall plugin ". basename($plugin['path'])." successfully</p>";
             }  
             $try = $this->file->removeFolder(SPT_PLUGIN_PATH.$data['solution']); 
         } else {
@@ -893,12 +955,14 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function generate_data_structure()
+    public function generate_data_structure($upload = false)
     {
         $result = array(
             'success' => false,
-            'message' => '<h4>5/6. Start generate data structure</h4>',
+            'message' => '',
         );
+
+        $result['message'] .= $upload ? '<h4>4/5. Start generate data structure</h4>' : '<h4>5/6. Start generate data structure</h4>';
         // generate database
         $entities = $this->DbToolModel->getEntities();
         foreach($entities as $entity)
@@ -921,7 +985,17 @@ class StarterModel extends Base
             'message' => '',
         );
 
-        $result['message'] .= $install == 'install' ? '<h4>6/6. Run composer update</h4>' : '<h4>3/3. Run composer update</h4>';
+        switch ($install) {
+            case 'install':
+                $result['message'] .= '<h4>6/6. Run composer update</h4>';
+                break;
+            case 'upload':
+                $result['message'] .= '<h4>5/5. Run composer update</h4>';
+                break;
+            default:
+                $result['message'] .= '<h4>3/3. Run composer update</h4>';
+        }
+        
         $try = $this->ComposerModel->update();
         if(!$try['success'])
         {

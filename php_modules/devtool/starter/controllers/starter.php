@@ -98,10 +98,20 @@ class starter extends ControllerMVVM
     public function prepare_install()
     {
         $urlVars = $this->request->get('urlVars');
-        $solution_code = isset($urlVars['solution_code']) ? $urlVars['solution_code'] : '';
+        $package = isset($urlVars['code']) ? $urlVars['code'] : '';
+        $type = $this->request->post->get('type', '', 'string');
+        $solution = $this->request->post->get('solution', '', 'string');
+        $require = $this->request->post->get('require', '', 'string');
+        $data = [
+            'solution' => $solution ? $solution : $package,
+            'type' => $type ? $type : 'solution',
+            'require' => $require ? $require : '',
+            'package' => $package,
+            'action' => $this->request->post->get('action', '', 'string'),
+        ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->prepare_install($solution_code);
+        $try = $this->StarterModel->prepare_install($data);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -152,19 +162,45 @@ class starter extends ControllerMVVM
 
     public function unzip_solution()
     {
-        // get input data
-        $data = [
-            'solution_path' => $this->request->post->get('solution_path', '', 'string')
-        ];
+        $action = $this->request->post->get('action', '', 'string');
+        if ($action && $action == 'upload_file')
+        {
+            $package = $_FILES['package'];
+            $file_tmp = $_FILES['package']['tmp_name'];
+            $tmp = explode('.',$_FILES['package']['name']);
+            $file_ext = strtolower(end($tmp));
+            $expensions = array('zip');
+        
+            if(in_array($file_ext, $expensions) === false){
+                $this->set('status', 'failed');
+                $this->set('message', 'Only .zip files are allowed.');
+                return;
+            }
+            
+            if($_FILES['package']['size'] > 20 * 1024 * 1024) {
+                $this->set('status', 'failed');
+                $this->set('message', 'File size should be less than 20MB.');
+                return;
+            }
+
+            move_uploaded_file($file_tmp, SPT_STORAGE_PATH. "solution.zip");
+
+            $package_path = SPT_STORAGE_PATH. "solution.zip";
+            $upload = true;
+        } else {
+            $package_path = $this->request->post->get('package', '', 'string');
+            $upload = false;
+        }
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->unzip_solution($data['solution_path']);
+        $try = $this->StarterModel->unzip_solution($package_path, $upload);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
         $this->set('status', $status);
         $this->set('data', $try['data']);
         $this->set('message', $try['message']);
+        $this->set('info', $try['info']);
         $this->set('time', $end_time - $start_time);
         return;
     }
@@ -173,12 +209,15 @@ class starter extends ControllerMVVM
     {
         // get input data
         $data = [
-            'solution_path' => $this->request->post->get('solution_path', '', 'string'),
+            'package_path' => $this->request->post->get('package_path', '', 'string'),
             'solution' => $this->request->post->get('solution', '', 'string'),
+            'type' => $this->request->post->get('type', '', 'string'),
+            'package' => $this->request->post->get('package', '', 'string'),
+            'action' => $this->request->post->get('action', '', 'string'),
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->install_plugins($data['solution_path'], $data['solution']);
+        $try = $this->StarterModel->install_plugins($data);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -212,8 +251,9 @@ class starter extends ControllerMVVM
 
     public function generate_data_structure()
     {
+        $upload = $this->request->post->get('upload', '', 'boolean');
         $start_time = microtime(true);
-        $try = $this->StarterModel->generate_data_structure();
+        $try = $this->StarterModel->generate_data_structure($upload);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 

@@ -15,7 +15,14 @@
 					<div class="mb-4">
 						<?php echo $this->renderWidget('core::notification'); ?>
 					</div>
-					<?php echo $this->render('starter.list.filter', []); ?>
+					<div class="d-flex">
+						<div class="w-75">
+							<?php echo $this->render('starter.list.filter', []); ?>
+						</div>
+						<div class="w-25 text-end">
+							<button class="btn btn-primary" id="install-package" data-bs-toggle="modal" data-bs-target="#upload_package">Upload Package</button>
+						</div>
+					</div>
 
 					<div class="solution-list row">
 						<?php while ($this->list->hasRow()) echo $this->render('starter.list.row'); ?>
@@ -45,6 +52,38 @@
 			<div class="modal-footer">
 				
 			</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="upload_package" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="text-align: left;">
+		<div class="modal-dialog modal-dialog-centered " style="max-width: 600px;">
+			<div class="modal-content container px-3">
+				<div class="modal-header">
+					<h4 class="modal-title fw-bold" id="popupNoteTypeLabel">Install Package</h4>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p id="error-text" style="color: red;"></p>
+					<div class="row px-0">
+						<div class="mb-3 col-12 mx-auto">
+							<label for="package_upload" class="form-label fw-bold">Choose package file (.zip)</label>
+							<input class="form-control" type="file" id="package_upload" name="package_upload">
+						</div>
+					</div>
+					<div class="row g-3 align-items-center m-0">
+						<div class="modal-footer">
+							<div class="row">
+								<div class="col-6 text-end pe-0">
+									<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+								</div>
+								<div class="col-6 text-end pe-0">
+									<button type="button" id="submit-upload" class="btn btn-outline-success">Create</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

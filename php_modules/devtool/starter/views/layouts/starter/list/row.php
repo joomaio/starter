@@ -21,6 +21,7 @@
                     <hr class="hr" />
                     <?php foreach($this->item['plugins'] as $plugin): ?>
                         <div class="plugin-item d-flex justify-content-between mb-2">
+                            <?php //print_r($plugin) ?>
                             <span><?php echo $plugin['name'] ?></span>
                             <button data-type="plugin" data-solution="<?php echo $plugin['solution']; ?>" data-name="<?php echo $plugin['name']; ?>" data-code="<?php echo $plugin['folder_name']; ?>" class="btn btn-secondary btn-uninstall">Uninstall</button>
                         </div>
