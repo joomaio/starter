@@ -28,12 +28,12 @@ class StarterModel extends Base
                     $tmp['status'] = true;
 
                     $tmp['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $tmp['code'], true);
-                }
 
-                $class = $this->app->getNameSpace() . '\\' . $tmp['code'] . '\\' . basename($tmp['code']) . '\\registers\\Installer';
-                if (method_exists($class, 'registerButton')) {
-                    if ($class::registerButton($this->app)) {
-                        $tmp['button'] = $class::registerButton($this->app);
+                    $class = $this->app->getNameSpace() . '\\' . $tmp['code'] . '\\' . basename($tmp['code']) . '\\registers\\Installer';
+                    if (method_exists($class, 'registerButton')) {
+                        if ($class::registerButton($this->app)) {
+                            $tmp['button'] = $class::registerButton($this->app);
+                        }
                     }
                 }
 
@@ -311,7 +311,8 @@ class StarterModel extends Base
     {
         $package_name = is_string($solution) ? $solution : $solution['code'];
         if (!file_exists(SPT_PLUGIN_PATH . $package_name)) {
-            if (!mkdir(SPT_PLUGIN_PATH . $package_name)) {
+            $try = mkdir(SPT_PLUGIN_PATH . $package_name);
+            if (!$try) {
                 $this->error = "Error: Can't Create folder solution";
                 return false;
             }
@@ -324,8 +325,6 @@ class StarterModel extends Base
         }
 
         $try = $this->file->copyFolder($plugin, $new_plugin);
-        // print_r($plugin);print_r('------------');
-        // print_r($new_plugin);die();
         if (!$try) {
             $this->error = "Error: Can't create folder solution";
             return false;
@@ -717,7 +716,6 @@ class StarterModel extends Base
 
         // unzip solution
         $solution_folder = $this->unzipSolution($solution_zip);
-        // print_r('111111111111111111111111');
 
         if (!$solution_folder) {
             $result['message'] .= '<p>Can`t read file solution</p>';
