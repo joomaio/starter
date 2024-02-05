@@ -43,7 +43,7 @@ class StarterModel extends Base
         return $solutions;
     }
 
-    public function installFileZipCli($package_path) 
+    public function installFileZipCli($package_path)
     {
         $solutions = $this->getSolutions();
         $result = array(
@@ -61,7 +61,17 @@ class StarterModel extends Base
         }
 
         $dir = new \DirectoryIterator($package_folder);
-        $info_list = simplexml_load_file($package_folder . '/' . $dir->getBasename() . '/information.xml');
+        foreach ($dir as $item) {
+            if ($item->isDir() && !$item->isDot()) {
+                $folder_name = $item->getBasename();
+            }
+        }
+
+        if (!$folder_name) {
+            echo "Can`t read file solution";
+            return $result;
+        }
+        $info_list = simplexml_load_file($package_folder . '/' . $folder_name . '/information.xml');
 
         foreach ($info_list as $idx => $info) {
             $tmp = (array) $info;
@@ -123,7 +133,7 @@ class StarterModel extends Base
         }
 
         if (isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH . $config['required'])) {
-            
+
             $check = readline("Solution " . $config['code'] . " required install " . $config['required'] . ". Do you want continue install solution " . $config['required'] . "(Y/n)? ");
             if (strtolower($check) == 'n' || strtolower($check) == 'no') {
                 $this->error = "<h4>Install Failed. Solution " . $config['code'] . " required install " . $config['required'] . '</h4>';
@@ -803,15 +813,13 @@ class StarterModel extends Base
 
         if ($upload) {
             $dir = new \DirectoryIterator($solution_folder);
-            foreach($dir as $item)
-            {
+            foreach ($dir as $item) {
                 if ($item->isDir() && !$item->isDot()) {
                     $folder_name = $item->getBasename();
                 }
             }
 
-            if (!$folder_name) 
-            {
+            if (!$folder_name) {
                 $result['message'] .= '<p>Can`t read file solution</p>';
                 return $result;
             }
