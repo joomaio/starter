@@ -378,7 +378,7 @@ class StarterModel extends Base
         }
 
         if (!file_exists(SPT_STORAGE_PATH)) {
-            $try = mkdir(SPT_PLUGIN_PATH);
+            $try = mkdir(SPT_STORAGE_PATH);
             if (!$try) {
                 return false;
             }
@@ -870,6 +870,13 @@ class StarterModel extends Base
             'info' => []
         );
 
+        if (!file_exists(SPT_STORAGE_PATH)) {
+            $try = mkdir(SPT_STORAGE_PATH);
+            if (!$try) {
+                return false;
+            }
+        }
+
         // unzip solution
         $solution_folder = $this->unzipSolution($solution_zip);
 
@@ -880,8 +887,20 @@ class StarterModel extends Base
 
         if ($upload) {
             $dir = new \DirectoryIterator($solution_folder);
-            $info_list = simplexml_load_file($solution_folder . '/' . $dir->getBasename() . '/information.xml');
+            foreach($dir as $item)
+            {
+                if ($item->isDir() && !$item->isDot()) {
+                    $folder_name = $item->getBasename();
+                }
+            }
 
+            if (!$folder_name) 
+            {
+                $result['message'] .= '<p>Can`t read file solution</p>';
+                return $result;
+            }
+
+            $info_list = simplexml_load_file($solution_folder . '/' . $folder_name . '/information.xml');
 
             foreach ($info_list as $idx => $info) {
                 $tmp = (array) $info;
