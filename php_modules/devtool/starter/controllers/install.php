@@ -22,12 +22,14 @@ class install extends ControllerMVVM
         $args = $this->request->cli->getArgs();
         $solution = isset($args[1]) ? $args[1] : '';
 
-        $try = $this->StarterModel->install($solution);
-        if (!$try)
+        if (file_exists($solution))
         {
-            echo $this->StarterModel->getError() ."\n";
+            $try = $this->StarterModel->installFileZipCli($solution);
+        } else {
+            $try = $this->StarterModel->install($solution);
         }
-        else
+        
+        if ($try['success'])
         {
             echo "Install Done!\n";
         }

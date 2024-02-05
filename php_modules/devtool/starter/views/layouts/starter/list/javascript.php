@@ -1,8 +1,6 @@
 <script>
     $(document).ready(function () {
         $(document).on('click', '#submit-upload', function () {
-            console.log(window.location.pathname);
-
             $('#error-text').html('');
             var check_error = false;
             // Get the file input element
@@ -53,7 +51,7 @@
                     processData: false,
                     complete: function (xhr_unzip_solution, status_unzip_solution) {
                         let response_unzip_solution = JSON.parse(xhr_unzip_solution.responseText);
-                        console.log(response_unzip_solution);
+                        // console.log(response_unzip_solution);
                         let solution_folder = response_unzip_solution.data;
                         let time_unzip_solution = response_unzip_solution.time;
                         total_time += time_unzip_solution;
@@ -75,7 +73,7 @@
                                     'action': 'upload'
                                 },
                                 complete: function (xhr_prepare_install, status_prepare_install) {
-                                    console.log(xhr_prepare_install.responseText);
+                                    // console.log(xhr_prepare_install.responseText);
                                     let response_prepare_install = JSON.parse(xhr_prepare_install.responseText);
                                     let time_prepare_install = response_prepare_install.time;
                                     total_time += time_prepare_install;
@@ -99,7 +97,7 @@
                                                 'action': 'upload'
                                             },
                                             complete: function (xhr_install_plugins, status_install_plugins) {
-                                                console.log(xhr_install_plugins.responseText);
+                                                // console.log(xhr_install_plugins.responseText);
                                                 let response_install_plugins = JSON.parse(xhr_install_plugins.responseText);
                                                 let time_install_plugins = response_install_plugins.time;
                                                 total_time += time_install_plugins;
@@ -251,7 +249,7 @@
                                             'package': solution_path
                                         },
                                         complete: function (xhr_unzip_solution, status_unzip_solution) {
-                                            console.log(xhr_unzip_solution.responseText);
+                                            // console.log(xhr_unzip_solution.responseText);
                                             let response_unzip_solution = JSON.parse(xhr_unzip_solution.responseText);
                                             let solution_folder = response_unzip_solution.data;
                                             let time_unzip_solution = response_unzip_solution.time;
@@ -274,7 +272,7 @@
                                                         'solution': code,
                                                     },
                                                     complete: function (xhr_install_plugins, status_install_plugins) {
-                                                        console.log(xhr_install_plugins.responseText);
+                                                        // console.log(xhr_install_plugins.responseText);
                                                         let response_install_plugins = JSON.parse(xhr_install_plugins.responseText);
                                                         let time_install_plugins = response_install_plugins.time;
                                                         total_time += time_install_plugins;
