@@ -14,9 +14,9 @@ class StarterModel extends Base
 
     public function getSolutions()
     {
-        // get file xml
+        // get file info
         if (!$this->solutions) {
-            $this->solutions = simplexml_load_file(ROOT_PATH . 'solution.xml');
+            $this->solutions = include ROOT_PATH . 'solution.php';
         }
 
         $solutions = [];
@@ -71,7 +71,7 @@ class StarterModel extends Base
             echo "Can`t read file solution";
             return $result;
         }
-        $info_list = simplexml_load_file($package_folder . '/' . $folder_name . '/information.xml');
+        $info_list = include $package_folder . '/' . $folder_name . '/information.php';
 
         foreach ($info_list as $idx => $info) {
             $tmp = (array) $info;
@@ -692,27 +692,58 @@ class StarterModel extends Base
             }
 
             if (!$config) {
-                $result['message'] = '<h4>Invalid Solution</h4>';
-                return $result;
-            }
+                $data_solutions = include ROOT_PATH . 'solution.php';
 
-            if (isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH . $config['required'])) {
-                $this->install($config['required'], true);
-            }
+                // Thêm phần tử mới vào mảng
+                $new_element = [
+                    $data['solution'] => [
+                        "name" => $data['solution'],
+                        "code" => $data['solution'],
+                        "link" => '',
+                        "description" => $data['solution'],
+                    ],
+                ];
+                $data_solutions = array_merge($data_solutions, $new_element);
 
-            if (file_exists(SPT_PLUGIN_PATH . $config['code'])) {
-                $result['message'] = "<h4>Solution " . $config['code'] . " already exists</h4>";
-                return $result;
+                // Ghi lại nội dung vào file
+                file_put_contents(ROOT_PATH . 'solution.php', '<?php return ' . var_export($data_solutions, true) . ';');
+            } else {
+                if (isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH . $config['required'])) {
+                    $this->install($config['required'], true);
+                }
+
+                if (file_exists(SPT_PLUGIN_PATH . $config['code'])) {
+                    $result['message'] = "<h4>Solution " . $config['code'] . " already exists</h4>";
+                    return $result;
+                }
             }
         } else {
-            if (file_exists(SPT_PLUGIN_PATH . $data['solution'] . '/' . $data['package'])) {
-                $result['message'] = "<h4>Plugin " . $data['package'] . " already exists</h4>";
-                return $result;
+            if (!file_exists(SPT_PLUGIN_PATH . $data['solution'])) {
+                $data_solutions = include ROOT_PATH . 'solution.php';
+
+                // Thêm phần tử mới vào mảng
+                $new_element = [
+                    $data['solution'] => [
+                        "name" => $data['solution'],
+                        "code" => $data['solution'],
+                        "link" => '',
+                        "description" => $data['solution'],
+                    ],
+                ];
+                $data_solutions = array_merge($data_solutions, $new_element);
+
+                // Ghi lại nội dung vào file
+                file_put_contents(ROOT_PATH . 'solution.php', '<?php return ' . var_export($data_solutions, true) . ';');
             } else {
-                if ($data['require']) {
-                    $require_arr = explode(',', $data['require']);
-                    foreach ($require_arr as $item) {
-                        $this->install($item, true);
+                if (file_exists(SPT_PLUGIN_PATH . $data['solution'] . '/' . $data['package'])) {
+                    $result['message'] = "<h4>Plugin " . $data['package'] . " already exists</h4>";
+                    return $result;
+                } else {
+                    if ($data['require']) {
+                        $require_arr = explode(',', $data['require']);
+                        foreach ($require_arr as $item) {
+                            $this->install($item, true);
+                        }
                     }
                 }
             }
@@ -721,7 +752,7 @@ class StarterModel extends Base
 
         $result['data'] = $data['type'] == 'solution' ? $config['link'] : '';
         $result['success'] = true;
-        $result['message'] .= $data['action'] == 'upload' ? '<h4>2/5. Check install availability</h4>' : '<h4>1/6. Check install availability</h4>';
+        $result['message'] = $data['action'] == 'upload' ? '<h4>2/5. Check install availability</h4>' : '<h4>1/6. Check install availability</h4>';
         return $result;
     }
 
@@ -824,16 +855,7 @@ class StarterModel extends Base
                 return $result;
             }
 
-            $info_list = simplexml_load_file($solution_folder . '/' . $folder_name . '/information.xml');
-
-            foreach ($info_list as $idx => $info) {
-                $tmp = (array) $info;
-                if (array_key_exists(0, $tmp)) {
-                    $result['info'][$idx] = $tmp[0];
-                } else {
-                    $result['info'][$idx] = '';
-                }
-            }
+            $result['info'] = include $solution_folder . '/' . $folder_name . '/information.php';
 
             $result['message'] = '<h4>1/5. Unzip package folder</h4>';
         }
