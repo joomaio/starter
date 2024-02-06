@@ -37,60 +37,60 @@ class Routing
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/prepare_install' => [
+            'starter/prepare-install' => [
                 'fnc' => [
-                    'post' => 'starter.starter.prepare_install',
+                    'post' => 'starter.starter.prepareInstall',
                 ],
                 'parameters' => ['code'],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/prepare_uninstall' => [
+            'starter/prepare-uninstall' => [
                 'fnc' => [
-                    'post' => 'starter.starter.prepare_uninstall',
+                    'post' => 'starter.starter.prepareUninstall',
                 ],
                 'parameters' => ['code'],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/download_solution' => [
+            'starter/download-solution' => [
                 'fnc' => [
-                    'post' => 'starter.starter.download_solution',
+                    'post' => 'starter.starter.downloadZipSolution',
                 ],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/unzip_solution' => [
+            'starter/unzip-solution' => [
                 'fnc' => [
-                    'post' => 'starter.starter.unzip_solution',
+                    'post' => 'starter.starter.unzipZipSolution',
                 ],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/install_plugins' => [
+            'starter/install-plugins' => [
                 'fnc' => [
-                    'post' => 'starter.starter.install_plugins',
+                    'post' => 'starter.starter.installPlugins',
                 ],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/uninstall_plugins' => [
+            'starter/uninstall-plugins' => [
                 'fnc' => [
-                    'post' => 'starter.starter.uninstall_plugins',
+                    'post' => 'starter.starter.uninstallPlugins',
                 ],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/generate_data_structure' => [
+            'starter/generate-data-structure' => [
                 'fnc' => [
-                    'post' => 'starter.starter.generate_data_structure',
+                    'post' => 'starter.starter.generateDataStructure',
                 ],
                 'restApi' => true,
                 'format' => 'json',
             ],
-            'starter/composer_update' => [
+            'starter/composer-update' => [
                 'fnc' => [
-                    'post' => 'starter.starter.composer_update',
+                    'post' => 'starter.starter.composerUpdate',
                 ],
                 'restApi' => true,
                 'format' => 'json',

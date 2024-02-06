@@ -10,7 +10,7 @@ class Starter extends ViewModel
     public static function register()
     {
         return [
-            'layout'=>[
+            'layout' => [
                 'starter.list',
                 'starter.list.row',
                 'starter.list.filter',
@@ -26,12 +26,9 @@ class Starter extends ViewModel
 
         $solutions = $this->StarterModel->getSolutions();
         $tmp = [];
-        if ($search)
-        {
-            foreach($solutions as $item)
-            {
-                if(strpos($item['name'], $search) !== false || strpos($item['code'], $search) !== false || strpos($item['description'], $search) !== false)
-                {
+        if ($search) {
+            foreach ($solutions as $item) {
+                if (strpos($item['name'], $search) !== false || strpos($item['code'], $search) !== false || strpos($item['description'], $search) !== false) {
                     $tmp[] = $item;
                 }
             }
@@ -39,28 +36,27 @@ class Starter extends ViewModel
             $solutions = $tmp;
         }
 
-        if(!$tmp && $search)
-        {
+        if (!$tmp && $search) {
             $this->session->set('flashMsg', 'Solution not found');
         }
 
-        $list   = new Listing($solutions, count($solutions), 0, $this->getColumns());
-        
+        $list = new Listing($solutions, count($solutions), 0, $this->getColumns());
+
         return [
             'url' => $this->router->url(),
             'list' => $list,
-            'link_list' =>  $this->router->url('starter'),
+            'link_list' => $this->router->url('starter'),
             'title_page' => 'Starter',
             'link_install' => $this->router->url('starter/install'),
             'link_uninstall' => $this->router->url('starter/uninstall'),
-            'link_prepare_install' => $this->router->url('starter/prepare_install'),
-            'link_prepare_uninstall' => $this->router->url('starter/prepare_uninstall'),
-            'link_download_solution' => $this->router->url('starter/download_solution'),
-            'link_unzip_solution' => $this->router->url('starter/unzip_solution'),
-            'link_install_plugins' => $this->router->url('starter/install_plugins'),
-            'link_uninstall_plugins' => $this->router->url('starter/uninstall_plugins'),
-            'link_generate_data_structure' => $this->router->url('starter/generate_data_structure'),
-            'link_composer_update' => $this->router->url('starter/composer_update'),
+            'link_prepare_install' => $this->router->url('starter/prepare-install'),
+            'link_prepare_uninstall' => $this->router->url('starter/prepare-uninstall'),
+            'link_download_solution' => $this->router->url('starter/download-solution'),
+            'link_unzip_solution' => $this->router->url('starter/unzip-solution'),
+            'link_install_plugins' => $this->router->url('starter/install-plugins'),
+            'link_uninstall_plugins' => $this->router->url('starter/uninstall-plugins'),
+            'link_generate_data_structure' => $this->router->url('starter/generate-data-structure'),
+            'link_composer_update' => $this->router->url('starter/composer-update'),
             'token' => $this->token->value(),
         ];
     }
@@ -78,7 +74,7 @@ class Starter extends ViewModel
     protected $_filter;
     public function filter()
     {
-        if (null === $this->_filter) :
+        if (null === $this->_filter):
             $data = [
                 'search' => $this->state('search', '', '', 'post', 'filter.search'),
                 'limit' => $this->state('limit', 10, 'int', 'post', 'filter.limit'),
