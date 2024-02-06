@@ -514,9 +514,11 @@ class StarterModel extends Base
             }
         }
 
+        $is_cli = $this->isCli();
+
         // create super user
-        if (method_exists($class, 'createSuperUser')) {
-            $class::createSuperUser($this->app);
+        if (method_exists($class, 'afterInstall')) {
+            $class::afterInstall($this->app, $is_cli);
         }
 
         return true;
