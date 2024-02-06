@@ -182,7 +182,7 @@ class starter extends ControllerMVVM
 
             move_uploaded_file($file_tmp, SPT_STORAGE_PATH . "solution.zip");
 
-            $package_path = SPT_STORAGE_PATH . "solution.zip";
+            $package_path = "solution.zip";
             $upload = true;
         } else {
             $package_path = $this->request->post->get('package', '', 'string');

@@ -463,23 +463,6 @@ class StarterModel extends Base
                     return $this->getPlugins($item->getPathname(), true);
                 }
 
-                if ($item->getBasename() == 'registers') {
-                    continue;
-                }
-                // get package info
-                if (substr($path, -1) == '/') {
-                    $path = substr($path, 0, -1);
-                }
-                $tmp = explode('/', $path);
-                $solution_name = end($tmp);
-
-                // case installed plugins
-                $info_path = SPT_PLUGIN_PATH . $solution_name . '/' . $item->getBasename() . '/information.php';
-                if (file_exists($info_path)) {
-                    $packages[$item->getBasename()] = include $info_path;
-                    $packages[$item->getBasename()]['path'] = $item->getPathname();
-                }
-
                 // case not installed yet plugins
                 $info_path = $item->getPathname() . '/information.php';
                 if (file_exists($info_path)) {
@@ -828,7 +811,7 @@ class StarterModel extends Base
             return $result;
         }
 
-        $result['data'] = $solution_zip;
+        $result['data'] = basename($solution_zip);
         $result['success'] = true;
         return $result;
     }
@@ -850,7 +833,7 @@ class StarterModel extends Base
         }
 
         // unzip solution
-        $solution_folder = $this->unzipSolution($solution_zip);
+        $solution_folder = $this->unzipSolution(SPT_STORAGE_PATH . $solution_zip);
 
         if (!$solution_folder) {
             $result['message'] .= '<p>Can`t read file solution</p>';
@@ -875,7 +858,7 @@ class StarterModel extends Base
             $result['message'] = '<h4>1/5. Unzip package folder</h4>';
         }
 
-        $result['data'] = $solution_folder;
+        $result['data'] = basename($solution_folder);
         $result['success'] = true;
         return $result;
     }
@@ -888,6 +871,7 @@ class StarterModel extends Base
         );
 
         $data['folder_name'] = $data['package'];
+        $data['package_path'] = SPT_STORAGE_PATH . $data['package_path'];
         foreach (new \DirectoryIterator($data['package_path']) as $item) {
             if ($item->isDir() && !$item->isDot()) {
                 $data['path'] = $data['package_path'] . '/' . $item->getBasename();

@@ -296,9 +296,6 @@
                                                             $.ajax({
                                                                 url: '<?php echo $this->link_generate_data_structure ?>',
                                                                 type: 'POST',
-                                                                data: {
-                                                                    'upload': false
-                                                                },
                                                                 complete: function (xhr_generate_data_structure, status_generate_data_structure) {
                                                                     let cleaned_generate_data_structure = xhr_generate_data_structure.responseText.replace(/^\ufeff+/g, '');
                                                                     let response_generate_data_structure = JSON.parse(cleaned_generate_data_structure);
