@@ -15,6 +15,9 @@ define('MEDIA_PATH', PUBLIC_PATH. 'media/');
 define('SPT_VENDOR_PATH', ROOT_PATH. 'vendor/');
 define('SPT_STORAGE_PATH', ROOT_PATH. 'storage/');
 
+// disable warning
+error_reporting(E_ALL & ~E_WARNING);
+
 require ROOT_PATH. 'vendor/autoload.php';
 
 $app = new \DTM\core\libraries\SDM(
