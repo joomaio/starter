@@ -50,7 +50,8 @@
                     contentType: false,
                     processData: false,
                     complete: function (xhr_unzip_solution, status_unzip_solution) {
-                        let response_unzip_solution = JSON.parse(xhr_unzip_solution.responseText);
+                        let cleaned_unzip_solution  = xhr_unzip_solution.responseText.replace(/^\ufeff+/g, '');
+                        let response_unzip_solution = JSON.parse(cleaned_unzip_solution);
                         // console.log(response_unzip_solution);
                         let solution_folder = response_unzip_solution.data;
                         let time_unzip_solution = response_unzip_solution.time;
@@ -74,7 +75,8 @@
                                 },
                                 complete: function (xhr_prepare_install, status_prepare_install) {
                                     // console.log(xhr_prepare_install.responseText);
-                                    let response_prepare_install = JSON.parse(xhr_prepare_install.responseText);
+                                    let cleaned_prepare_install  = xhr_prepare_install.responseText.replace(/^\ufeff+/g, '');
+                                    let response_prepare_install = JSON.parse(cleaned_prepare_install);
                                     let time_prepare_install = response_prepare_install.time;
                                     total_time += time_prepare_install;
                                     let text_time_prepare_install = `Execute time: ${time_prepare_install.toFixed(2)} s`;
@@ -98,7 +100,8 @@
                                             },
                                             complete: function (xhr_install_plugins, status_install_plugins) {
                                                 // console.log(xhr_install_plugins.responseText);
-                                                let response_install_plugins = JSON.parse(xhr_install_plugins.responseText);
+                                                let cleaned_install_plugins  = xhr_install_plugins.responseText.replace(/^\ufeff+/g, '');
+                                                let response_install_plugins = JSON.parse(cleaned_install_plugins);
                                                 let time_install_plugins = response_install_plugins.time;
                                                 total_time += time_install_plugins;
                                                 let text_time_install_plugins = `Execute time: ${time_install_plugins.toFixed(2)} s`;
@@ -116,7 +119,8 @@
                                                             'upload': true
                                                         },
                                                         complete: function (xhr_generate_data_structure, status_generate_data_structure) {
-                                                            let response_generate_data_structure = JSON.parse(xhr_generate_data_structure.responseText);
+                                                            let cleaned_generate_data_structure = xhr_generate_data_structure.responseText.replace(/^\ufeff+/g, '');
+                                                            let response_generate_data_structure = JSON.parse(cleaned_generate_data_structure);
                                                             let time_generate_data_structure = response_generate_data_structure.time;
                                                             total_time += time_generate_data_structure;
                                                             let text_time_generate_data_structure = `Execute time: ${time_generate_data_structure.toFixed(2)} s`;
@@ -134,7 +138,8 @@
                                                                         'action': 'upload'
                                                                     },
                                                                     complete: function (xhr_composer_update, status_composer_update) {
-                                                                        let response_composer_update = JSON.parse(xhr_composer_update.responseText);
+                                                                        let cleaned_composer_update = xhr_composer_update.responseText.replace(/^\ufeff+/g, '');
+                                                                        let response_composer_update = JSON.parse(cleaned_composer_update);
                                                                         let time_composer_update = response_composer_update.time;
                                                                         total_time += time_composer_update;
                                                                         let text_time_composer_update = `Execute time: ${time_composer_update.toFixed(2)} s`;
@@ -211,7 +216,8 @@
                 url: '<?php echo $this->link_prepare_install ?>/' + code,
                 type: 'POST',
                 complete: function (xhr_prepare_install, status_prepare_install) {
-                    let response_prepare_install = JSON.parse(xhr_prepare_install.responseText);
+                    let cleaned_prepare_install = xhr_prepare_install.responseText.replace(/^\ufeff+/g, '');
+                    let response_prepare_install = JSON.parse(cleaned_prepare_install);
                     let time_prepare_install = response_prepare_install.time;
                     total_time += time_prepare_install;
                     let text_time_prepare_install = `Execute time: ${time_prepare_install.toFixed(2)} s`;
@@ -230,7 +236,8 @@
                                 'solution': solution
                             },
                             complete: function (xhr_download_solution, status_download_solution) {
-                                let response_download_solution = JSON.parse(xhr_download_solution.responseText);
+                                let cleaned_download_solution = xhr_download_solution.responseText.replace(/^\ufeff+/g, '');
+                                let response_download_solution = JSON.parse(cleaned_download_solution);
                                 let solution_path = response_download_solution.data;
                                 let time_download_solution = response_download_solution.time;
                                 total_time += time_download_solution;
@@ -250,7 +257,8 @@
                                         },
                                         complete: function (xhr_unzip_solution, status_unzip_solution) {
                                             // console.log(xhr_unzip_solution.responseText);
-                                            let response_unzip_solution = JSON.parse(xhr_unzip_solution.responseText);
+                                            let cleaned_unzip_solution = xhr_unzip_solution.responseText.replace(/^\ufeff+/g, '');
+                                            let response_unzip_solution = JSON.parse(cleaned_unzip_solution);
                                             let solution_folder = response_unzip_solution.data;
                                             let time_unzip_solution = response_unzip_solution.time;
                                             total_time += time_unzip_solution;
@@ -273,7 +281,8 @@
                                                     },
                                                     complete: function (xhr_install_plugins, status_install_plugins) {
                                                         // console.log(xhr_install_plugins.responseText);
-                                                        let response_install_plugins = JSON.parse(xhr_install_plugins.responseText);
+                                                        let cleaned_install_plugins = xhr_install_plugins.responseText.replace(/^\ufeff+/g, '');
+                                                        let response_install_plugins = JSON.parse(cleaned_install_plugins);
                                                         let time_install_plugins = response_install_plugins.time;
                                                         total_time += time_install_plugins;
                                                         let text_time_install_plugins = `Execute time: ${time_install_plugins.toFixed(2)} s`;
@@ -291,7 +300,8 @@
                                                                     'upload': false
                                                                 },
                                                                 complete: function (xhr_generate_data_structure, status_generate_data_structure) {
-                                                                    let response_generate_data_structure = JSON.parse(xhr_generate_data_structure.responseText);
+                                                                    let cleaned_generate_data_structure = xhr_generate_data_structure.responseText.replace(/^\ufeff+/g, '');
+                                                                    let response_generate_data_structure = JSON.parse(cleaned_generate_data_structure);
                                                                     let time_generate_data_structure = response_generate_data_structure.time;
                                                                     total_time += time_generate_data_structure;
                                                                     let text_time_generate_data_structure = `Execute time: ${time_generate_data_structure.toFixed(2)} s`;
@@ -309,7 +319,8 @@
                                                                                 'action': 'install'
                                                                             },
                                                                             complete: function (xhr_composer_update, status_composer_update) {
-                                                                                let response_composer_update = JSON.parse(xhr_composer_update.responseText);
+                                                                                let cleaned_composer_update = xhr_composer_update.responseText.replace(/^\ufeff+/g, '');
+                                                                                let response_composer_update = JSON.parse(cleaned_composer_update);
                                                                                 let time_composer_update = response_composer_update.time;
                                                                                 total_time += time_composer_update;
                                                                                 let text_time_composer_update = `Execute time: ${time_composer_update.toFixed(2)} s`;
@@ -406,7 +417,8 @@
                     },
                     type: 'POST',
                     complete: function (xhr_prepare_uninstall, status_prepare_uninstall) {
-                        response_prepare_uninstall = JSON.parse(xhr_prepare_uninstall.responseText);
+                        let cleaned_prepare_uninstall = xhr_prepare_uninstall.responseText.replace(/^\ufeff+/g, '');
+                        let response_prepare_uninstall = JSON.parse(cleaned_prepare_uninstall);
                         let time_prepare_uninstall = response_prepare_uninstall.time;
                         total_time += time_prepare_uninstall;
                         let text_time_prepare_uninstall = `Execute time: ${time_prepare_uninstall.toFixed(2)} s`;
@@ -427,7 +439,8 @@
                                     'solution': solution
                                 },
                                 complete: function (xhr_uninstall_plugins, status_uninstall_plugins) {
-                                    let response_uninstall_plugins = JSON.parse(xhr_uninstall_plugins.responseText);
+                                    let cleaned_uninstall_plugins = xhr_uninstall_plugins.responseText.replace(/^\ufeff+/g, '');
+                                    let response_uninstall_plugins = JSON.parse(cleaned_uninstall_plugins);
                                     let time_uninstall_plugins = response_uninstall_plugins.time;
                                     total_time += time_uninstall_plugins;
                                     let text_time_uninstall_plugins = `Execute time: ${time_uninstall_plugins.toFixed(2)} s`;
@@ -445,7 +458,8 @@
                                                 'action': 'uninstall'
                                             },
                                             complete: function (xhr_composer_update, status_composer_update) {
-                                                let response_composer_update = JSON.parse(xhr_composer_update.responseText);
+                                                let cleaned_composer_update = xhr_composer_update.responseText.replace(/^\ufeff+/g, '');
+                                                let response_composer_update = JSON.parse(cleaned_composer_update);
                                                 let time_composer_update = response_composer_update.time;
                                                 total_time += time_composer_update;
                                                 let text_time_composer_update = `Execute time: ${time_composer_update.toFixed(2)} s`;
@@ -454,7 +468,7 @@
                                                 if (response_composer_update.status == 'success') {
                                                     $('.progress-bar').css('width', '100%').attr("aria-valuenow", 100);
                                                     $('#progess-status').html('Uninstall successfully!');
-                                                    modalText += `<h4>Install successfully! Total execute time: ${total_time.toFixed(2)} s</h4>`;
+                                                    modalText += `<h4>Uninstall successfully! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                                     // $('.progress').css("display", "none");
                                                     // $('.progess-status').css("display", "none");
                                                     button.html('Install');
