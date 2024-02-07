@@ -93,7 +93,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function prepare_install()
+    public function prepareInstall()
     {
         $urlVars = $this->request->get('urlVars');
         $package = isset($urlVars['code']) ? $urlVars['code'] : '';
@@ -109,7 +109,7 @@ class starter extends ControllerMVVM
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->prepare_install($data);
+        $try = $this->StarterModel->prepareInstall($data);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -120,7 +120,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function prepare_uninstall()
+    public function prepareUninstall()
     {
         $urlVars = $this->request->get('urlVars');
         $code = isset($urlVars['code']) ? $urlVars['code'] : '';
@@ -128,7 +128,7 @@ class starter extends ControllerMVVM
         $solution = $this->request->post->get('solution', '', 'string');
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->prepare_uninstall($code, $type, $solution);
+        $try = $this->StarterModel->prepareUninstall($code, $type, $solution);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -139,7 +139,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function download_solution()
+    public function downloadZipSolution()
     {
         // get input data
         $data = [
@@ -147,7 +147,7 @@ class starter extends ControllerMVVM
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->download_solution($data['solution']);
+        $try = $this->StarterModel->downloadZipSolution($data['solution']);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -158,7 +158,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function unzip_solution()
+    public function unzipZipSolution()
     {
         $action = $this->request->post->get('action', '', 'string');
         if ($action && $action == 'upload_file') {
@@ -190,7 +190,7 @@ class starter extends ControllerMVVM
         }
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->unzip_solution($package_path, $upload);
+        $try = $this->StarterModel->unzipZipSolution($package_path, $upload);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -202,7 +202,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function install_plugins()
+    public function installPlugins()
     {
         // get input data
         $data = [
@@ -214,7 +214,7 @@ class starter extends ControllerMVVM
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->install_plugins($data);
+        $try = $this->StarterModel->installPlugins($data);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -225,7 +225,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function uninstall_plugins()
+    public function uninstallPlugins()
     {
         // get input data
         $data = [
@@ -235,7 +235,7 @@ class starter extends ControllerMVVM
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->uninstall_plugins($data);
+        $try = $this->StarterModel->uninstallPlugins($data);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -246,11 +246,11 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function generate_data_structure()
+    public function generateDataStructure()
     {
         $upload = $this->request->post->get('upload', '', 'boolean');
         $start_time = microtime(true);
-        $try = $this->StarterModel->generate_data_structure($upload);
+        $try = $this->StarterModel->generateDataStructure($upload);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 
@@ -261,7 +261,7 @@ class starter extends ControllerMVVM
         return;
     }
 
-    public function composer_update()
+    public function composerUpdate()
     {
         // get input data
         $data = [
@@ -269,7 +269,7 @@ class starter extends ControllerMVVM
         ];
 
         $start_time = microtime(true);
-        $try = $this->StarterModel->composer_update($data['action']);
+        $try = $this->StarterModel->composerUpdate($data['action']);
         $end_time = microtime(true);
         $status = $try['success'] ? 'success' : 'failed';
 

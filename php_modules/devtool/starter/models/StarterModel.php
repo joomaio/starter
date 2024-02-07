@@ -670,7 +670,7 @@ class StarterModel extends Base
         return $check === 'cli';
     }
 
-    public function prepare_install($data, $required = false)
+    public function prepareInstall($data, $required = false)
     {
         $solutions = $this->getSolutions();
         $result = array(
@@ -756,7 +756,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function prepare_uninstall($package, $type, $solution)
+    public function prepareUninstall($package, $type, $solution)
     {
         $solutions = $this->getSolutions();
         $result = array(
@@ -794,7 +794,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function download_solution($link)
+    public function downloadZipSolution($link)
     {
         $result = array(
             'success' => false,
@@ -818,7 +818,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function unzip_solution($solution_zip, $upload = false)
+    public function unzipZipSolution($solution_zip, $upload = false)
     {
         $result = array(
             'success' => false,
@@ -865,7 +865,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function install_plugins($data)
+    public function installPlugins($data)
     {
         $result = array(
             'success' => false,
@@ -924,7 +924,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function uninstall_plugins($data)
+    public function uninstallPlugins($data)
     {
         $result = array(
             'success' => false,
@@ -958,7 +958,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function generate_data_structure($upload = false)
+    public function generateDataStructure($upload = false)
     {
         $result = array(
             'success' => false,
@@ -980,7 +980,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function composer_update($install)
+    public function composerUpdate($install)
     {
         $result = array(
             'success' => false,
