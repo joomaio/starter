@@ -14,33 +14,33 @@ class StarterModel extends Base
 
     public function getSolutions()
     {
-        // get file info
+        // Todo get storage solutions by link api
         if (!$this->solutions) {
-            $this->solutions = include ROOT_PATH . 'solution.php';
+            $this->solutions = [];
         }
 
-        $solutions = [];
-        if ($this->solutions) {
-            foreach ($this->solutions as $solution) {
-                $tmp = (array) $solution;
-                $tmp['status'] = false;
-                if (file_exists(SPT_PLUGIN_PATH . $tmp['code'])) {
-                    $tmp['status'] = true;
+        // $solutions = [];
+        // if ($this->solutions) {
+        //     foreach ($this->solutions as $solution) {
+        //         $tmp = (array) $solution;
+        //         $tmp['status'] = false;
+        //         if (file_exists(SPT_PLUGIN_PATH . $tmp['code'])) {
+        //             $tmp['status'] = true;
 
-                    $tmp['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $tmp['code'], true);
+        //             $tmp['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $tmp['code'], true);
 
-                    $class = $this->app->getNameSpace() . '\\' . $tmp['code'] . '\\' . basename($tmp['code']) . '\\registers\\Installer';
-                    if (method_exists($class, 'registerButton')) {
-                        if ($class::registerButton($this->app)) {
-                            $tmp['button'] = $class::registerButton($this->app);
-                        }
-                    }
-                }
+        //             $class = $this->app->getNameSpace() . '\\' . $tmp['code'] . '\\' . basename($tmp['code']) . '\\registers\\Installer';
+        //             if (method_exists($class, 'registerButton')) {
+        //                 if ($class::registerButton($this->app)) {
+        //                     $tmp['button'] = $class::registerButton($this->app);
+        //                 }
+        //             }
+        //         }
 
-                $solutions[] = $tmp;
-            }
-        }
-        return $solutions;
+        //         $solutions[] = $tmp;
+        //     }
+        // }
+        return $this->solutions;
     }
 
     public function installFileZipCli($package_path)
