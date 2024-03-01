@@ -105,6 +105,7 @@ class starter extends ControllerMVVM
             'type' => $type ? $type : 'solution',
             'require' => $require ? $require : '',
             'package' => $package,
+            'info' => $this->request->post->get('info', [], 'array');
             'action' => $this->request->post->get('action', '', 'string'),
         ];
 

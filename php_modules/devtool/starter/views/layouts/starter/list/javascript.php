@@ -5,23 +5,27 @@
             var check_error = false;
             // Get the file input element
             var fileInput = document.getElementById('package_upload');
+            var urlInput = $('#package_url').val();
             var file = fileInput.files[0];
 
-            if (!file) {
-                $('#error-text').html('Please choose your package file.');
+            if (!file && !urlInput) {
+                $('#error-text').html('Please choose your package file or enter urlInput.');
                 check_error = true;
             } else {
-                // Check file extension
-                var allowedExtensions = ['zip'];
-                var extension = file.name.split('.').pop().toLowerCase();
-                if (!allowedExtensions.includes(extension)) {
-                    $('#error-text').html('Only .zip files are allowed.');
-                    check_error = true;
-                } else {
-                    // Check file size
-                    if (file.size > 20 * 1024 * 1024) { // 5MB in bytes
-                        $('#error-text').html('File size should be less than 20MB.');
+                if(file)
+                {
+                    // Check file extension
+                    var allowedExtensions = ['zip'];
+                    var extension = file.name.split('.').pop().toLowerCase();
+                    if (!allowedExtensions.includes(extension)) {
+                        $('#error-text').html('Only .zip files are allowed.');
                         check_error = true;
+                    } else {
+                        // Check file size
+                        if (file.size > 20 * 1024 * 1024) { // 5MB in bytes
+                            $('#error-text').html('File size should be less than 20MB.');
+                            check_error = true;
+                        }
                     }
                 }
             }
@@ -42,6 +46,7 @@
 
                 var formData = new FormData();
                 formData.append('package', file);
+                formData.append('package_url', urlInput);
                 formData.append('action', 'upload_file');
                 $.ajax({
                     url: '<?php echo $this->link_unzip_solution ?>',
@@ -70,6 +75,7 @@
                                 data: {
                                     'type': response_unzip_solution.info.type,
                                     'solution': response_unzip_solution.info.solution,
+                                    'info': response_unzip_solution.info,
                                     'require': response_unzip_solution.info.require,
                                     'action': 'upload'
                                 },
@@ -79,7 +85,7 @@
                                     let response_prepare_install = JSON.parse(cleaned_prepare_install);
                                     let time_prepare_install = response_prepare_install.time;
                                     total_time += time_prepare_install;
-                                    let text_time_prepare_install = `Execute time: ${time_prepare_install.toFixed(2)} s`;
+                                    let text_time_prepare_install = time_prepare_install ? `Execute time: ${time_prepare_install.toFixed(2)} s` : '';
                                     modalText += response_prepare_install.message.replace(/\\/g, '') + text_time_prepare_install;
                                     $('#modal-text').html(modalText);
                                     $('.modal-body').scrollTop($('#modal-text').height());
@@ -104,7 +110,7 @@
                                                 let response_install_plugins = JSON.parse(cleaned_install_plugins);
                                                 let time_install_plugins = response_install_plugins.time;
                                                 total_time += time_install_plugins;
-                                                let text_time_install_plugins = `Execute time: ${time_install_plugins.toFixed(2)} s`;
+                                                let text_time_install_plugins = time_prepare_install ? `Execute time: ${time_install_plugins.toFixed(2)} s` : '';
                                                 modalText += response_install_plugins.message.replace(/\\/g, '') + text_time_install_plugins;
                                                 $('#modal-text').html(modalText);
                                                 $('.modal-body').scrollTop($('#modal-text').height());
@@ -123,7 +129,7 @@
                                                             let response_generate_data_structure = JSON.parse(cleaned_generate_data_structure);
                                                             let time_generate_data_structure = response_generate_data_structure.time;
                                                             total_time += time_generate_data_structure;
-                                                            let text_time_generate_data_structure = `Execute time: ${time_generate_data_structure.toFixed(2)} s`;
+                                                            let text_time_generate_data_structure = time_prepare_install ? `Execute time: ${time_generate_data_structure.toFixed(2)} s` : '';
                                                             modalText += response_generate_data_structure.message.replace(/\\/g, '') + text_time_generate_data_structure;
                                                             $('#modal-text').html(modalText);
                                                             $('.modal-body').scrollTop($('#modal-text').height());
@@ -142,7 +148,7 @@
                                                                         let response_composer_update = JSON.parse(cleaned_composer_update);
                                                                         let time_composer_update = response_composer_update.time;
                                                                         total_time += time_composer_update;
-                                                                        let text_time_composer_update = `Execute time: ${time_composer_update.toFixed(2)} s`;
+                                                                        let text_time_composer_update = time_prepare_install ? `Execute time: ${time_composer_update.toFixed(2)} s` : '';
                                                                         modalText += response_composer_update.message.replace(/\\/g, '') + text_time_composer_update;
                                                                         if (response_composer_update.status == 'success') {
                                                                             $('.progress-bar').css('width', '100%').attr("aria-valuenow", 100);

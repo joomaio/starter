@@ -42,7 +42,7 @@ class StarterModel extends Base
             foreach ($this->solutions as $key => &$solution) 
             {
                 $solution['status'] = file_exists(SPT_PLUGIN_PATH . $key);
-                $solution['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $key, true);
+                $solution['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $key, true, $key);
             }
         }
 
@@ -77,7 +77,7 @@ class StarterModel extends Base
             echo "Can`t read file solution";
             return $result;
         }
-        $info_list = include $package_folder . '/' . $folder_name . '/information.php';
+        $info_list = include $package_folder . '/' . $folder_name . '/solution.php';
 
         foreach ($info_list as $idx => $info) {
             $tmp = (array) $info;
@@ -114,7 +114,7 @@ class StarterModel extends Base
                 }
             }
 
-            if (file_exists(SPT_PLUGIN_PATH . $config['code'] . '/information.php')) {
+            if (file_exists(SPT_PLUGIN_PATH . $config['code'] . '/solution.php')) {
                 $check = readline($config['code'] . ' already exists, Do you still want to install it (Y/n)? ');
                 if (strtolower($check) == 'n' || strtolower($check) == 'no') {
                     echo "Stop Install";
@@ -183,7 +183,7 @@ class StarterModel extends Base
                     $temp_folder = $item->getBasename();
                 }
             }
-            copy($package_folder . '/' . $temp_folder . '/information.php', SPT_PLUGIN_PATH . $config['code'] . '/information.php');
+            copy($package_folder . '/' . $temp_folder . '/solution.php', SPT_PLUGIN_PATH . $config['code'] . '/solution.php');
         }
 
         if (is_dir(SPT_STORAGE_PATH . 'solutions')) {
@@ -262,7 +262,7 @@ class StarterModel extends Base
             }
         }
 
-        if (file_exists(SPT_PLUGIN_PATH . $config['code'] . '/information.php')) {
+        if (file_exists(SPT_PLUGIN_PATH . $config['code'] . '/solution.php')) {
             if ($is_cli) {
                 $check = readline($config['code'] . ' already exists, Do you still want to install it (Y/n)? ');
                 if (strtolower($check) == 'n' || strtolower($check) == 'no') {
@@ -327,7 +327,7 @@ class StarterModel extends Base
                 $temp_folder = $item->getBasename();
             }
         }
-        copy($solution_folder . '/' . $temp_folder . '/information.php', SPT_PLUGIN_PATH . $config['code'] . '/information.php');
+        copy($solution_folder . '/' . $temp_folder . '/plugin.php', SPT_PLUGIN_PATH . $config['code'] . '/plugin.php');
 
         foreach ($plugins as $item) {
             $try = $this->installPlugin($config, $item);
@@ -460,17 +460,17 @@ class StarterModel extends Base
         return false;
     }
 
-    public function getPlugins($path, $folder_solution = false)
+    public function getPlugins($path, $folder_solution = false, $solution = '')
     {
         $packages = [];
         foreach (new \DirectoryIterator($path) as $item) {
             if (!$item->isDot() && $item->isDir()) {
                 if (!$folder_solution) {
-                    return $this->getPlugins($item->getPathname(), true);
+                    return $this->getPlugins($item->getPathname(), true, $item->getBasename());
                 }
 
                 // case not installed yet plugins
-                $info_path = $item->getPathname() . '/information.php';
+                $info_path = $item->getPathname() . '/plugin.php';
                 if (file_exists($info_path)) {
                     $packages[$item->getBasename()] = include $info_path;
                     $packages[$item->getBasename()]['path'] = $item->getPathname();
@@ -482,13 +482,20 @@ class StarterModel extends Base
 
     public function installPlugin($solution, $plugin)
     {
-        $package_name = is_string($solution) ? $solution : $solution['code'];
+        $package_name = is_string($solution) ? $solution : $solution['folder_name'];
         if (!file_exists(SPT_PLUGIN_PATH . $package_name)) {
             $try = mkdir(SPT_PLUGIN_PATH . $package_name);
             if (!$try) {
                 $this->error = "Error: Can't Create folder solution";
                 return false;
             }
+        }
+
+        // check dependency
+        if(!$this->checkDependencies($plugin['dependencies'] ?? []))
+        {
+            $this->error = "Install failed, must install: ". implode(', ', $plugin['dependencies']);
+            return false;
         }
 
         // copy folder
@@ -697,64 +704,7 @@ class StarterModel extends Base
                     $config = $item;
                 }
             }
-
-            if (!$config) {
-                $data_solutions = include ROOT_PATH . 'solution.php';
-
-                // New solution element
-                $new_element = [
-                    $data['solution'] => [
-                        "name" => $data['solution'],
-                        "code" => $data['solution'],
-                        "link" => '',
-                        "description" => $data['solution'],
-                    ],
-                ];
-                $data_solutions = array_merge($data_solutions, $new_element);
-
-                // Add solution to info file
-                file_put_contents(ROOT_PATH . 'solution.php', '<?php return ' . var_export($data_solutions, true) . ';');
-            } else {
-                if (isset($config['required']) && $config['required'] && !file_exists(SPT_PLUGIN_PATH . $config['required'])) {
-                    $this->install($config['required'], true);
-                }
-
-                if (file_exists(SPT_PLUGIN_PATH . $config['code'] . '/information.php')) {
-                    $result['message'] = "<h4>Solution " . $config['code'] . " already exists</h4>";
-                    return $result;
-                }
-            }
-        } else {
-            if (!file_exists(SPT_PLUGIN_PATH . $data['solution'])) {
-                $data_solutions = include ROOT_PATH . 'solution.php';
-
-                // Thêm phần tử mới vào mảng
-                $new_element = [
-                    $data['solution'] => [
-                        "name" => $data['solution'],
-                        "code" => $data['solution'],
-                        "link" => '',
-                        "description" => $data['solution'],
-                    ],
-                ];
-                $data_solutions = array_merge($data_solutions, $new_element);
-
-                // Ghi lại nội dung vào file
-                file_put_contents(ROOT_PATH . 'solution.php', '<?php return ' . var_export($data_solutions, true) . ';');
-            } else {
-                if (file_exists(SPT_PLUGIN_PATH . $data['solution'] . '/' . $data['package'])) {
-                    $result['message'] = "<h4>Plugin " . $data['package'] . " already exists</h4>";
-                    return $result;
-                } else {
-                    if ($data['required']) {
-                        foreach ($data['required'] as $item) {
-                            $this->install($item, true);
-                        }
-                    }
-                }
-            }
         }
-
 
         $result['data'] = $data['type'] == 'solution' ? $config['link'] : '';
         $result['success'] = true;
@@ -778,7 +728,7 @@ class StarterModel extends Base
 
         $config = null;
         foreach ($solutions as $item) {
-            if ($item['code'] == $solution) {
+            if ($item['folder_name'] == $solution) {
                 if ($type == 'solution') {
                     $config = (array) $item;
                 } else {
@@ -861,7 +811,7 @@ class StarterModel extends Base
                 return $result;
             }
 
-            $result['info'] = include $solution_folder . '/' . $folder_name . '/information.php';
+            $result['info'] = include $solution_folder . '/' . $folder_name . '/solution.php';
 
             $result['message'] = '<h4>1/5. Unzip package folder</h4>';
         }
@@ -915,7 +865,7 @@ class StarterModel extends Base
                 $result['message'] .= "<p>Install plugin " . $item['folder_name'] . " successfully</p>";
             }
 
-            copy($data['path'] . '/information.php', SPT_PLUGIN_PATH . $config['code'] . '/information.php');
+            copy($data['path'] . '/solution.php', SPT_PLUGIN_PATH . $config['code'] . '/solution.php');
         }
 
         if (is_dir(SPT_STORAGE_PATH . 'solutions')) {
@@ -1015,5 +965,36 @@ class StarterModel extends Base
 
         $result['success'] = true;
         return $result;
+    }
+
+    public function checkDependencies($dependencies)
+    {
+        $solutions = $this->getSolutions();
+
+        if(!$dependencies)
+        {
+            return true;
+        }
+
+        $dependencies = is_string($dependencies) ? [$dependencies] : $dependencies;
+        $try = true;
+        foreach($dependencies as $item)
+        {
+            $arr = explode('/', $item);
+            $solution = $arr[0] ?? '';
+            $plugin = $arr[1] ?? '';
+            if($solution && $plugin)
+            {
+                continue;
+            }
+
+            if(!isset($solutions[$solution]) || !$solutions[$solution] || ($plugin && !isset($solutions[$solution]['plugins'][$plugin])))
+            {
+                $try = false;
+                break;
+            }
+        }
+
+        return $try;
     }
 }

@@ -70,6 +70,13 @@
 							<label for="package_upload" class="form-label fw-bold">Choose package file (.zip)</label>
 							<input class="form-control" type="file" id="package_upload" name="package_upload">
 						</div>
+						<div class="col-12 mx-auto text-center">
+							<label for="package_upload" class="mb-0 form-label fw-bold">OR</label>
+						</div>
+						<div class="mb-3 col-12 mx-auto">
+							<label for="package_upload" class="form-label fw-bold">Enter URL package (.zip)</label>
+							<input class="form-control" type="text" id="package_url" name="package_url">
+						</div>
 					</div>
 					<div class="row g-3 align-items-center m-0">
 						<div class="modal-footer">

@@ -12,7 +12,7 @@
                     </button>
                     <?php if (array_key_exists('modal-widget', $this->item['button'])) echo $this->renderWidget($this->item['button']['modal-widget']); ?>
                 <?php endif; ?>
-                <button data-type="solution" data-solution="<?php echo $this->item['code']; ?>" data-name="<?php echo $this->item['name']; ?>" data-code="<?php echo $this->item['code']; ?>" class="btn <?php echo $this->item['status'] ? 'btn-secondary btn-uninstall' : 'btn-primary btn-install' ?> ">
+                <button data-type="solution" data-solution="<?php echo $this->item['folder_name']; ?>" data-name="<?php echo $this->item['name']; ?>" data-code="<?php echo $this->item['folder_name']; ?>" class="btn <?php echo $this->item['status'] ? 'btn-secondary btn-uninstall' : 'btn-primary btn-install' ?> ">
                     <?php echo $this->item['status'] ? 'Uninstall Solution' : 'Install' ?>
                 </button>
             </div>
