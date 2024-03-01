@@ -10,20 +10,20 @@ class Cli
     {
         return [
             'install' => [
-                'description' => "Install solution. Example: php cli.php install solution-name",
-                'fnc' => 'starter.install.install'
+                'description' => "Install solution. Example: php cli.php install solution-link(solution-path)",
+                'fnc' => 'starter.cli.install'
             ],
             'uninstall' => [
-                'description' => "Uninstall solution. Example: php cli.php uninstall solution-name",
-                'fnc' => 'starter.uninstall.uninstall'
+                'description' => "Uninstall solution. Example: php cli.php uninstall solution-link(solution-path)",
+                'fnc' => 'starter.cli.uninstall'
             ],
             'solution-list' => [
                 'description' => "Show solution list",
-                'fnc' => 'starter.install.list'
+                'fnc' => 'starter.cli.list'
             ],
             'data-minimum' => [
                 'description' => "Install data minimum.",
-                'fnc' => 'starter.database.generatedata'
+                'fnc' => 'starter.cli.generatedata'
             ],
         ];
     }

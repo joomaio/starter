@@ -162,27 +162,50 @@ class starter extends ControllerMVVM
     {
         $action = $this->request->post->get('action', '', 'string');
         if ($action && $action == 'upload_file') {
-            $package = $_FILES['package'];
-            $file_tmp = $_FILES['package']['tmp_name'];
-            $tmp = explode('.', $_FILES['package']['name']);
-            $file_ext = strtolower(end($tmp));
-            $expensions = array('zip');
+            $package = $this->request->file->get('package');
+            if($package)
+            {
+                $file_tmp = $this->request->file->get('package')['tmp_name'];
+                $tmp = explode('.', $this->request->file->get('package')['name']);
+                $file_ext = strtolower(end($tmp));
+                $expensions = array('zip');
+                if (in_array($file_ext, $expensions) === false) {
+                    $this->set('status', 'failed');
+                    $this->set('message', 'Only .zip files are allowed.');
+                    return;
+                }
 
-            if (in_array($file_ext, $expensions) === false) {
+                if ($_FILES['package']['size'] > 20 * 1024 * 1024) {
+                    $this->set('status', 'failed');
+                    $this->set('message', 'File size should be less than 20MB.');
+                    return;
+                }
+    
+                move_uploaded_file($file_tmp, SPT_STORAGE_PATH . "solution.zip");
+    
+                $package_path = "solution.zip";
+            }
+
+            $package_url = $this->request->post->get('package_url', '', 'string');
+            if($package_url)
+            {
+                $try = $this->StarterModel->downloadSolution($package_url);
+                if(!$try)
+                {
+                    $this->set('status', 'failed');
+                    $this->set('message', 'Invalid File Zip solution');
+                    return;
+                }
+
+                $package_path = "solution.zip";
+            }
+            else
+            {
                 $this->set('status', 'failed');
-                $this->set('message', 'Only .zip files are allowed.');
+                $this->set('message', 'Invalid File Zip solution');
                 return;
             }
 
-            if ($_FILES['package']['size'] > 20 * 1024 * 1024) {
-                $this->set('status', 'failed');
-                $this->set('message', 'File size should be less than 20MB.');
-                return;
-            }
-
-            move_uploaded_file($file_tmp, SPT_STORAGE_PATH . "solution.zip");
-
-            $package_path = "solution.zip";
             $upload = true;
         } else {
             $package_path = $this->request->post->get('package', '', 'string');
