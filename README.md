@@ -12,12 +12,12 @@ Or download zip bash script from https://github.com/joomaio/starter/tree/bash_sc
 
 # Run bash script
 ```
-sudo bash setup.sh -user user-name -fpm fpm-container-name -fpm_path folder_path_in_container
+sudo bash setup.sh -user user-name -fpm fpm-container-name -web_root_path root_path
 ```
 with
 user-name: permission for starter work, ex: www-data
 fpm-container-name: container name run php service. If empty, bash script will run without docker container
-folder_path_in_container: is folder source run bash script in container.
+root_path: is folder source run bash script in container.
 
 When run bash script, you must enter database info:
 ```
