@@ -40,7 +40,7 @@ class Starter extends ViewModel
             $this->session->set('flashMsg', 'Solution not found');
         }
 
-        $list = new Listing($solutions, count($solutions), 0, $this->getColumns());
+        $list = new Listing(array_values($solutions), count($solutions), 0, $this->getColumns());
 
         return [
             'url' => $this->router->url(),
@@ -64,9 +64,8 @@ class Starter extends ViewModel
     public function getColumns()
     {
         return [
-            'num' => '#',
-            'title' => 'Title',
-            'created_at' => 'Created at',
+            'name' => '#',
+            'name' => 'Title',
             'col_last' => ' ',
         ];
     }

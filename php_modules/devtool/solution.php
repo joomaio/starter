@@ -1,4 +1,5 @@
-<?php
+<?php  
+defined('APP_PATH') or die('Invalid config');
 return [
     'tags' => [],
     'type' => 'solution',

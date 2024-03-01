@@ -11,6 +11,7 @@ class StarterModel extends Base
     use \SPT\Traits\ErrorString;
 
     private $solutions;
+    private $skip = ['devtool'];
 
     public function getSolutions()
     {
@@ -19,27 +20,32 @@ class StarterModel extends Base
             $this->solutions = [];
         }
 
-        // $solutions = [];
-        // if ($this->solutions) {
-        //     foreach ($this->solutions as $solution) {
-        //         $tmp = (array) $solution;
-        //         $tmp['status'] = false;
-        //         if (file_exists(SPT_PLUGIN_PATH . $tmp['code'])) {
-        //             $tmp['status'] = true;
+        foreach (new \DirectoryIterator(SPT_PLUGIN_PATH) as $item) 
+        {
+            if (!$item->isDot() && $item->isDir()) 
+            {
+                // case not installed yet plugins
+                if(!in_array($item->getBasename(), $this->skip))
+                {
+                    $info_path = $item->getPathname() . '/solution.php';
+                    if (file_exists($info_path)) 
+                    {
+                        $info = include $info_path;
+                        $this->solutions[$item->getBasename()] = $info;
+                    }
+                }
+            }
+        }
 
-        //             $tmp['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $tmp['code'], true);
+        if ($this->solutions) 
+        {
+            foreach ($this->solutions as $key => &$solution) 
+            {
+                $solution['status'] = file_exists(SPT_PLUGIN_PATH . $key);
+                $solution['plugins'] = $this->getPlugins(SPT_PLUGIN_PATH . $key, true);
+            }
+        }
 
-        //             $class = $this->app->getNameSpace() . '\\' . $tmp['code'] . '\\' . basename($tmp['code']) . '\\registers\\Installer';
-        //             if (method_exists($class, 'registerButton')) {
-        //                 if ($class::registerButton($this->app)) {
-        //                     $tmp['button'] = $class::registerButton($this->app);
-        //                 }
-        //             }
-        //         }
-
-        //         $solutions[] = $tmp;
-        //     }
-        // }
         return $this->solutions;
     }
 
