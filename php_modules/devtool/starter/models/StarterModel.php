@@ -458,6 +458,13 @@ class StarterModel extends Base
             return $result;
         }
 
+        $try = $this->checkDependencies($data['info']['dependencies'] ?? []);
+        if(!$try)
+        {
+            $result['message'] = '<h4>Install fail, must install : '. implode(', ', $data['info']['dependencies']). '</h4>';
+            return $result;
+        }
+
         $result['data'] = $data['type'] == 'solution' ? $data['info']['solution'] : '';
         $result['success'] = true;
         $result['message'] = $data['action'] == 'upload' ? '<h4>2/5. Check install availability</h4>' : '<h4>1/6. Check install availability</h4>';
