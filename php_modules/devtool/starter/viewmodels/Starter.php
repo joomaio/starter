@@ -27,8 +27,10 @@ class Starter extends ViewModel
         $solutions = $this->StarterModel->getSolutions();
         $tmp = [];
         if ($search) {
-            foreach ($solutions as $item) {
-                if (strpos($item['name'], $search) !== false || strpos($item['code'], $search) !== false || strpos($item['description'], $search) !== false) {
+            foreach ($solutions as $item) 
+            {
+                if (strpos($item['name'], $search) !== false || strpos($item['description'], $search) !== false) 
+                {
                     $tmp[] = $item;
                 }
             }
