@@ -738,6 +738,14 @@ class StarterModel extends Base
             return $result;
         }
 
+        // check dependencies
+        $package = $type == 'solution' ? $solution : $solution.'/'. $package;
+        if(!$this->checkUninstall($package))
+        {
+            $result['message'] .= '<h4>Uninstall failed, '. $this->error .' is depending on '. $package .'</h4>';
+            return $result;
+        }
+
         $result["success"] = true;
         $result["data"] = $type == 'solution' ? $solution : $solution . '/' . $package;
         return $result;
@@ -1028,6 +1036,39 @@ class StarterModel extends Base
             if(!$plugin_info)
             {
                 return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function checkUninstall($package)
+    {
+        $solutions = $this->getSolutions();
+        foreach($solutions as $item)
+        {
+            if(isset($item['dependencies']))
+            {
+                if(in_array($package, $item['dependencies']))
+                {
+                    $this->error = $item['name'];
+                    return false;
+                }
+            }
+
+            if(isset($item['plugins']) && $item['plugins'])
+            {
+                foreach($item['plugins'] as $plugin)
+                {
+                    if(isset($plugin['dependencies']))
+                    {
+                        if(in_array($package, $plugin['dependencies']))
+                        {
+                            $this->error = $plugin['name'];
+                            return false;
+                        }
+                    }
+                }
             }
         }
 
