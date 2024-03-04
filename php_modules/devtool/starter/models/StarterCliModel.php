@@ -295,4 +295,68 @@ class StarterCliModel extends Base
 
         return true;
     }
+
+    public function uninstall($package)
+    {
+        if (!$package) 
+        {
+            $this->error = 'Invalid Package.';
+            return false;
+        }
+
+        $arr = explode('/', $package);
+        $solution = $arr[0] ?? '';
+        $plugin = $arr[1] ?? '';
+        if(!$this->StarterModel->checkValidPackage($solution, $plugin))
+        {
+            $this->error = 'Invalid Package.';
+            return false;
+        }
+
+        if(!$this->StarterModel->checkUninstall($package))
+        {
+            $this->error = 'Uninstall Failed, '. $this->StarterModel->getError() .' is depending on '.$package;
+            return false;
+        }
+
+        echo "Start uninstall " . $package . "\n";
+        if(!$plugin)
+        {
+            echo "1. Uninstall plugins: \n";
+            $plugins = $this->StarterModel->getPlugins(SPT_PLUGIN_PATH . $solution, true);
+            foreach ($plugins as $plugin) 
+            {
+                $try = $this->StarterModel->uninstallPlugin($plugin['path'], $solution);
+                if (!$try) 
+                {
+                    echo "- Uninstall plugin " . $plugin['folder_name'] . " failed:\n";
+                    return false;
+                }
+    
+                echo "- Uninstall plugin " . $plugin['folder_name'] . " done!\n";
+            }
+        }
+        else
+        {
+            $try = $this->StarterModel->uninstallPlugin(SPT_PLUGIN_PATH . $package, $solution);
+        }
+
+        
+        $try = $this->file->removeFolder(SPT_PLUGIN_PATH . $package);
+
+        echo "2. Start composer update:\n";
+
+        $try = $this->ComposerModel->update(true);
+
+        if (!$try['success']) 
+        {
+            echo "Composer update failed!\n";
+            return false;
+        } 
+        else 
+        {
+            echo "Composer update successfully!\n";
+            return true;
+        }
+    }
 }
