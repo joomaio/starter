@@ -493,6 +493,7 @@
                                         $('.progess-status').css("display", "none");
                                         modalText += `<h4>Install failed! Total execute time: ${total_time.toFixed(2)} s</h4>`;
                                         $('#modal-text').html(modalText);
+                                        $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                                         // showToast('failed', 'Uninstall failed!');
                                     }
                                 }

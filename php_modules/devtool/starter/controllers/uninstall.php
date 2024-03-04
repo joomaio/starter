@@ -11,10 +11,10 @@ class uninstall extends ControllerMVVM
         $args = $this->request->cli->getArgs();
         $solution = isset($args[1]) ? $args[1] : '';
 
-        $try = $this->StarterModel->uninstall($solution);
+        $try = $this->StarterCliModel->uninstall($solution);
         if (!$try)
         {
-            echo $this->StarterModel->getError() ."\n";
+            echo $this->StarterCliModel->getError() ."\n";
         }
         else
         {
