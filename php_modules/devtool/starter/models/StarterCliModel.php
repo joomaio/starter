@@ -52,9 +52,11 @@ class StarterCliModel extends Base
         echo "1. Unzip solution folder done!\n";
 
         // check package exist
-        if ($package_info['type'] == 'solution') {
+        if ($package_info['type'] == 'solution') 
+        {
             $config = null;
-            foreach ($solutions as $item) {
+            foreach ($solutions as $item) 
+            {
                 if ($item['code'] == $package_info['solution']) {
                     $config = $item;
                 }
@@ -122,7 +124,7 @@ class StarterCliModel extends Base
             }
             echo "Install plugin " . basename($package_info['folder_name']) . " successfully";
         } else {
-            $plugins = $this->getPlugins($package_folder);
+            $plugins = $this->StarterModel->getPlugins($package_folder);
             $config = null;
             foreach ($solutions as $item) {
                 if ($item['code'] == $package_info['solution']) {
@@ -177,7 +179,7 @@ class StarterCliModel extends Base
         }
 
         // clear file install
-        $this->clearInstall($package_path);
+        $this->clearInstall($package_path, '');
         $result['success'] = true;
         return $result;
     }
@@ -244,7 +246,7 @@ class StarterCliModel extends Base
         {
             if (!$solution_folder) {
                 $this->error = 'Failed Solution info not found!';
-                $this->StarterModel->clearInstall($solution_folder);
+                $this->StarterModel->clearInstall($solution_folder, '');
                 return false;
             }
         }
@@ -253,7 +255,7 @@ class StarterCliModel extends Base
         if (!$solution_info)
         {
             $this->error = 'Failed Solution info not found!';
-            $this->clearInstall($solution_folder);
+            $this->clearInstall($solution_folder, '');
             return false;
         }
 
@@ -264,21 +266,23 @@ class StarterCliModel extends Base
             if(!$try)
             {
                 $this->error = 'Install fail, must install : '. implode(', ', $solution_info['dependencies']);
-                $this->clearInstall($solution_folder);
+                $this->clearInstall($solution_folder, '');
                 return false;
             }
         }
         
         // Install plugins
-        $plugins = $this->getPlugins($solution_folder, false, $solution_info['folder_name'] ?? '');
+        $plugins = $this->StarterModel->getPlugins($solution_folder, false, $solution_info['folder_name'] ?? '');
         echo "3. Start install plugin: \n";
 
-        copy($solution_folder . '/' . $temp_folder . '/solution.php', SPT_PLUGIN_PATH . $config['code'] . '/solution.php');
+        copy($solution_folder . '/' . $temp_folder . '/solution.php', SPT_PLUGIN_PATH . $solution_info['folder_name'] . '/solution.php');
 
-        foreach ($plugins as $item) {
+        foreach ($plugins as $item) 
+        {
             $try = $this->StarterModel->installPlugin($solution_info, $item);
-            if (!$try) {
-                $this->StarterModel->clearInstall($solution_folder, $config);
+            if (!$try) 
+            {
+                $this->StarterModel->clearInstall($solution_folder, $solution_info);
                 $this->error = "- Install plugin " . $item['folder_name'] . " failed:\n";
                 return $result;
             }
@@ -290,7 +294,8 @@ class StarterCliModel extends Base
 
         // generate database
         $entities = $this->DbToolModel->getEntities();
-        foreach ($entities as $entity) {
+        foreach ($entities as $entity) 
+        {
             $try = $this->{$entity}->checkAvailability();
             $status = $try !== false ? 'successfully' : 'failed';
             echo str_pad($entity, 30) . $status . "\n";
@@ -299,19 +304,20 @@ class StarterCliModel extends Base
         echo "Generate data structure done\n";
 
         // update composer
-        if (!$required) {
-            echo "5. Start composer update:\n";
-            $try = $this->ComposerModel->update($is_cli);
-            if (!$try['success']) {
-                echo "Composer update failed!\n";
-                return false;
-            } else {
-                echo "Composer update done!\n";
-            }
+        echo "5. Start composer update:\n";
+        $try = $this->ComposerModel->update(true);
+        if (!$try['success']) 
+        {
+            echo "Composer update failed!\n";
+            return false;
+        } 
+        else 
+        {
+            echo "Composer update done!\n";
         }
 
         // clear file install
-        $this->StarterModel->clearInstall($solution_folder);
+        $this->StarterModel->clearInstall($solution_folder, '');
 
         return true;
     }

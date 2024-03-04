@@ -560,11 +560,13 @@ class StarterModel extends Base
         }
 
         $package_path = is_string($config) ? $config : $config['folder_name'];
-        if ($config && file_exists(SPT_PLUGIN_PATH . $package_path)) {
+        if ($config && file_exists(SPT_PLUGIN_PATH . $package_path)) 
+        {
             $try = $this->file->removeFolder(SPT_PLUGIN_PATH . $package_path);
         }
 
-        if (file_exists(SPT_STORAGE_PATH . "solution.zip")) {
+        if (file_exists(SPT_STORAGE_PATH . "solution.zip")) 
+        {
             $try = unlink(SPT_STORAGE_PATH . "solution.zip");
         }
 

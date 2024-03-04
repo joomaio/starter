@@ -24,10 +24,13 @@ class install extends ControllerMVVM
 
         $try = $this->StarterCliModel->install($solution);
         
-        if ($try['success'])
+        if ($try)
         {
             echo "Install Done!\n";
+            return true;
         }
+
+        echo $this->StarterCliModel->getError() ."\n";
 
         return true;
     }
