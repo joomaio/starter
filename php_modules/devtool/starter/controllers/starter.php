@@ -163,11 +163,11 @@ class starter extends ControllerMVVM
     {
         $action = $this->request->post->get('action', '', 'string');
         if ($action && $action == 'upload_file') {
-            $package = $this->request->file->get('package');
+            $package = $this->request->file->get('package', '', 'array');
             if($package)
             {
-                $file_tmp = $this->request->file->get('package')['tmp_name'];
-                $tmp = explode('.', $this->request->file->get('package')['name']);
+                $file_tmp = $package['tmp_name'];
+                $tmp = explode('.', $package['name']);
                 $file_ext = strtolower(end($tmp));
                 $expensions = array('zip');
                 if (in_array($file_ext, $expensions) === false) {
@@ -183,7 +183,6 @@ class starter extends ControllerMVVM
                 }
     
                 move_uploaded_file($file_tmp, SPT_STORAGE_PATH . "solution.zip");
-    
                 $package_path = "solution.zip";
             }
 
@@ -199,12 +198,6 @@ class starter extends ControllerMVVM
                 }
 
                 $package_path = "solution.zip";
-            }
-            else
-            {
-                $this->set('status', 'failed');
-                $this->set('message', 'Invalid File Zip solution');
-                return;
             }
 
             $upload = true;

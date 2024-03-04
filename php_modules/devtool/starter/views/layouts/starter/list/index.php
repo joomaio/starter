@@ -85,7 +85,7 @@
 									<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
 								</div>
 								<div class="col-6 text-end pe-0">
-									<button type="button" id="submit-upload" class="btn btn-outline-success">Create</button>
+									<button type="button" id="submit-upload" class="btn btn-outline-success">Install</button>
 								</div>
 							</div>
 						</div>
