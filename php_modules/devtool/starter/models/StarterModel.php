@@ -460,23 +460,29 @@ class StarterModel extends Base
         return false;
     }
 
-    public function getPlugins($path, $folder_solution = false, $solution = '')
+    public function getPlugins($path)
     {
         $packages = [];
-        foreach (new \DirectoryIterator($path) as $item) {
-            if (!$item->isDot() && $item->isDir()) {
-                if (!$folder_solution) {
-                    return $this->getPlugins($item->getPathname(), true, $item->getBasename());
+        foreach (new \DirectoryIterator($path) as $item) 
+        {
+            if (!$item->isDot() && $item->isDir()) 
+            {
+                $info_solution = $item->getPathname() . '/solution.php';
+                if (file_exists($info_path)) 
+                {
+                    return $this->getPlugins($item->getPathname());
                 }
 
                 // case not installed yet plugins
                 $info_path = $item->getPathname() . '/plugin.php';
-                if (file_exists($info_path)) {
+                if (file_exists($info_path)) 
+                {
                     $packages[$item->getBasename()] = include $info_path;
                     $packages[$item->getBasename()]['path'] = $item->getPathname();
                 }
             }
         }
+        
         return $packages;
     }
 
@@ -685,28 +691,18 @@ class StarterModel extends Base
 
     public function prepareInstall($data, $required = false)
     {
-        $solutions = $this->getSolutions();
         $result = array(
             'success' => false,
             'message' => '',
             'data' => '',
         );
 
-        if (!$data['solution']) {
+        if (!$data['info']) {
             $result['message'] = '<h4>Invalid Solution</h4>';
             return $result;
         }
 
-        if ($data['type'] == 'solution') {
-            $config = null;
-            foreach ($solutions as $item) {
-                if ($item['code'] == $data['solution']) {
-                    $config = $item;
-                }
-            }
-        }
-
-        $result['data'] = $data['type'] == 'solution' ? $config['link'] : '';
+        $result['data'] = $data['type'] == 'solution' ? $data['info']['solution'] : '';
         $result['success'] = true;
         $result['message'] = $data['action'] == 'upload' ? '<h4>2/5. Check install availability</h4>' : '<h4>1/6. Check install availability</h4>';
         return $result;
@@ -816,7 +812,7 @@ class StarterModel extends Base
             $result['message'] = '<h4>1/5. Unzip package folder</h4>';
         }
 
-        $result['data'] = basename($solution_folder);
+        $result['data'] = basename($solution_folder). '/'. $folder_name;
         $result['success'] = true;
         return $result;
     }
