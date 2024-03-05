@@ -12,12 +12,13 @@ Or download zip bash script from https://github.com/joomaio/starter/tree/bash_sc
 
 # Run bash script
 ```
-sudo bash setup.sh -user user-name -fpm fpm-container-name -web_root_path root_path
+sudo bash setup.sh -user user-name -fpm fpm-container-name -web_root_path web_path -document_root document_root_path
 ```
 with
 user-name: permission for starter work, ex: www-data
 fpm-container-name: container name run php service. If empty, bash script will run without docker container
-root_path: is folder source run bash script in container.
+web_root_path: Absolute path to the app in the container for the web service. If you don't have a web container, you can ignore this information
+document_root_path: absolute path to app.The default will be the starter folder contained in the bash run folder.
 
 When run bash script, you must enter database info:
 ```
@@ -27,3 +28,18 @@ Enter database password:
 Enter database name:
 Enter database prefix:
 ```
+
+starter info:
+```
+Enter access key (default is random string): 
+Enter username starter (default is starter): 
+Enter password starter (default is random string): 
+```
+
+#Folder docker
+docker folder contains 2 folders: php82 and mysql
+Php82 folder contains the dockerfile to build the fpm82 image
+And mysql8 folder contains the dockerfile to build the mysql8 image
+
+#file docker/docker-compose_sample.yml
+This is an example of setting up a starter runtime environment via docker container and docker-compose
