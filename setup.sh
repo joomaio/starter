@@ -3,38 +3,20 @@
 # Step 1 Install source 
 repository_url="https://github.com/joomaio/starter.git"
 
-# Check if Git is installed
-if ! command -v git &> /dev/null; then
-    echo "Git is not installed. Please install Git before using this script."
-    exit 1
-fi
-
-# Perform git clone
-git clone "$repository_url"
-
-# Check if git clone was successful
-if [ $? -eq 0 ]; then
-    echo "Git clone successful from $repository_url."
-else
-    echo "Git clone failed."
-    exit 1
-fi
-
-# checkout to web branch (remove when after merge branch web)
-cd starter
-git checkout refactor
-echo 'checkout to web';
-
-# Run composer update
 fpm=""
 web_root_path=""
 user=""
+document_root=""
 
-# Xử lý tham số dòng lệnh
+# Read params
 while [ "$#" -gt 0 ]; do
     case "$1" in
         -fpm|--fpm)
             fpm="$2"
+            shift 2
+            ;;
+        -document_root|--document_root)
+            document_root="$2"
             shift 2
             ;;
         -web_root_path|--web_root_path)
@@ -45,8 +27,60 @@ while [ "$#" -gt 0 ]; do
             user="$2"
             shift 2
             ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            break
+            ;;
     esac
 done
+
+script_path=$(readlink -f "$0")
+script_dir=$(dirname "$script_path")
+
+if [ -z "$document_root" ]; then
+    echo -n "Enter document root (Enter to skip, default is $script_dir/starter): "
+    read document_root
+    if [ -z "$document_root" ]; then
+        $document_root = "$script_dir/starter"
+    fi
+fi
+
+# Check if Git is installed
+if ! command -v git &> /dev/null; then
+    echo "Git is not installed. Please install Git before using this script."
+    exit 1
+fi
+
+# Perform git clone
+git clone "$repository_url" $document_root
+
+# Check if git clone was successful
+if [ $? -eq 0 ]; then
+    echo "Git clone successful from $repository_url."
+else
+    echo "Git clone failed."
+    exit 1
+fi
+
+# checkout to web branch (remove when after merge branch web)
+cd $document_root
+git checkout refactor
+echo 'checkout to web';
+
+# run setup composer install
+if [ -z "$fpm" ]; then
+    echo -n "Enter fpm docker container name (Enter to skip): "
+    read fpm
+fi
+
+if [ -z "$web_root_path" ]; then
+    echo -n "Enter web root path (Enter to skip): "
+    read web_root_path
+fi
+
 if [ -n "$fpm" ]; then
     echo "Composer Install Start:"
     if ! command -v docker &> /dev/null; then
@@ -59,7 +93,7 @@ if [ -n "$fpm" ]; then
         exit 1
     fi
 
-    docker exec -it $fpm bash -c "cd $web_root_path/starter && composer install"
+    docker exec -it $fpm bash -c "cd $web_root_path && composer install"
 
     if [ $? -eq 0 ]; then
         echo "Composer install done!"
@@ -140,7 +174,6 @@ echo "Setup starter config"
 echo -n "Enter access key (default is random string): "
 read access_key
 if [ -z "$access_key" ]; then
-  # Gán đoạn string ngẫu nhiên cho biến
   access_key=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10)
 fi
 old_string="'access_key' => 'OPQzxeyQpU',"
@@ -150,7 +183,6 @@ sed -i "s/$old_string/$new_string/g" "config/starter.php"
 echo -n "Enter username starter (default is starter): "
 read username
 if [ -z "$username" ]; then
-  # Gán đoạn string ngẫu nhiên cho biến
   username="starter"
 fi
 old_string="'username' => 'starter',"
@@ -160,7 +192,6 @@ sed -i "s/$old_string/$new_string/g" "config/starter.php"
 echo -n "Enter password starter (default is random string): "
 read password
 if [ -z "$password" ]; then
-  # Gán đoạn string ngẫu nhiên cho biến
   password=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10)
 fi
 old_string="'password' => '4Gr6RlAHPp',"
@@ -170,6 +201,11 @@ sed -i "s/$old_string/$new_string/g" "config/starter.php"
 echo "Config Done!"
 
 # run setup permission
+if [ -z "$user" ]; then
+    echo -n "Change user permission (Enter to skip): "
+    read user
+fi
+
 if [ -n "$user" ]; then
     chown -R "$user":"$user" ../starter
     if [ $? -eq 0 ]; then
