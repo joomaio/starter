@@ -35,3 +35,11 @@ Enter access key (default is random string):
 Enter username starter (default is starter): 
 Enter password starter (default is random string): 
 ```
+
+#Folder docker
+docker folder contains 2 folders: php82 and mysql
+Php82 folder contains the dockerfile to build the fpm82 image
+And mysql8 folder contains the dockerfile to build the mysql8 image
+
+#file docker/docker-compose_sample.yml
+This is an example of setting up a starter runtime environment via docker container and docker-compose
