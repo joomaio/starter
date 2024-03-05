@@ -1,0 +1,220 @@
+ul a.submenu-link{
+    padding-left: 2rem;
+}
+
+.label-bold .form-label
+{
+    font-weight: bold;
+}
+
+.message-toast{
+    position: fixed; 
+    z-index: 9999999;
+    top: 20px; 
+    right: 20px;
+    box-shadow: none !important;
+}
+
+.message-toast .message-body{
+    padding: 3px 0px 3px 10px;
+}
+.back-ground-sidebar a.sidebar-link
+{
+    background: #35414e;
+    font-size: 14px;
+    border-top: 0.5px solid;
+}
+
+.sidebar-nav .sidebar-item:not(.back-ground-sidebar) + .sidebar-item.back-ground-sidebar a.sidebar-link{
+    border-top: none;
+}
+
+.field-sheetjs{
+    border: 1px solid #c1c4c7;
+    height: 80vh;
+    width: 100%;
+    background-color: #f5f6f7;
+}
+.select2-container {
+    z-index: 9999;
+}
+div .select2-w-100 .select2-container{
+    width: 100% !important;
+}
+span.select2-container {
+    z-index:10050;
+    width: 100% !important;
+}
+.select2-no-index span.select2-container
+{
+    z-index: 0;
+}
+#tree_root
+{
+    height: calc(100vh - 130px);
+}
+
+.sidebar-content.js-simplebar .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content{
+    height: 100vh;
+    overflow: auto;
+}
+
+.sidebar-content.js-simplebar .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: rgba(0,0,0,0.1);
+    border: 1px solid #ccc;
+}
+.sidebar-content.js-simplebar .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content::-webkit-scrollbar{
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+.sidebar-content.js-simplebar .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    background: linear-gradient(left, #fff, #e4e4e4);
+    border: 1px solid #aaa;
+}
+
+.col-left-note{
+    border-left: 1px solid #aaa;
+    min-height: calc(100vh - 90px);
+}
+
+.popover.show{
+    max-height: 100vh;
+    overflow-y: auto;
+}
+.min-w-100{
+    min-width: 100px;
+}
+
+.sidebar-dropdown .sidebar-item a{
+    font-size: 14px;
+}
+
+#version_link {
+    border-top: 2px solid #dee2e6;
+}
+
+.relate-note-description{
+    overflow: hidden;
+    white-space: nowrap !important;
+    max-width: 500px;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.hide-modal span.select2-container{
+    z-index: 0;
+}
+
+#editPosition a.btn.btn-primary{
+    display: none;
+}
+
+.list-products .remove-product
+{
+    padding: 2px 7px;
+    top: 0;
+    right: 0;
+    font-size: 1rem;
+}
+
+.list-products .product-item .content, .feature-list .feature-item .feature-title, .feature-list .feature-item .feature-content{
+    text-align: center;
+}
+
+.list-products .product-item, .feature-list .feature-item .feature-title, .feature-list .feature-item .feature-content{
+    cursor: pointer;
+}
+
+.preview-note .list-products .product-item, .preview-note .feature-list .feature-item .feature-title, .preview-note .feature-list .feature-item .feature-content{
+    cursor: auto;
+}
+
+.feature-item .remove-feature
+{
+    padding: 2px 7px;
+    top: 0;
+    right: 0;
+    font-size: 1rem;
+}
+
+.feature-item .feature-title
+{
+    vertical-align: middle;
+}
+.feature-item .feature-title .content{
+    min-height: 21px;
+}
+
+.feature-item .feature-content p {
+    margin: 0;
+}
+
+.type-checkbox.checkbox-col-3 .form-check
+{
+    width: 33%;
+}
+
+.type-checkbox.checkbox-col-3 .option-group
+{
+    width: 33%;
+    margin-bottom: 10px;
+}
+
+.type-checkbox.checkbox-col-3 .option-group .form-check{
+    width: 100%;
+}
+
+.type-checkbox.checkbox-col-3 fieldset
+{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.widget-history{
+    max-height: 300px;
+    overflow: auto;
+}
+
+#filter_form .select2-container--default .select2-selection--multiple .select2-selection__choice{
+    margin-top: 3px;
+}
+
+#filter_form .select2-container--default .select2-selection--multiple{
+    padding-bottom: 3px;
+}
+
+#filter_form span.select2-container {
+    z-index: 0;
+    width: auto !important;
+}
+
+.sidebar-link, a.sidebar-link{
+    font-size: 16px;
+}
+
+.sidebar-brand .dropdown-menu li a{
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    display: block;
+    font-weight: 400;
+    padding: 0.625rem 1.625rem;
+    position: relative;
+    text-decoration: none;
+    transition: background .1s ease-in-out;
+}
+
+.sidebar-brand .dropdown-menu li a:hover{
+    background-color: #ebebeb;
+}
+
+.open-dashboard-menu.dropdown-toggle:after{
+    display: none;
+}
+
+.container img, .content-wrap img, .container-fluid img{
+    max-width: 100%;
+    height: auto;
+}
