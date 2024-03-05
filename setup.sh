@@ -22,7 +22,7 @@ fi
 
 # checkout to web branch (remove when after merge branch web)
 cd starter
-git checkout webapp
+git checkout refactor
 echo 'checkout to web';
 
 # Run composer update
@@ -96,6 +96,13 @@ cp -r config.sample/* config
 
 echo "Copy folder config done."
 
+# generate secret key
+RANDOM_STRING=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10)
+echo "Generate secret key done."
+old_string="'secrect' => 'sid',"
+new_string="'secrect' => '$RANDOM_STRING',"
+sed -i "s/$old_string/$new_string/g" "config/general.php"
+
 # setup database config
 if [ ! -f "config/database.php" ]; then
     echo "File config not exists."
@@ -127,6 +134,39 @@ sed -i "s/$old_string/$new_string/g" "config/database.php"
 old_string="'prefix' => '',"
 new_string="'prefix' => '$prefix',"
 sed -i "s/$old_string/$new_string/g" "config/database.php"
+
+# Config starter
+echo "Setup starter config"
+echo -n "Enter access key (default is random string): "
+read access_key
+if [ -z "$access_key" ]; then
+  # Gán đoạn string ngẫu nhiên cho biến
+  access_key=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10)
+fi
+old_string="'access_key' => 'OPQzxeyQpU',"
+new_string="'access_key' => '$access_key',"
+sed -i "s/$old_string/$new_string/g" "config/starter.php"
+
+echo -n "Enter username starter (default is starter): "
+read username
+if [ -z "$username" ]; then
+  # Gán đoạn string ngẫu nhiên cho biến
+  username="starter"
+fi
+old_string="'username' => 'starter',"
+new_string="'username' => '$username',"
+sed -i "s/$old_string/$new_string/g" "config/starter.php"
+
+echo -n "Enter password starter (default is random string): "
+read password
+if [ -z "$password" ]; then
+  # Gán đoạn string ngẫu nhiên cho biến
+  password=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 10)
+fi
+old_string="'password' => '4Gr6RlAHPp',"
+new_string="'password' => '$password',"
+sed -i "s/$old_string/$new_string/g" "config/starter.php"
+
 echo "Config Done!"
 
 # run setup permission
