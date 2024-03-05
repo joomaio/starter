@@ -41,12 +41,14 @@ class Starter extends ViewModel
         if (!$tmp && $search) {
             $this->session->set('flashMsg', 'Solution not found');
         }
+        $buttons = $this->StarterModel->loadButton();
 
         $list = new Listing(array_values($solutions), count($solutions), 0, $this->getColumns());
 
         return [
             'url' => $this->router->url(),
             'list' => $list,
+            'buttons' => $buttons,
             'link_list' => $this->router->url('starter'),
             'title_page' => 'Starter',
             'link_install' => $this->router->url('starter/install'),

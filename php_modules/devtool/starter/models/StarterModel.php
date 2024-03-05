@@ -827,4 +827,17 @@ class StarterModel extends Base
 
         return true;
     }
+
+    public function loadButton()
+    {
+        $buttons = [];
+        $this->app->plgLoad('installer', 'registerButton', function($result) use (&$buttons) {
+            if($result && $result['solution'])
+            {
+                $buttons[$result['solution']] = $result;
+            }
+        });
+
+        return $buttons;
+    }
 }
