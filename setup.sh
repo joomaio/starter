@@ -67,7 +67,7 @@ fi
 
 # checkout to web branch (remove when after merge branch web)
 cd $document_root
-git checkout refactor
+git checkout webapp
 echo 'checkout to web';
 
 # run setup composer install
