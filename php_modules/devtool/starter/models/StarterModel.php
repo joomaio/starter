@@ -565,7 +565,20 @@ class StarterModel extends Base
                 return $result;
             }
 
-            $result['info'] = include $solution_folder . '/' . $folder_name . '/solution.php';
+            if(file_exists($solution_folder . '/' . $folder_name . '/solution.php'))
+            {
+                $result['info'] = include $solution_folder . '/' . $folder_name . '/solution.php';
+            }
+            elseif(file_exists($solution_folder . '/' . $folder_name . '/plugin.php'))
+            {
+                $result['info'] = include $solution_folder . '/' . $folder_name . '/plugin.php';
+            }
+
+            if(!$result['info'])
+            {
+                $result['message'] .= '<p>Can`t read file package info</p>';
+                return $result;
+            }
 
             $result['message'] = '<h4>1/5. Unzip package folder</h4>';
         }
@@ -587,6 +600,7 @@ class StarterModel extends Base
         $result['message'] .= $data['action'] == 'upload' ? '<h4>3/5. Start install plugins</h4>' : '<h4>4/6. Start install plugins</h4>';
         if ($data['type'] == 'plugin') 
         {
+            $data['path'] = $data['package_path'];
             $try = $this->installPlugin($data['solution'], $data);
             if (!$try) 
             {
@@ -594,6 +608,8 @@ class StarterModel extends Base
                 $result['message'] .= "<p>Install plugin " . basename($data['package']) . " failed</p>";
                 return $result;
             }
+
+            $this->registerSolution($data['solution'] ?? '');
             $result['message'] .= "<p>Install plugin " . basename($data['package']) . " successfully</p>";
         } 
         else 
@@ -734,7 +750,7 @@ class StarterModel extends Base
         return $result;
     }
 
-    public function checkDependencies($dependencies)
+    public function checkDependencies($dependencies, $plugins = [])
     {
         $solutions = $this->getSolutions();
 
@@ -839,5 +855,27 @@ class StarterModel extends Base
         });
 
         return $buttons;
+    }
+
+    public function registerSolution($solution)
+    {
+        // check invalid
+        if(file_exists(SPT_PLUGIN_PATH. $solution.'/solution.php'))
+        {
+            return true;
+        }
+
+        $solution_info = [
+            'tags' => [],
+            'type' => 'solution',
+            'solution' => $solution,
+            'folder_name' => $solution,
+            'name' => $solution,
+            'dependencies' => [],
+        ];
+
+        file_put_contents(SPT_PLUGIN_PATH. $solution.'/solution.php', '<?php return ' . var_export($solution_info, true) . ';');
+    
+        return true;
     }
 }

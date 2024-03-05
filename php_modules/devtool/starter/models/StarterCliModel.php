@@ -24,7 +24,7 @@ class StarterCliModel extends Base
         if (!$package_folder) 
         {
             echo "Can`t read file solution";
-            return $result;
+            return false;
         }
 
         $dir = new \DirectoryIterator($package_folder);
@@ -39,9 +39,25 @@ class StarterCliModel extends Base
         if (!$folder_name) 
         {
             echo "Can`t read file solution";
-            return $result;
+            return false;
         }
-        $info_list = include $package_folder . '/' . $folder_name . '/solution.php';
+        
+        $info_list = [];
+        if(file_exists($package_folder . '/' . $folder_name . '/solution.php'))
+        {
+            $info_list = include $package_folder . '/' . $folder_name . '/solution.php';
+        }
+        elseif($package_folder . '/' . $folder_name . '/plugin.php')
+        {
+            $info_list = include $package_folder . '/' . $folder_name . '/plugin.php';
+        }
+        
+        if(!$info_list)
+        {
+            $this->error = 'Failed package info not found!';
+            $this->StarterModel->clearInstall($package_folder, '');
+            return false;
+        }
 
         foreach ($info_list as $idx => $info) 
         {
@@ -61,21 +77,21 @@ class StarterCliModel extends Base
         // check package exist
         if ($package_info['type'] == 'solution') 
         {
-            $try = $this->StarterModel->checkDependencies($package_info['dependencies']);
+            $try = $this->StarterModel->checkDependencies($package_info['dependencies'] ?? []);
             if(!$try)
             {
                 $this->error = 'Install fail, must install : '. implode(', ', $package_info['dependencies']);
-                $this->StarterModel->clearInstall($solution_folder, '');
+                $this->StarterModel->clearInstall($package_folder, '');
                 return false;
             }
         }
         else 
         {
-            $try = $this->StarterModel->checkDependencies($package_info['dependencies']);
+            $try = $this->StarterModel->checkDependencies($package_info['dependencies'] ?? []);
             if(!$try)
             {
                 $this->error = 'Install fail, must install : '. implode(', ', $package_info['dependencies']);
-                $this->StarterModel->clearInstall($solution_folder, '');
+                $this->StarterModel->clearInstall($package_folder, '');
                 return false;
             }
         }
@@ -84,15 +100,16 @@ class StarterCliModel extends Base
         echo "2. Start install plugin: \n";
         if ($package_info['type'] == 'plugin') 
         {
-            $package_info['path'] = $package_folder . '/' . $package_info['folder_name'];
+            $package_info['path'] = $package_folder . '/' . $folder_name;
             $try = $this->StarterModel->installPlugin($package_info['solution'], $package_info);
             if (!$try) 
             {
-                $this->StarterModel->clearInstall($package_folder, $package_info['folder_name']);
+                $this->StarterModel->clearInstall($package_folder, $folder_name);
                 echo "Install plugin " . basename($package_info['folder_name']) . " failed";
-                return $result;
+                return false;
             }
 
+            $this->StarterModel->registerSolution($package_info['solution']);
             echo "Install plugin " . basename($package_info['folder_name']) . " successfully \n";
         } 
         else 
@@ -106,7 +123,7 @@ class StarterCliModel extends Base
                 {
                     $this->StarterModel->clearInstall($package_info['package_path'], $package_info);
                     echo "Install plugin " . $item['folder_name'] . " failed";
-                    return $result;
+                    return false;
                 }
                 echo "Install plugin " . $item['folder_name'] . " successfully \n";
             }
@@ -147,15 +164,14 @@ class StarterCliModel extends Base
         if (!$try['success']) 
         {
             echo "Composer update failed!\n";
-            return $result;
+            return false;
         } else {
             echo "Composer update done!\n";
         }
 
         // clear file install
         $this->StarterModel->clearInstall($package_path, '');
-        $result['success'] = true;
-        return $result;
+        return false;
     }
 
     public function install($solution)
@@ -200,8 +216,8 @@ class StarterCliModel extends Base
         echo "1. Download solution done!\n";
 
         // unzip solution
-        $solution_folder = $this->StarterModel->unzipSolution($solution_zip);
-        if (!$solution_folder) {
+        $package_folder = $this->StarterModel->unzipSolution($solution_zip);
+        if (!$package_folder) {
             $this->error = 'Can`t read file solution';
             return false;
         }
@@ -209,60 +225,86 @@ class StarterCliModel extends Base
         echo "2. Unzip solution folder done!\n";
 
         // check info
-        foreach (new \DirectoryIterator($solution_folder) as $item) 
+        foreach (new \DirectoryIterator($package_folder) as $item) 
         {
             if (!$item->isDot() && $item->isDir()) {
                 $temp_folder = $item->getBasename();
+                break;
             }
         }
 
-        if(!file_exists($solution_folder. '/'. $temp_folder .'/solution.php'))
+        $package_info = [];
+        if(file_exists($package_folder . '/' . $temp_folder . '/solution.php'))
         {
-            if (!$solution_folder) {
-                $this->error = 'Failed Solution info not found!';
-                $this->StarterModel->clearInstall($solution_folder, '');
-                return false;
-            }
+            $package_info = include $package_folder . '/' . $temp_folder . '/solution.php';
         }
-        
-        $solution_info = include_once($solution_folder. '/'. $temp_folder .'/solution.php');
-        if (!$solution_info)
+        elseif($package_folder . '/' . $temp_folder . '/plugin.php')
         {
-            $this->error = 'Failed Solution info not found!';
-            $this->StarterModel->clearInstall($solution_folder, '');
+            $package_info = include $package_folder . '/' . $temp_folder . '/plugin.php';
+        }
+
+        if(!$package_info)
+        {
+            $this->error = 'Failed package info not found!';
+            $this->StarterModel->clearInstall($package_folder, '');
             return false;
         }
-
+        
         // check dependencies
-        if($solution_info['dependencies'])
+        $try = $this->StarterModel->checkDependencies($package_info['dependencies'] ?? []);
+        if(!$try)
         {
-            $try = $this->StarterModel->checkDependencies($solution_info['dependencies']);
-            if(!$try)
-            {
-                $this->error = 'Install fail, must install : '. implode(', ', $solution_info['dependencies']);
-                $this->StarterModel->clearInstall($solution_folder, '');
-                return false;
-            }
+            $this->error = 'Install fail, must install : '. implode(', ', $package_info['dependencies']);
+            $this->StarterModel->clearInstall($package_folder, '');
+            return false;
         }
         
         // Install plugins
-        $plugins = $this->StarterModel->getPlugins($solution_folder, false, $solution_info['folder_name'] ?? '');
         echo "3. Start install plugin: \n";
-
-        copy($solution_folder . '/' . $temp_folder . '/solution.php', SPT_PLUGIN_PATH . $solution_info['folder_name'] . '/solution.php');
-
-        foreach ($plugins as $item) 
+        if($package_info['type'] == 'solution')
         {
-            $try = $this->StarterModel->installPlugin($solution_info, $item);
+            $plugins = $this->StarterModel->getPlugins($package_folder, false, $package_info['folder_name'] ?? '');
+
+            if(!file_exists(SPT_PLUGIN_PATH . $package_info['folder_name']))
+            {
+                if(!mkdir(SPT_PLUGIN_PATH . $package_info['folder_name']))
+                {
+                    $this->error = 'Can`t create folder solution';
+                    $this->StarterModel->clearInstall($package_folder, '');
+                    return false;
+                }
+            }
+            
+            copy($package_folder . '/' . $temp_folder . '/solution.php', SPT_PLUGIN_PATH . $package_info['folder_name'] . '/solution.php');
+    
+            foreach ($plugins as $item) 
+            {
+                $try = $this->StarterModel->installPlugin($package_info, $item);
+                if (!$try) 
+                {
+                    $this->StarterModel->clearInstall($package_folder, $package_info);
+                    $this->error = "- Install plugin " . $item['folder_name'] . " failed:\n";
+                    return false;
+                }
+    
+                echo "- Install plugin " . $item['folder_name'] . " done!\n";
+            }
+        }
+        else
+        {
+            $package_info['path'] = $package_folder . '/' . $temp_folder;
+            $try = $this->StarterModel->installPlugin($package_info['solution'], $package_info);
             if (!$try) 
             {
-                $this->StarterModel->clearInstall($solution_folder, $solution_info);
-                $this->error = "- Install plugin " . $item['folder_name'] . " failed:\n";
-                return $result;
+                $this->StarterModel->clearInstall($package_folder, $temp_folder);
+                echo "Install plugin " . basename($package_info['folder_name']) . " failed";
+                return false;
             }
 
-            echo "- Install plugin " . $item['folder_name'] . " done!\n";
+            $this->StarterModel->registerSolution($package_info['solution']);
+            echo "Install plugin " . basename($package_info['folder_name']) . " successfully \n";
         }
+        
 
         echo "4. Start generate data structure:\n";
 
@@ -291,7 +333,7 @@ class StarterCliModel extends Base
         }
 
         // clear file install
-        $this->StarterModel->clearInstall($solution_folder, '');
+        $this->StarterModel->clearInstall($package_folder, '');
 
         return true;
     }
