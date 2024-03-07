@@ -1,0 +1,7 @@
+{
+    "title": "New Theme",
+    "folder" : "new_theme",
+    "description" : "This is new theme",
+    "image": "new_theme/images/new_theme.png",
+    "dependencies" : []
+}
