@@ -1,7 +1,8 @@
 {
-    "title": "New Theme",
-    "folder" : "new_theme",
-    "description" : "This is new theme",
-    "image": "new_theme/images/new_theme.png",
+    "title": "Basic Theme",
+    "folder" : "basic",
+    "assets" : "assets",
+    "description" : "This is basic theme",
+    "image": "",
     "dependencies" : []
 }
