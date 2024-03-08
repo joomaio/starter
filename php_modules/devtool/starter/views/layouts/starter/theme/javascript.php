@@ -64,7 +64,10 @@
                     data: formData,
                     contentType: false,
                     processData: false,
-                    success: function (res) {
+                    complete: function (respone) {
+                        var res = respone.responseText.replace(/^\ufeff+/g, '');
+                        res = JSON.parse(res);
+                        console.log(res);
                         var endTime = Date.now();
                         var duration = endTime - startTime;
                         modalText = $('#modal-text').html();
@@ -84,6 +87,10 @@
                             {
                                 ajaxInstall(formData, step +1 ,totalStep, res.timestamp);
                             }
+                            else
+                            {
+                                $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
+                            }
                             $('.progress-bar').css('width', person.toFixed(0) + '%').attr("aria-valuenow", person.toFixed(0));
                             $('#progess-status').html(`Installing ${person.toFixed(0)}%`);
                         } else {
@@ -96,13 +103,17 @@
                             $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                         }
                     },
-                    error: function(){
-                        // Hành động khi có lỗi xảy ra
-                        $('.progress').css("display", "none");
-                        $('.progess-status').css("display", "none");
-                        modalText += '<h4>An error occurred, please try again later</h4>';
-                        $('#modal-text').html(modalText);
-                        $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
+                    error: function(respone){
+                        var res = respone.responseText.replace(/^\ufeff+/g, '');
+                        res = JSON.parse(res);
+                        if(!res.status)
+                        {
+                            $('.progress').css("display", "none");
+                            $('.progess-status').css("display", "none");
+                            modalText += '<h4>An error occurred, please try again later</h4>';
+                            $('#modal-text').html(modalText);
+                            $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
+                        }
                     }
                 });
         }
