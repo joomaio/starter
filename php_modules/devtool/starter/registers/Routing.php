@@ -21,6 +21,11 @@ class Routing
                     'post' => 'starter.starter.login',
                 ],
             ],
+            'starter/config' => [
+                'fnc' => [
+                    'post' => 'starter.config.update',
+                ],
+            ],
             'starter/install' => [
                 'fnc' => [
                     'post' => 'starter.starter.install',

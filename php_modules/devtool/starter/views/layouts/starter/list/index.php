@@ -9,6 +9,9 @@
 				<li class="nav-item" role="presentation">
 					<button class="nav-link" id="themes-tab" data-bs-toggle="tab" data-bs-target="#themes" type="button" role="tab" aria-controls="themes" aria-selected="false">Themes</button>
 				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab" aria-controls="config" aria-selected="false">Configuration</button>
+				</li>
 			</ul>
 			<div class="tab-content" id="myTabContent">
 				<div class="tab-pane fade show active" id="solutions" role="tabpanel" aria-labelledby="solutions-tab">
@@ -36,6 +39,25 @@
 					<div class="theme-list row mt-2">
 						<?php while ($this->themes->hasRow()) echo $this->render('starter.theme.row'); ?>
 					</div>
+				</div>
+				<div class="tab-pane fade" id="config" role="tabpanel" aria-labelledby="config-tab">
+					<form action="<?php echo $this->link_config ?>" method="POST">
+						<div class="row mt-3">
+							<div class="col-6">
+								<?php $this->ui->field('admin_theme'); ?>
+							</div>
+							<div class="col-6">
+								<?php $this->ui->field('default_theme'); ?>
+							</div>
+						</div>
+						<div class="row mt-4">
+							<div class="col-12 text-center">
+								<a href="<?php echo $this->url('starter'); ?>" class="btn btn-secondary me-3">Cancel</a>
+								<button class="btn btn-primary">Save</button>
+							</div>
+						</div>
+						<?php $this->ui->field('token'); ?>
+					</form>
 				</div>
 			</div>
 		</div>

@@ -12,6 +12,7 @@ class Dispatcher
         $fName = $app->get('function');
 
         $check = php_sapi_name();
+        $app->set('theme', $app->cf('defaultTheme'));
         $container = $app->getContainer();
         if($check != 'cli')
         {
@@ -33,7 +34,7 @@ class Dispatcher
 
         $controller = new $controller($container);
         $controller->{$fName}();
-        
+
         if ($check != 'cli')
         {
             $fName = 'to'. ucfirst($app->get('format', 'html'));

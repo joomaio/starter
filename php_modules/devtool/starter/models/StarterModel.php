@@ -878,4 +878,15 @@ class StarterModel extends Base
     
         return true;
     }
+
+    public function updateConfig($data)
+    {
+        $fields = ['admin_theme', 'default_theme'];
+        foreach($fields as $field)
+        {
+            $this->OptionModel->set($field, $data[$field] ?? '');
+        }
+
+        return true;
+    }
 }
