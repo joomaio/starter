@@ -339,7 +339,7 @@ class ThemeModel extends Base
         if(!$step)
         {
             // check dependencies
-            $try = $this->checkUninstall('themes/'. $theme);
+            $try = $this->StarterModel->checkUninstall('themes/'. $theme);
             if(!$try)
             {
                 $this->error = 'Uninstall failed, package existence depends on the theme.';

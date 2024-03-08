@@ -6,7 +6,7 @@
             <div class="d-flex justify-content-end">  
                 <?php if (isset($this->buttons[$this->item['folder']]) && $this->buttons[$this->item['folder']]): ?> 
                 <?php endif; ?>
-                <button data-type="solution" data-solution="<?php echo $this->item['folder']; ?>" data-name="<?php echo $this->item['name']; ?>" data-code="<?php echo $this->item['folder']; ?>" class="btn btn-secondary btn-uninstall">
+                <button data-type="solution" data-solution="<?php echo $this->item['folder']; ?>" data-name="<?php echo $this->item['title']; ?>" data-code="<?php echo $this->item['folder']; ?>" class="btn btn-secondary btn-theme-uninstall">
                     Uninstall
                 </button>
             </div>
