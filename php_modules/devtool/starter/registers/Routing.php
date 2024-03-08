@@ -95,6 +95,20 @@ class Routing
                 'restApi' => true,
                 'format' => 'json',
             ],
+            'starter/theme/install' => [
+                'fnc' => [
+                    'post' => 'starter.theme.install',
+                ],
+                'restApi' => true,
+                'format' => 'json',
+            ],
+            'starter/theme/uninstall' => [
+                'fnc' => [
+                    'post' => 'starter.theme.uninstall',
+                ],
+                'restApi' => true,
+                'format' => 'json',
+            ],
         ];
     }
 }
