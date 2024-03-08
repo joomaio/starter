@@ -34,6 +34,7 @@ class ThemeModel extends Base
                 if (file_exists($info_path)) 
                 {
                     $info = file_get_contents($info_path);
+                    $info = json_decode($info, true);
                     $this->themes[$item->getBasename()] = $info;
                 }
             }

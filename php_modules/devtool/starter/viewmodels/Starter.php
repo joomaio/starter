@@ -44,10 +44,13 @@ class Starter extends ViewModel
         $buttons = $this->StarterModel->loadButton();
 
         $list = new Listing(array_values($solutions), count($solutions), 0, $this->getColumns());
+        $themes = $this->ThemeModel->getThemes();
+        $themes = new Listing(array_values($themes), count($themes), 0, $this->getColumns());
 
         return [
             'url' => $this->router->url(),
             'list' => $list,
+            'themes' => $themes,
             'buttons' => $buttons,
             'link_list' => $this->router->url('starter'),
             'title_page' => 'Starter',

@@ -23,12 +23,15 @@
 							<button class="btn btn-primary" id="install-package" data-bs-toggle="modal" data-bs-target="#upload_package">Upload Package</button>
 						</div>
 					</div>
-
 					<div class="solution-list row">
 						<?php while ($this->list->hasRow()) echo $this->render('starter.list.row'); ?>
 					</div>
 				</div>
-				<div class="tab-pane fade" id="themes" role="tabpanel" aria-labelledby="themes-tab"></div>
+				<div class="tab-pane fade" id="themes" role="tabpanel" aria-labelledby="themes-tab">
+					<div class="theme-list row mt-5">
+						<?php while ($this->themes->hasRow()) echo $this->render('starter.theme.row'); ?>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
