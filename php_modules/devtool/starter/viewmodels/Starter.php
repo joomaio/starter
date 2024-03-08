@@ -64,6 +64,8 @@ class Starter extends ViewModel
             'link_uninstall_plugins' => $this->router->url('starter/uninstall-plugins'),
             'link_generate_data_structure' => $this->router->url('starter/generate-data-structure'),
             'link_composer_update' => $this->router->url('starter/composer-update'),
+            'link_install_theme' => $this->router->url('starter/theme/install'),
+            'link_uninstall_theme' => $this->router->url('starter/theme/uninstall'),
             'token' => $this->token->value(),
         ];
     }

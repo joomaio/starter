@@ -10,7 +10,7 @@ class theme extends ControllerMVVM
     {
         $data = [
             'file' => $this->request->file->get('file_upload', [], 'array'),
-            'url' => $this->request->post->get('url', '', 'string');
+            'url' => $this->request->post->get('url', '', 'string'),
         ];
 
         $step = $this->request->post->get('step', 0, 'int');
@@ -50,9 +50,10 @@ class theme extends ControllerMVVM
 
         $this->set('status', $status);
         $this->set('totalStep', $totalStep);
+        $this->set('timestamp', isset($try['timestamp']) ? $try['timestamp'] : $timestamp );
         $this->set('step', $step);
         $this->set('title', $step. '/'. $totalStep . ' '. $title);
-        $this->set('message', $status ? $done : $this->ThemeModel->getError());
+        $this->set('message', $status ? $message : $this->ThemeModel->getError());
         return;
     }
 

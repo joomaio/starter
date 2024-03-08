@@ -216,7 +216,7 @@ class ThemeModel extends Base
         }
 
         // load install theme info
-        $try = $this->getInstallTheme($folder);
+        $try = $this->getInstallTheme($path);
         if(!$try)
         {
             $this->error = "Invalid theme config";
@@ -236,6 +236,11 @@ class ThemeModel extends Base
 
         // copy folder theme
         $theme_path = $this->app->get('themePath', '');
+        if(!$info['folder'])
+        {
+            $this->error = "Can't read folder theme";
+            return false;
+        }
         $new_theme = $theme_path. '/' . $infor['folder'];
         if (file_exists($new_theme)) 
         {
@@ -270,7 +275,7 @@ class ThemeModel extends Base
 
     public function getInstallTheme($folder)
     {
-        if(!$folder || !file_exists($path))
+        if(!$folder || !file_exists($folder))
         {
             $this->error = 'Invalid folder theme';
             return false;
