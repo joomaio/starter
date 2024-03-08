@@ -753,6 +753,7 @@ class StarterModel extends Base
     public function checkDependencies($dependencies, $plugins = [])
     {
         $solutions = $this->getSolutions();
+        $themes = $this->ThemeModel->getThemes();
 
         if(!$dependencies)
         {
@@ -767,6 +768,11 @@ class StarterModel extends Base
             $solution = $arr[0] ?? '';
             $plugin = $arr[1] ?? '';
             if($solution && $plugin)
+            {
+                continue;
+            }
+
+            if($solution == 'themes' && isset($themes[$plugin]) && $themes[$plugin])
             {
                 continue;
             }
