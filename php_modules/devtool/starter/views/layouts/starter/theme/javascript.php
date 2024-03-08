@@ -89,7 +89,7 @@
                         {
                             step = res.step ?? step;
                             totalStep = res.totalStep ?? totalStep;
-                            let text_time = `Execute time: ${duration} s`;
+                            let text_time = `Execute time: ${duration} ms`;
                             var title = `<h4>${res.title}</h4>`;
                             modalText += `${title}<p> ${res.message.replace(/\\/g, '')}</p><p> ${text_time}</p>`;
                             $('#modal-text').html(modalText);
@@ -178,7 +178,7 @@
 
                         if(res.status)
                         {
-                            let text_time = `Execute time: ${duration} s`;
+                            let text_time = `Execute time: ${duration} ms`;
                             var title = `<h4>${res.title}</h4>`;
                             title = !step && !totalStep ? '' : title;
                             modalText += `${title}<p> ${res.message.replace(/\\/g, '')}</p><p> ${text_time}</p>`;

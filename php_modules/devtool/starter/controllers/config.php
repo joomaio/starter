@@ -16,6 +16,8 @@ class config extends ControllerMVVM
         $try = $this->StarterModel->updateConfig($data);
         $this->session->set('flashMsg', $try ? 'Update successfully' : $this->StarterModel->getError());
         
-        return  $this->app->redirect('starter');
+        return  $this->app->redirect(
+            $this->router->url('starter')
+        );
     }
 }

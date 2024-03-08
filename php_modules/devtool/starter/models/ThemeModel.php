@@ -346,6 +346,14 @@ class ThemeModel extends Base
                 return false;
             }
 
+            $admin_theme = $this->OptionModel->get('admin_theme', '');
+            $default_theme = $this->OptionModel->get('default_theme', '');
+            if($admin_theme == $theme || $default_theme == $theme)
+            {
+                $this->error = 'Uninstall failed, theme is in use.';
+                return false;
+            }
+
             $timestamp = strtotime('now');
             $this->session->set('uninstallerTheme', $timestamp);
 
