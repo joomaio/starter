@@ -236,7 +236,7 @@ class ThemeModel extends Base
 
         // copy folder theme
         $theme_path = $this->app->get('themePath', '');
-        if(!$info['folder'])
+        if(!$infor['folder'])
         {
             $this->error = "Can't read folder theme";
             return false;
@@ -257,16 +257,19 @@ class ThemeModel extends Base
 
         // install assets file
         $assets = $infor['assets'] ?? 'assets';
-        $public_assets = PUBLIC_PATH. $infor['name'];
-        if (file_exists($public_assets)) 
+        $public_assets = PUBLIC_PATH. $infor['folder'];
+        if(file_exists($new_theme.'/'. $assets))
         {
-            $this->file->removeFolder($public_assets);
-        }
-
-        $try = $this->file->copyFolder($new_theme.'/'. $assets, $public_assets);
-        if($try)
-        {
-            $this->file->removeFolder($new_theme.'/'. $assets);
+            if (file_exists($public_assets)) 
+            {
+                $this->file->removeFolder($public_assets);
+            }
+    
+            $try = $this->file->copyFolder($new_theme.'/'. $assets, $public_assets);
+            if($try)
+            {
+                $this->file->removeFolder($new_theme.'/'. $assets);
+            }
         }
 
         $this->clearInstall();
@@ -299,8 +302,8 @@ class ThemeModel extends Base
             return false;
         }
 
-        $info = file_get_contents($folder.'/theme.json');
-        $info = json_decode($info, true);
+        $infor = file_get_contents($folder.'/theme.json');
+        $infor = json_decode($infor, true);
 
         return [
             'infor' => $infor,
