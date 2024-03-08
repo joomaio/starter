@@ -83,7 +83,7 @@
                         console.log(res);
                         var endTime = Date.now();
                         var duration = endTime - startTime;
-                        modalText = $('#modal-text').html();
+                        var modalText = $('#modal-text').html();
 
                         if(res.status)
                         {
@@ -124,14 +124,6 @@
                             $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                         }
                         res = JSON.parse(res);
-                        if(!res.status)
-                        {
-                            $('.progress').css("display", "none");
-                            $('.progess-status').css("display", "none");
-                            modalText += '<h4>An error occurred, please try again later</h4>';
-                            $('#modal-text').html(modalText);
-                            $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
-                        }
                     }
                 });
         }
@@ -180,14 +172,15 @@
                         res = JSON.parse(res);
                         var endTime = Date.now();
                         var duration = endTime - startTime;
-                        modalText = $('#modal-text').html();
+                        var modalText = $('#modal-text').html();
+                        step = res.step ?? step;
+                        totalStep = res.totalStep ?? totalStep;
 
                         if(res.status)
                         {
-                            step = res.step ?? step;
-                            totalStep = res.totalStep ?? totalStep;
                             let text_time = `Execute time: ${duration} s`;
                             var title = `<h4>${res.title}</h4>`;
+                            title = !step && !totalStep ? '' : title;
                             modalText += `${title}<p> ${res.message.replace(/\\/g, '')}</p><p> ${text_time}</p>`;
                             $('#modal-text').html(modalText);
                             $('.modal-body').scrollTop($('#modal-text').height());
@@ -207,8 +200,9 @@
                             $('.progress').css("display", "none");
                             $('.progess-status').css("display", "none");
                             var title = `<h4>${res.title}</h4>`;
+                            title = !step && !totalStep ? '' : title;
                             modalText += title + res.message ?? '';
-                            modalText += `<h4>Install failed! Total execute time: ${duration} ms</h4>`;
+                            modalText += `<h4>Uninstall failed! Total execute time: ${duration} ms</h4>`;
                             $('#modal-text').html(modalText);
                             $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                         }
@@ -218,15 +212,6 @@
                         if(!isJSON(res))
                         {
                             alert('An error occurred, please try again later');
-                            $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
-                        }
-                        res = JSON.parse(res);
-                        if(!res.status)
-                        {
-                            $('.progress').css("display", "none");
-                            $('.progess-status').css("display", "none");
-                            modalText += '<h4>An error occurred, please try again later</h4>';
-                            $('#modal-text').html(modalText);
                             $('.modal-footer').html(`<button id="modal-close" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>`);
                         }
                     }
