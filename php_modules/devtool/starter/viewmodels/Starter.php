@@ -134,7 +134,7 @@ class Starter extends ViewModel
     {
         $themes = $this->ThemeModel->getThemes();
         $optional = [
-            ['text' => 'Select theme', 'value' => ''],
+            // ['text' => 'Select theme', 'value' => ''],
         ];
         foreach($themes as $key => $value)
         {
