@@ -23,8 +23,8 @@ class Bootstrap
         {
             $config = $container->get('config');
             $OptionModel = $container->get('OptionModel');
-            $config->adminTheme = $OptionModel->get('admin_theme', '');
-            $config->defaultTheme = $OptionModel->get('default_theme', '');
+            $config->adminTheme = $OptionModel->get('admin_theme', $config->adminTheme);
+            $config->defaultTheme = $OptionModel->get('default_theme', $config->defaultTheme);
         }
     }
 }
