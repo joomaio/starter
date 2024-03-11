@@ -13,5 +13,18 @@ class Bootstrap
         {
             $container->set('file', new File());
         }
+
+        if ($container->exists('OptionEntity')) 
+        {
+            $container->get('OptionEntity')->checkAvailability();
+        }
+
+        if ($container->exists('config')) 
+        {
+            $config = $container->get('config');
+            $OptionModel = $container->get('OptionModel');
+            $config->adminTheme = $OptionModel->get('admin_theme', $config->adminTheme);
+            $config->defaultTheme = $OptionModel->get('default_theme', $config->defaultTheme);
+        }
     }
 }

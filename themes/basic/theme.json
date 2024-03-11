@@ -1,0 +1,8 @@
+{
+    "title": "Basic Theme",
+    "folder" : "basic",
+    "assets" : "assets",
+    "description" : "This is basic theme using bootstrap framework.",
+    "image": "",
+    "dependencies" : []
+}

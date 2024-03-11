@@ -21,6 +21,11 @@ class Routing
                     'post' => 'starter.starter.login',
                 ],
             ],
+            'starter/config' => [
+                'fnc' => [
+                    'post' => 'starter.config.update',
+                ],
+            ],
             'starter/install' => [
                 'fnc' => [
                     'post' => 'starter.starter.install',
@@ -91,6 +96,20 @@ class Routing
             'starter/composer-update' => [
                 'fnc' => [
                     'post' => 'starter.starter.composerUpdate',
+                ],
+                'restApi' => true,
+                'format' => 'json',
+            ],
+            'starter/theme/install' => [
+                'fnc' => [
+                    'post' => 'starter.theme.install',
+                ],
+                'restApi' => true,
+                'format' => 'json',
+            ],
+            'starter/theme/uninstall' => [
+                'fnc' => [
+                    'post' => 'starter.theme.uninstall',
                 ],
                 'restApi' => true,
                 'format' => 'json',

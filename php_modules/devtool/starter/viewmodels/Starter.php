@@ -42,15 +42,23 @@ class Starter extends ViewModel
             $this->session->set('flashMsg', 'Solution not found');
         }
         $buttons = $this->StarterModel->loadButton();
-
         $list = new Listing(array_values($solutions), count($solutions), 0, $this->getColumns());
+        $themes = $this->ThemeModel->getThemes();
+        $themes = new Listing(array_values($themes), count($themes), 0, $this->getColumns());
+        $form = new Form($this->getFormFields(), [
+            'admin_theme' => $this->OptionModel->get('admin_theme', $this->app->cf('adminTheme')),
+            'default_theme' => $this->OptionModel->get('default_theme', $this->app->cf('defaultTheme')),
+        ]);
 
         return [
             'url' => $this->router->url(),
             'list' => $list,
+            'form' => $form,
+            'themes' => $themes,
             'buttons' => $buttons,
             'link_list' => $this->router->url('starter'),
             'title_page' => 'Starter',
+            'link_config' => $this->router->url('starter/config'),
             'link_install' => $this->router->url('starter/install'),
             'link_uninstall' => $this->router->url('starter/uninstall'),
             'link_prepare_install' => $this->router->url('starter/prepare-install'),
@@ -61,6 +69,8 @@ class Starter extends ViewModel
             'link_uninstall_plugins' => $this->router->url('starter/uninstall-plugins'),
             'link_generate_data_structure' => $this->router->url('starter/generate-data-structure'),
             'link_composer_update' => $this->router->url('starter/composer-update'),
+            'link_install_theme' => $this->router->url('starter/theme/install'),
+            'link_uninstall_theme' => $this->router->url('starter/theme/uninstall'),
             'token' => $this->token->value(),
         ];
     }
@@ -120,4 +130,36 @@ class Starter extends ViewModel
         ];
     }
 
+    public function getFormFields()
+    {
+        $themes = $this->ThemeModel->getThemes();
+        $optional = [
+            // ['text' => 'Select theme', 'value' => ''],
+        ];
+        foreach($themes as $key => $value)
+        {
+            $optional[] = [
+                'text' => $value['title'],
+                'value' => $key,
+            ];
+        }
+
+        $fields = [
+            'admin_theme' => ['option',
+                'default' => '',
+                'formClass' => 'form-select',
+                'options' => $optional,
+            ],
+            'default_theme' => ['option',
+                'default' => '',
+                'formClass' => 'form-select',
+                'options' => $optional,
+            ],
+            'token' => ['hidden',
+                'default' => $this->token->value(),
+            ],
+        ];
+
+        return $fields;
+    }
 }

@@ -2,8 +2,8 @@
 
 return [ 
     'subpath' => '',
-    'defaultTheme' => '',
-    'adminTheme' => 'admin',
+    'defaultTheme' => 'basic',
+    'adminTheme' => 'basic',
     'secrect' => 'sid',
     'expireSessionDuration' => 60,
     'redirectAfterLogin' => '',

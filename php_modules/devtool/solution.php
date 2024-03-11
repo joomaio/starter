@@ -6,5 +6,7 @@ return [
     'solution' => 'devtool',
     'folder_name' => 'devtool',
     'name' => 'Solution Dev Tool',
-    'dependencies' => [],
+    'dependencies' => [
+        'themes/basic'
+    ],
 ];
