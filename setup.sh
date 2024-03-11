@@ -44,7 +44,7 @@ if [ -z "$document_root" ]; then
     echo -n "Enter document root (Enter to skip, default is $script_dir/starter): "
     read document_root
     if [ -z "$document_root" ]; then
-        $document_root = "$script_dir/starter"
+        document_root="$script_dir/starter"
     fi
 fi
 
