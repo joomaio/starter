@@ -1,0 +1,35 @@
+version: "3.1"
+services:
+
+    mysql:
+      build: db/mysql8
+      container_name: mysql
+      volumes:
+        - ./source:/app
+        - ./import:/import
+        - ../mysql8/storage:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=123123
+        - MYSQL_USER=user
+        - MYSQL_PASSWORD=pass
+      ports:
+        - "3306:3306"
+    webserver:
+      image: nginx:alpine
+      container_name: web
+      working_dir: /app
+      volumes:
+          - ./source:/app
+          - ./log:/log
+          - ./webserver/nginx:/etc/nginx/conf.d
+          - ./webserver/ssl:/usr/ssl
+      ports:
+       - "80:80"
+       - "5101-5110:5101-5110"
+    php-fpm82:
+      build: php82
+      container_name: fpm82
+      working_dir: /app
+      volumes:
+        - ./source:/app
+        - ./php82/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
