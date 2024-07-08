@@ -59,3 +59,8 @@ else
 fi
 
 ## Step 5 Base Structure Setup
+
+## Step 6  Which app
+
+## Step 7  Cli app
+
