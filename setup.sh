@@ -62,5 +62,18 @@ fi
 
 ## Step 6  Which app
 
-## Step 7  Cli app
+## Step 7  Cli App
+
+## Step 8  Web App
+
+## Step 9 Theme
+
+## Step 10 Solution
+
+## Step 11 Solution
+
+## Step 12 Continue ?
+
+## Step 13 Done
+echo "Septup done!"
 
