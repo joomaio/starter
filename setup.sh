@@ -59,9 +59,17 @@ else
 fi
 
 ## Step 5 Base Structure Setup
+# load dtm Base Structure
 
 ## Step 6  Which app
-
+while true; do
+    echo -n "Which application do you want to deploy?
+    1. cli
+    2. web
+    3. solution
+    4. plugin
+    5. theme"
+    read app
 ## Step 7  Cli App
 
 ## Step 8  Web App
@@ -73,6 +81,15 @@ fi
 ## Step 11 Solution
 
 ## Step 12 Continue ?
+    echo -n "Do you want to continue? yes/no (no): "
+    read answer
+    if [ "$answer" != "yes" ]; then
+        echo "Returning to step 1."
+        continue
+    fi
+
+    break
+done
 
 ## Step 13 Done
 echo "Septup done!"
