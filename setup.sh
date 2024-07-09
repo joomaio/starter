@@ -60,8 +60,7 @@ fi
 
 ## Step 5 Base Structure Setup
 echo "Start generate basic structure"
-base_structure="$DIR/vendor/smpleader/dtm/src/core"
-echo $base_structure;
+base_structure="$DIR/vendor/smpleader/dtm/boilerplates/base_structure"
 if [ ! -d "$base_structure" ]; then
     echo "Error: Basic structure not found."
     exit 1
@@ -87,30 +86,67 @@ while true; do
 case "$app" in
     "cli")
         ## Step 7  Cli App
-        echo ""
+        cli_path="$DIR/vendor/smpleader/dtm/boilerplates/cli"
+        cp -r "$cli_path"/* "$DIR"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Setup cli app failed!"
+            exit 1
+        fi
         echo "Setup cli app done!"
         ;;
     "web")
         ## Step 8  Web App
-        echo "Bạn đã chọn tùy chọn 2"
+        web_path="$DIR/vendor/smpleader/dtm/boilerplates/web_public"
+        cp -r "$web_path"/* "$DIR"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Setup cli app failed!"
+            exit 1
+        fi
+        echo "Setup web app done!"
         ;;
     "plugin")
-        ## Step 9 Theme
-        echo "Bạn đã chọn tùy chọn 3"
+        ## Step 9 Plugin
+        plugin_path="$DIR/vendor/smpleader/dtm/boilerplates/plugin"
+        cp -r "$plugin_path"/* "$DIR"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Setup cli app failed!"
+            exit 1
+        fi
+        echo "Setup web app done!"
         ;;
     "solution")
         ## Step 10 Solution
-        echo "Bạn đã chọn tùy chọn 4"
+        solution_path="$DIR/vendor/smpleader/dtm/boilerplates/solution"
+        cp -r "$solution_path"/* "$DIR/php_modules"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Setup cli app failed!"
+            exit 1
+        fi
+        echo "Setup web app done!"
         ;;
     "theme")
-        ## Step 11 Solution
-        echo "Bạn đã chọn tùy chọn 5"
+        ## Step 11 Theme
+        solution_path="$DIR/vendor/smpleader/dtm/boilerplates/solution"
+        cp -r "$solution_path"/* "$DIR/php_modules"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Setup cli app failed!"
+            exit 1
+        fi
+        echo "Setup web app done!"
         ;;
     *)
-        ## Step 12 Continue ?
         echo "Invalid value. Please enter one of the following values: cli, web, plugin, solution, theme."
-        continue;
+        continue
         ;;
 esac
+    ## Step 12 Continue ?
+    echo -n "Do you want to continue? y/N: "
+    read answer
+    answer_lower=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
+    if [ "$answer_lower" == "y" ] || [ "$answer_lower" == "yes" ]; then
+        continue
+    fi
+    break
 done
 ## Step 13 Done
+echo "Setup done!"
