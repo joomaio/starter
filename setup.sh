@@ -59,6 +59,22 @@ else
 fi
 
 ## Step 5 Base Structure Setup
+echo "Start generate basic structure"
+base_structure="$DIR/vendor/smpleader/dtm/src/core"
+echo $base_structure;
+if [ ! -d "$base_structure" ]; then
+    echo "Error: Basic structure not found."
+    exit 1
+fi
+
+cp -r "$base_structure"/* "$DIR"
+if [ ! $? -eq 0 ]; then
+    echo "Error: Basic structure cannot copy!"
+    exit 1
+fi
+
+echo "Basic structure setup done!"
+## Step 6  Cli App
 ## Step 7  Cli App
 ## Step 8  Web App
 ## Step 9 Theme
@@ -66,4 +82,3 @@ fi
 ## Step 11 Solution
 ## Step 12 Continue ?
 ## Step 13 Done
-## Function libraries
