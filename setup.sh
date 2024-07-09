@@ -97,12 +97,31 @@ case "$app" in
     "web")
         ## Step 8  Web App
         web_path="$DIR/vendor/smpleader/dtm/boilerplates/web_public"
-        cp -r "$web_path"/* "$DIR"
+        cp -r "$web_path"/ "$DIR/"
         if [ ! $? -eq 0 ]; then
             echo "Error: Setup web app failed!"
             exit 1
         fi
-        # generate solution
+        # generate index app
+        echo "Which solution do you want to used?"
+        read solution
+        generate_app=""
+        while true; do
+            if [ "$generate_app" != "" ]; then
+                generate_app="$generate_app\n\t\t\t\tAPP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\'";
+            else
+                generate_app="APP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\'";
+            fi
+            echo "Which solution do you want to used? or enter to skip"
+            read solution
+            if [ $solution ]; then
+                continue;
+            fi
+            break;
+        done
+
+        sed -i "s/__packages__/$generate_app/g" "web_public/index.php"
+
         echo "Setup web app done!"
         ;;
     "plugin")
