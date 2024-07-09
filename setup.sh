@@ -108,9 +108,9 @@ case "$app" in
         generate_app=""
         while true; do
             if [ "$generate_app" != "" ]; then
-                generate_app="$generate_app\n\t\t\t\tAPP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\'";
+                generate_app="$generate_app\n\t\t\t\tAPP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\',";
             else
-                generate_app="APP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\'";
+                generate_app="APP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\',";
             fi
             echo "Which solution do you want to used? or enter to skip"
             read solution
@@ -126,33 +126,147 @@ case "$app" in
         ;;
     "plugin")
         ## Step 9 Plugin
-        plugin_path="$DIR/vendor/smpleader/dtm/boilerplates/plugin"
-        cp -r "$plugin_path"/* "$DIR"
+        while true; do
+            echo "What is the name of the solution?"
+            read solution
+            if [ "$solution" != "" ]; then
+                break;
+            fi
+        done
+        solution=$(echo "$solution" | tr -cd '[:alnum:]-_' | tr ' ' '_')
+        
+        while true; do
+            echo "What is the name of the plugin?"
+            read plugin
+            if [ "$plugin" != "" ]; then
+                break;
+            fi
+        done
+        plugin=$(echo "$plugin" | tr -cd '[:alnum:]-_' | tr ' ' '_')
+
+        solution_boilerplate="$DIR/vendor/smpleader/dtm/boilerplates/solution"
+        solution_dir="$DIR/php_modules/$solution"
+
+        if [ ! -d "$solution_dir" ]; then
+            # generate solution
+            mkdir "$solution_dir"
+            cp -r "$solution_boilerplate"/* "$solution_dir/"
+            if [ ! $? -eq 0 ]; then
+                echo "Error: Generate solution failed!"
+                exit 1
+            fi
+
+            sed -i "s/__solution__/$solution/g" "$solution_dir/about.php"
+        fi
+
+        plugin_boilerplate="$DIR/vendor/smpleader/dtm/boilerplates/plugin"
+        plugin_dir="$DIR/php_modules/$solution/$plugin"
+        if [ ! -d "$plugin_dir" ]; then
+            # generate solution
+            mkdir "$plugin_dir"
+        fi
+
+        cp -r "$plugin_boilerplate"/* "$plugin_dir/"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Generate solution failed!"
+            exit 1
+        fi
+
+        sed -i "s/__solution__/$solution/g" "$plugin_dir/registers/Installer.php"
+        sed -i "s/__solution__/$solution/g" "$plugin_dir/registers/Bootstrap.php"
+        sed -i "s/__solution__/$solution/g" "$plugin_dir/registers/Dispatcher.php"
+        sed -i "s/__solution__/$solution/g" "$plugin_dir/registers/Routing.php"
+        sed -i "s/__plugin__/$plugin/g" "$plugin_dir/registers/Installer.php"
+        sed -i "s/__plugin__/$plugin/g" "$plugin_dir/registers/Bootstrap.php"
+        sed -i "s/__plugin__/$plugin/g" "$plugin_dir/registers/Dispatcher.php"
+        sed -i "s/__plugin__/$plugin/g" "$plugin_dir/registers/Routing.php"
+
         if [ ! $? -eq 0 ]; then
             echo "Error: Setup cli app failed!"
             exit 1
         fi
-        echo "Setup web app done!"
+        echo "Setup plugin done!"
         ;;
     "solution")
         ## Step 10 Solution
-        solution_path="$DIR/vendor/smpleader/dtm/boilerplates/solution"
-        cp -r "$solution_path"/* "$DIR/php_modules"
-        if [ ! $? -eq 0 ]; then
-            echo "Error: Setup cli app failed!"
-            exit 1
+         while true; do
+            echo "What is the name of the solution?"
+            read solution
+            if [ "$solution" != "" ]; then
+                break;
+            fi
+        done
+        solution=$(echo "$solution" | tr -cd '[:alnum:]-_' | tr ' ' '_')
+        
+        solution_boilerplate="$DIR/vendor/smpleader/dtm/boilerplates/solution"
+        solution_dir="$DIR/php_modules/$solution"
+
+        if [ ! -d "$solution_dir" ]; then
+            # generate solution
+            mkdir "$solution_dir"
+            cp -r "$solution_boilerplate"/* "$solution_dir/"
+            if [ ! $? -eq 0 ]; then
+                echo "Error: Generate solution failed!"
+                exit 1
+            fi
+
+            sed -i "s/__solution__/$solution/g" "$solution_dir/about.php"
         fi
-        echo "Setup web app done!"
+        echo "Setup solution done!"
         ;;
     "theme")
         ## Step 11 Theme
-        solution_path="$DIR/vendor/smpleader/dtm/boilerplates/solution"
-        cp -r "$solution_path"/* "$DIR/php_modules"
+        while true; do
+            echo "What is the name of the solution?"
+            read solution
+            if [ "$solution" != "" ]; then
+                break;
+            fi
+        done
+        solution=$(echo "$solution" | tr -cd '[:alnum:]-_' | tr ' ' '_')
+        
+        while true; do
+            echo "What is the name of the theme?"
+            read theme
+            if [ "$theme" != "" ]; then
+                break;
+            fi
+        done
+        theme=$(echo "$theme" | tr -cd '[:alnum:]-_' | tr ' ' '_')
+
+        solution_boilerplate="$DIR/vendor/smpleader/dtm/boilerplates/solution"
+        solution_dir="$DIR/php_modules/$solution"
+
+        if [ ! -d "$solution_dir" ]; then
+            # generate solution
+            mkdir "$solution_dir"
+            cp -r "$solution_boilerplate"/* "$solution_dir/"
+            if [ ! $? -eq 0 ]; then
+                echo "Error: Generate solution failed!"
+                exit 1
+            fi
+
+            sed -i "s/__solution__/$solution/g" "$solution_dir/about.php"
+        fi
+
+        theme_boilerplate="$DIR/vendor/smpleader/dtm/boilerplates/theme"
+        theme_dir="$DIR/php_modules/$solution/$theme"
+        if [ ! -d "$theme_dir" ]; then
+            # generate solution
+            mkdir "$theme_dir"
+        fi
+
+        cp -r "$theme_boilerplate"/* "$theme_dir/"
+        if [ ! $? -eq 0 ]; then
+            echo "Error: Generate solution failed!"
+            exit 1
+        fi
+
         if [ ! $? -eq 0 ]; then
             echo "Error: Setup cli app failed!"
             exit 1
         fi
-        echo "Setup web app done!"
+        echo "Setup theme done!"
         ;;
     *)
         echo "Invalid value. Please enter one of the following values: cli, web, plugin, solution, theme."
@@ -170,3 +284,5 @@ esac
 done
 ## Step 13 Done
 echo "Setup done!"
+
+## function libraries
