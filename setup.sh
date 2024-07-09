@@ -87,7 +87,7 @@ case "$app" in
     "cli")
         ## Step 7  Cli App
         cli_path="$DIR/vendor/smpleader/dtm/boilerplates/cli"
-        cp -r "$cli_path"/* "$DIR"
+        cp -r "$cli_path" "$DIR"
         if [ ! $? -eq 0 ]; then
             echo "Error: Setup cli app failed!"
             exit 1
@@ -99,9 +99,10 @@ case "$app" in
         web_path="$DIR/vendor/smpleader/dtm/boilerplates/web_public"
         cp -r "$web_path"/* "$DIR"
         if [ ! $? -eq 0 ]; then
-            echo "Error: Setup cli app failed!"
+            echo "Error: Setup web app failed!"
             exit 1
         fi
+        # generate solution
         echo "Setup web app done!"
         ;;
     "plugin")
