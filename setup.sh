@@ -109,7 +109,7 @@ case "$app" in
         generate_app=""
         while true; do
             if [ "$generate_app" != "" ]; then
-                generate_app="$generate_app\n\t\t\t\tAPP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\',";
+                generate_app="$generate_app\n\t\tAPP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\',";
             else
                 generate_app="APP_PATH.'$solution' => '\\\\\\\\App\\\\\\\\$solution\\\\\\\\',";
             fi
