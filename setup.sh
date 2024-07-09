@@ -74,11 +74,43 @@ if [ ! $? -eq 0 ]; then
 fi
 
 echo "Basic structure setup done!"
-## Step 6  Cli App
-## Step 7  Cli App
-## Step 8  Web App
-## Step 9 Theme
-## Step 10 Solution
-## Step 11 Solution
-## Step 12 Continue ?
+## Step 6  Which App
+while true; do
+    echo "Which application do you want to deploy?"
+    echo "1. cli"
+    echo "2. web"
+    echo "3. plugin"
+    echo "4. solution"
+    echo "5. theme"
+    read app
+
+case "$app" in
+    "cli")
+        ## Step 7  Cli App
+        echo ""
+        echo "Setup cli app done!"
+        ;;
+    "web")
+        ## Step 8  Web App
+        echo "Bạn đã chọn tùy chọn 2"
+        ;;
+    "plugin")
+        ## Step 9 Theme
+        echo "Bạn đã chọn tùy chọn 3"
+        ;;
+    "solution")
+        ## Step 10 Solution
+        echo "Bạn đã chọn tùy chọn 4"
+        ;;
+    "theme")
+        ## Step 11 Solution
+        echo "Bạn đã chọn tùy chọn 5"
+        ;;
+    *)
+        ## Step 12 Continue ?
+        echo "Invalid value. Please enter one of the following values: cli, web, plugin, solution, theme."
+        continue;
+        ;;
+esac
+done
 ## Step 13 Done
