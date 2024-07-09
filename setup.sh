@@ -1,4 +1,5 @@
 #!/bin/bash
+
 DIR="$(dirname "$(realpath "$0")")"
 # Step 1 Check Php version
 php_version=$(php -v 2>&1)
@@ -284,5 +285,3 @@ esac
 done
 ## Step 13 Done
 echo "Setup done!"
-
-## function libraries
