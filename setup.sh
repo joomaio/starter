@@ -47,7 +47,17 @@ if [ "$(printf '%s\n' "$required_version" "$current_version" | sort -V | head -n
 else
     echo "Git version is < 2"
 fi
+
 ## Step 4 composer install
+echo "Start composer install:"
+composer require smpleader/spt smpleader/dtm
+if [ $? -eq 0 ]; then
+    echo "Composer install done!"
+else
+    echo "An error occurred while installing the packages."
+    exit 1
+fi
+
 ## Step 5 Base Structure Setup
 ## Step 7  Cli App
 ## Step 8  Web App
